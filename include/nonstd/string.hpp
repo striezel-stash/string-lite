@@ -6,12 +6,6 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-// string-lite is inspired on the article
-// "Fun with Concepts: Do You Even Lift, Bool?" by Colby Pike (vector-of-bool), Oct 26, 2020.
-// https://vector-of-bool.github.io/2020/10/26/strong-bool.html
-
-// The name string_ is used to prevent clashing with string from the Windows SDK (rpcndr.h(193))
-
 #ifndef NONSTD_STRING_LITE_HPP
 #define NONSTD_STRING_LITE_HPP
 
