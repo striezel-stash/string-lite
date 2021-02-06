@@ -112,13 +112,19 @@
 namespace nonstd {
 
 template< typename CharT >
-void clear( CharT * s )
+CharT nullchr() string_noexcept
 {
-    *s = CharT( 0 );
+    return 0;
+}
+
+template< typename CharT >
+void clear( CharT * s ) string_noexcept
+{
+    *s = nullchr<CharT>();
 }
 
 template< typename CharT, typename Traits = std::char_traits<CharT>, typename Allocator = std::allocator<CharT> >
-void clear( std::basic_string<CharT, Traits, Allocator> & s )
+void clear( std::basic_string<CharT, Traits, Allocator> & s ) string_noexcept
 {
     s.clear();
 }
