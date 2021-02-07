@@ -28,14 +28,14 @@ message( STATUS "Project '${PROJECT_NAME}', package '${package_name}' version: '
 # Toplevel or subproject:
 
 if ( CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME )
-    set( string_IS_TOPLEVEL_PROJECT TRUE )
+    set( STRING_IS_TOPLEVEL_PROJECT TRUE )
 else()
-    set( string_IS_TOPLEVEL_PROJECT FALSE )
+    set( STRING_IS_TOPLEVEL_PROJECT FALSE )
 endif()
 
 # If toplevel project, enable building and performing of tests, disable building of examples:
 
-option( STRING_LITE_OPT_BUILD_TESTS    "Build and perform string-lite tests" ${string_IS_TOPLEVEL_PROJECT} )
+option( STRING_LITE_OPT_BUILD_TESTS    "Build and perform string-lite tests" ${STRING_IS_TOPLEVEL_PROJECT} )
 option( STRING_LITE_OPT_BUILD_EXAMPLES "Build string-lite examples" OFF )
 
 # If requested, build and perform tests, build examples:
