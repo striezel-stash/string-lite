@@ -117,7 +117,7 @@ void clear( CharT * s ) string_noexcept
     *s = nullchr<CharT>();
 }
 
-template< typename CharT, typename Traits = std::char_traits<CharT>, typename Allocator = std::allocator<CharT> >
+template< typename CharT, typename Traits, typename Allocator >
 void clear( std::basic_string<CharT, Traits, Allocator> & s ) string_noexcept
 {
     s.clear();
