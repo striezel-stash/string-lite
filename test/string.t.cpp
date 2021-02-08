@@ -94,7 +94,6 @@ CASE( "as_uppercase: Returns string in uppercase - string" )
 CASE( "clear: Makes string empty - string " "[unicode]" )
 {
 #if string_HAS_CSSTRING
-    EXPECT( string_TWEAK_VALUE == 42 );
     CsString::CsString s( "α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ ς σ τ υ φ χ ψ ω" );
 
     EXPECT( s  == s );
