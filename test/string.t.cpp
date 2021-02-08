@@ -7,6 +7,12 @@
 
 #include "string-main.t.hpp"
 
+#ifdef _WIN32
+# define string_strdup  _strdup
+#else
+# define string_strdup   strdup
+#endif
+
 namespace {
 
 using namespace nonstd::string;
@@ -15,7 +21,8 @@ struct scoped_str
 {
     char * p;
 
-    scoped_str( char const * s ) : p ( _strdup(s) ) {}
+    scoped_str( char const * s ) : p ( string_strdup(s) ) {}
+
     ~scoped_str() { delete p; }
 
     operator char const *() { return p; }
@@ -101,7 +108,7 @@ CASE( "clear: Makes string empty - string " "[unicode]" )
 #endif
 }
 
-CASE( "to_upper: Makes string uppercase - string " "[unicode]" )
+CASE( "to_upper: Makes string uppercase - string " "[unicode][.todo]" )
 {
 #if string_HAS_CSSTRING
     // el_EU ISO-8859-7x   Greek language locale for Europe (Euro symbol added)
