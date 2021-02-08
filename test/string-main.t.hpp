@@ -34,22 +34,32 @@
 
 #include <iostream>
 
+// Provide CsString with C++17 and later:
+
+#define string_HAS_CSSTRING string_CPP17_140
+
+#if string_HAS_CSSTRING
+
+#include "cs_string/cs_string.h"
+
 namespace nonstd {
 
 // use oparator<< instead of to_string() overload;
 // see  http://stackoverflow.com/a/10651752/437272
 
-// inline std::ostream & operator<<( std::ostream & os, nonstd::string_ const & v )
-// {
-//     return os << "[string:" << std::boolalpha << bool(v) << "]";
-// }
+inline std::ostream & operator<< ( std::ostream & os, CsString::CsString const & s )
+{
+    return os << s.constData();
 }
+} // namespace nonstd
 
 namespace lest {
 
-// using ::nonstd::operator<<;
+using ::nonstd::operator<<;
 
 } // namespace lest
+
+#endif // string_HAS_CSSTRING
 
 #include "lest_cpp03.hpp"
 

@@ -57,23 +57,29 @@
 
 // Presence of language and library features:
 
+#define string_CPP11_110  (string_CPP11_OR_GREATER || string_COMPILER_MSVC_VER >= 1700)
 #define string_CPP11_120  (string_CPP11_OR_GREATER || string_COMPILER_MSVC_VER >= 1800)
 #define string_CPP11_140  (string_CPP11_OR_GREATER || string_COMPILER_MSVC_VER >= 1900)
 
 #define string_CPP17_000  (string_CPP17_OR_GREATER)
+#define string_CPP17_140  (string_CPP17_OR_GREATER || string_COMPILER_MSVC_VER >= 1900)
 
 // Presence of C++11 language features:
 
-#define string_HAVE_CONSTEXPR_11           string_CPP11_140
-#define string_HAVE_NOEXCEPT               string_CPP11_140
-#define string_HAVE_DEFAULT_FN_TPL_ARGS    string_CPP11_120
-#define string_HAVE_EXPLICIT_CONVERSION    string_CPP11_120
+#define string_HAVE_CONSTEXPR_11            string_CPP11_140
+#define string_HAVE_NOEXCEPT                string_CPP11_140
+#define string_HAVE_DEFAULT_FN_TPL_ARGS     string_CPP11_120
+#define string_HAVE_EXPLICIT_CONVERSION     string_CPP11_120
 
 // Presence of C++17 language features:
 
-#define string_HAVE_NODISCARD              string_CPP17_000
+#define string_HAVE_NODISCARD               string_CPP17_000
 
-// Presence of C++ language features:
+// Presence of C++ library features:
+
+#define string_HAVE_TYPE_TRAITS             string_CPP11_110
+
+// Usage of C++ language features:
 
 #if string_HAVE_CONSTEXPR_11
 # define string_constexpr constexpr
@@ -99,29 +105,122 @@
 # define string_explicit_cv /*explicit*/
 #endif
 
+#define string_HAS_ENABLE_IF_  (string_HAVE_TYPE_TRAITS && string_HAVE_DEFAULT_FN_TPL_ARGS)
+
+#if string_HAS_ENABLE_IF_
+#  define string_ENABLE_IF_HAS_MEMBER_(member) , class = decltype( std::declval<StringT>().member )
+#else
+# define  string_ENABLE_IF_HAS_MEMBER_(member)
+#endif
+
 // Additional includes:
 
+#include <algorithm>
+#include <locale>
 #include <string>
+#include <cstring>
+
+#if string_HAVE_TYPE_TRAITS
+# include <type_traits>
+#elif string_HAVE_TR1_TYPE_TRAITS
+# include <tr1/type_traits>
+#endif
 
 namespace nonstd {
+namespace string {
+namespace detail {
 
 template< typename CharT >
-CharT nullchr() string_noexcept
+string_nodiscard inline CharT * to_begin( CharT * text )
+{
+    return text;
+}
+
+template< typename CharT >
+string_nodiscard inline CharT * to_end( CharT * text )
+{
+    return std::strchr( text, '\0' );
+}
+
+template< typename StringT >
+string_nodiscard inline typename StringT::iterator to_begin( StringT & text )
+{
+    return text.begin();
+}
+
+template< typename StringT >
+string_nodiscard inline typename StringT::iterator to_end( StringT & text )
+{
+    return text.end();
+}
+
+template< typename CharT >
+string_nodiscard inline CharT as_uppercase( CharT chr )
+{
+    return std::toupper( chr, std::locale() );
+}
+
+} // namespace detail
+
+template< typename CharT >
+string_nodiscard CharT nullchr() string_noexcept
 {
     return 0;
 }
 
 template< typename CharT >
-void clear( CharT * s ) string_noexcept
+void clear( CharT * cp ) string_noexcept
 {
-    *s = nullchr<CharT>();
+    *cp = nullchr<CharT>();
 }
 
-template< typename CharT, typename Traits, typename Allocator >
-void clear( std::basic_string<CharT, Traits, Allocator> & s ) string_noexcept
+template< typename StringT  string_ENABLE_IF_HAS_MEMBER_(clear()) >
+void clear( StringT & text ) string_noexcept
 {
-    s.clear();
+    text.clear();
 }
+
+template< typename CharT >
+void to_uppercase( CharT * cp ) string_noexcept
+{
+    std::transform(
+        detail::to_begin( cp ), detail::to_end( cp )
+        , detail::to_begin( cp )
+        , detail::as_uppercase<CharT>
+    );
+}
+template< typename StringT  string_ENABLE_IF_HAS_MEMBER_(begin()) >
+void to_uppercase( StringT & text ) string_noexcept
+{
+    std::transform(
+        detail::to_begin( text ), detail::to_end( text )
+        , detail::to_begin( text )
+        , detail::as_uppercase<typename StringT::value_type>
+    );
+}
+
+template< typename StringT  string_ENABLE_IF_HAS_MEMBER_(begin()) >
+string_nodiscard StringT as_uppercase( StringT const & text ) string_noexcept
+{
+    StringT result( text );
+    to_uppercase( result );
+    return result;
+}
+
+#if string_HAS_ENABLE_IF_
+// template< typename StringT  string_ENABLE_IF_HAS_MEMBER_(toUpper()) >
+// void to_upper( StringT & text ) string_noexcept
+// {
+//     text = text.toUpper();
+// }
+#endif
+
+} // namespace string
+} // namespace nonstd
+
+namespace nonstd {
+
+// using string::clear;
 
 } // namespace nonstd
 

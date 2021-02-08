@@ -9,25 +9,116 @@
 
 namespace {
 
-using namespace nonstd;
+using namespace nonstd::string;
+
+struct scoped_str
+{
+    char * p;
+
+    scoped_str( char const * s ) : p ( _strdup(s) ) {}
+    ~scoped_str() { delete p; }
+
+    operator char const *() { return p; }
+
+    char * get() { return p; }
+};
+
+inline char const * lstr() { return "a b c d e f g h i j k l m n o p q r s t u v w x y z"; }
+inline char const * ustr() { return "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z"; }
+
+// Tests:
+
+CASE( "string: Setting Windows console to print utf8 characters" "[unicode][windows]" )
+{
+#if defined(_WIN32) && _WIN32
+    // enable display of utf8, https://stackoverflow.com/a/19071749/437272
+    EXPECT( SetConsoleOutputCP(65001) != 0 );
+#else
+    EXPECT( !!"string: skipping (non-Windows)" );
+#endif
+}
 
 CASE( "clear: Makes string empty - char *" )
 {
-    char s[5] = "abc";
+    scoped_str s( lstr() );
 
-    clear( s );
+    clear( s.get() );
 
     EXPECT( *s == '\0' );
 }
 
 CASE( "clear: Makes string empty - string" )
 {
-    std::string s("abc");
+    std::string s(lstr());
 
     clear( s );
 
     EXPECT( s  == "" );
     EXPECT( s.length() == 0u );
+}
+
+CASE( "to_uppercase: Makes string uppercase - char *" )
+{
+    scoped_str s( lstr() );
+
+    to_uppercase( s.get() );
+
+    EXPECT( std::strcmp( s, ustr() ) == 0 );
+}
+
+CASE( "to_uppercase: Makes string uppercase - string" )
+{
+    std::string us( ustr() );
+    std::string  s( lstr() );
+
+    to_uppercase( s );
+
+    EXPECT( s == us );
+}
+
+CASE( "as_uppercase: Returns string in uppercase - string" )
+{
+    std::string ls( lstr() );
+    std::string us( ustr() );
+
+    EXPECT( as_uppercase( ls ) == us );
+}
+
+CASE( "clear: Makes string empty - string " "[unicode]" )
+{
+#if string_HAS_CSSTRING
+    EXPECT( string_TWEAK_VALUE == 42 );
+    CsString::CsString s( "α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ ς σ τ υ φ χ ψ ω" );
+
+    EXPECT( s  == s );
+
+    clear( s );
+
+    EXPECT( s  == "" );
+    EXPECT( s.length() == 0u );
+#else
+    EXPECT( !!"Unicode via CsString is not available (pre C++17)." );
+#endif
+}
+
+CASE( "to_upper: Makes string uppercase - string " "[unicode]" )
+{
+#if string_HAS_CSSTRING
+    // el_EU ISO-8859-7x   Greek language locale for Europe (Euro symbol added)
+    // el_GR ISO-8859-7    Greek language locale for Greece
+
+    // std::locale::global(std::locale("el_GR"));
+
+    CsString::CsString ls( "α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ τ υ φ χ ψ ω" );
+    CsString::CsString us( "Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω" );
+    CsString::CsString  s( ls );
+
+    // to_upper( s );
+
+    EXPECT( s == us );
+#else
+    EXPECT( !!"Unicode via CsString is not available (pre C++17)." );
+#endif
 }
 
 CASE( "tweak header: Reads tweak header if supported " "[tweak]" )
