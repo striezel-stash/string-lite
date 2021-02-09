@@ -155,9 +155,27 @@ string_nodiscard inline typename StringT::iterator to_end( StringT & text )
 }
 
 template< typename CharT >
+string_nodiscard inline CharT as_lowercase( CharT chr )
+{
+    return std::tolower( chr, std::locale() );
+}
+
+template< typename CharT >
 string_nodiscard inline CharT as_uppercase( CharT chr )
 {
     return std::toupper( chr, std::locale() );
+}
+
+// Note: serve both CharT* and StringT&:
+
+template< typename StringT, typename Fn >
+void to_case( StringT & text, Fn fn ) string_noexcept
+{
+    std::transform(
+        detail::to_begin( text ), detail::to_end( text )
+        , detail::to_begin( text )
+        , fn
+    );
 }
 
 } // namespace detail
@@ -181,22 +199,35 @@ void clear( StringT & text ) string_noexcept
 }
 
 template< typename CharT >
+void to_lowercase( CharT * cp ) string_noexcept
+{
+    detail::to_case( cp, detail::as_lowercase<CharT> );
+}
+
+template< typename CharT >
 void to_uppercase( CharT * cp ) string_noexcept
 {
-    std::transform(
-        detail::to_begin( cp ), detail::to_end( cp )
-        , detail::to_begin( cp )
-        , detail::as_uppercase<CharT>
-    );
+    detail::to_case( cp, detail::as_uppercase<CharT> );
 }
+
+template< typename StringT  string_ENABLE_IF_HAS_MEMBER_(begin()) >
+void to_lowercase( StringT & text ) string_noexcept
+{
+    detail::to_case( text, detail::as_lowercase<typename StringT::value_type> );
+}
+
 template< typename StringT  string_ENABLE_IF_HAS_MEMBER_(begin()) >
 void to_uppercase( StringT & text ) string_noexcept
 {
-    std::transform(
-        detail::to_begin( text ), detail::to_end( text )
-        , detail::to_begin( text )
-        , detail::as_uppercase<typename StringT::value_type>
-    );
+    detail::to_case( text, detail::as_uppercase<typename StringT::value_type> );
+}
+
+template< typename StringT  string_ENABLE_IF_HAS_MEMBER_(begin()) >
+string_nodiscard StringT as_lowercase( StringT const & text ) string_noexcept
+{
+    StringT result( text );
+    to_lowercase( result );
+    return result;
 }
 
 template< typename StringT  string_ENABLE_IF_HAS_MEMBER_(begin()) >

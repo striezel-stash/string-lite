@@ -17,7 +17,9 @@ Note: this repository contains a copy of several files from the [CsString librar
 | **Free function**  | CharT **nullchr**()                         | null character of template type |
 | &nbsp;             | void **clear**(CharT * s)                   | make string empty |
 | &nbsp;             | void **clear**(StringT & s)                 | ..  |
-| &nbsp;             | void **to_uppercase**(CharT * p)            | convert string to uppercase |
-| &nbsp;             | void **to_uppercase**(StringT & s)          | ..  |
+| &nbsp;             | void **to_lowercase**(CharT * p)            | convert C-string to lowercase |
+| &nbsp;             | void **to_uppercase**(CharT * p)            | convert C-string to uppercase |
+| &nbsp;             | void **to_lowercase**(StringT & s)          | convert string to lowercase  |
+| &nbsp;             | void **to_uppercase**(StringT & s)          | convert string to uppercase  |
+| &nbsp;             | StringT **as_lowercase**(StringT const & s) | return string converted to lowercase |
 | &nbsp;             | StringT **as_uppercase**(StringT const & s) | return string converted to uppercase |
-

@@ -64,6 +64,15 @@ CASE( "clear: Makes string empty - string" )
     EXPECT( s.length() == 0u );
 }
 
+CASE( "to_lowercase: Makes string lowercase - char *" )
+{
+    scoped_str s( ustr() );
+
+    to_lowercase( s.get() );
+
+    EXPECT( std::strcmp( s, lstr() ) == 0 );
+}
+
 CASE( "to_uppercase: Makes string uppercase - char *" )
 {
     scoped_str s( lstr() );
@@ -71,6 +80,16 @@ CASE( "to_uppercase: Makes string uppercase - char *" )
     to_uppercase( s.get() );
 
     EXPECT( std::strcmp( s, ustr() ) == 0 );
+}
+
+CASE( "to_lowercase: Makes string lowercase - string" )
+{
+    std::string ls( lstr() );
+    std::string  s( ustr() );
+
+    to_lowercase( s );
+
+    EXPECT( s == ls );
 }
 
 CASE( "to_uppercase: Makes string uppercase - string" )
@@ -81,6 +100,14 @@ CASE( "to_uppercase: Makes string uppercase - string" )
     to_uppercase( s );
 
     EXPECT( s == us );
+}
+
+CASE( "as_lowercase: Returns string in lowercase - string" )
+{
+    std::string ls( lstr() );
+    std::string us( ustr() );
+
+    EXPECT( as_lowercase( us ) == ls );
 }
 
 CASE( "as_uppercase: Returns string in uppercase - string" )
