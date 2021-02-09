@@ -140,25 +140,25 @@ namespace string {
 namespace detail {
 
 template< typename CharT >
-string_nodiscard inline CharT * to_begin( CharT * text )
+string_nodiscard inline CharT * begin( CharT * text )
 {
     return text;
 }
 
 template< typename CharT >
-string_nodiscard inline CharT * to_end( CharT * text )
+string_nodiscard inline CharT * end( CharT * text )
 {
     return std::strchr( text, '\0' );
 }
 
 template< typename StringT >
-string_nodiscard inline typename StringT::iterator to_begin( StringT & text )
+string_nodiscard inline typename StringT::iterator begin( StringT & text )
 {
     return text.begin();
 }
 
 template< typename StringT >
-string_nodiscard inline typename StringT::iterator to_end( StringT & text )
+string_nodiscard inline typename StringT::iterator end( StringT & text )
 {
     return text.end();
 }
@@ -181,8 +181,8 @@ template< typename StringT, typename Fn >
 void to_case( StringT & text, Fn fn ) string_noexcept
 {
     std::transform(
-        detail::to_begin( text ), detail::to_end( text )
-        , detail::to_begin( text )
+        detail::begin( text ), detail::end( text )
+        , detail::begin( text )
         , fn
     );
 }
