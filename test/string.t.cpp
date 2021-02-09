@@ -45,6 +45,25 @@ CASE( "string: Setting Windows console to print utf8 characters" "[unicode][wind
 #endif
 }
 
+// Observers:
+
+CASE( "is_empty: true if string is empty - char *" )
+{
+    char const * es = "";
+    char const * ns = "a";
+
+    EXPECT(     is_empty( es ) );
+    EXPECT_NOT( is_empty( ns ) );
+}
+
+CASE( "is_empty: true if string is empty - string" )
+{
+    EXPECT(     is_empty( std::string(   ) ) );
+    EXPECT_NOT( is_empty( std::string("x") ) );
+}
+
+// Modifiers:
+
 CASE( "clear: Makes string empty - char *" )
 {
     scoped_str s( lstr() );

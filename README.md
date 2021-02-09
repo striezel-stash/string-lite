@@ -15,8 +15,12 @@ Note: this repository contains a copy of several files from the [CsString librar
 | **Type**           | **xxx**                                     | ... |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | **Free function**  | CharT **nullchr**()                         | null character of template type |
-| &nbsp;             | void **clear**(CharT * s)                   | make string empty |
-| &nbsp;             | void **clear**(StringT & s)                 | ..  |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
+| Observers          | bool **is_empty**(CharT * s)                | true if C-string is empty |
+| &nbsp;             | bool **is_empty**(StringT const & s)        | true if string is empty |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
+| Modifiers          | void **clear**(CharT * s)                   | make C-string empty |
+| &nbsp;             | void **clear**(StringT & s)                 | make string empty |
 | &nbsp;             | void **to_lowercase**(CharT * p)            | convert C-string to lowercase |
 | &nbsp;             | void **to_uppercase**(CharT * p)            | convert C-string to uppercase |
 | &nbsp;             | void **to_lowercase**(StringT & s)          | convert string to lowercase  |

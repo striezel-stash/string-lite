@@ -68,6 +68,7 @@
 
 #define string_HAVE_CONSTEXPR_11            string_CPP11_140
 #define string_HAVE_NOEXCEPT                string_CPP11_140
+#define string_HAVE_NULLPTR                 string_CPP11_100
 #define string_HAVE_DEFAULT_FN_TPL_ARGS     string_CPP11_120
 #define string_HAVE_EXPLICIT_CONVERSION     string_CPP11_120
 
@@ -99,6 +100,12 @@
 # define string_nodiscard /*[[nodiscard]]*/
 #endif
 
+#if string_HAVE_NULLPTR
+# define string_nullptr nullptr
+#else
+# define string_nullptr NULL
+#endif
+
 #if string_HAVE_EXPLICIT_CONVERSION
 # define string_explicit_cv explicit
 #else
@@ -116,6 +123,7 @@
 // Additional includes:
 
 #include <algorithm>
+#include <cassert>
 #include <locale>
 #include <string>
 #include <cstring>
@@ -185,6 +193,23 @@ string_nodiscard CharT nullchr() string_noexcept
 {
     return 0;
 }
+
+// Observers:
+
+template< typename CharT >
+string_nodiscard bool is_empty( CharT const * cp ) string_noexcept
+{
+    assert( cp != string_nullptr );
+    return *cp == nullchr<CharT>();
+}
+
+template< typename StringT  string_ENABLE_IF_HAS_MEMBER_(empty()) >
+string_nodiscard bool is_empty( StringT const & text ) string_noexcept
+{
+    return text.empty();
+}
+
+// Modifiers:
 
 template< typename CharT >
 void clear( CharT * cp ) string_noexcept
