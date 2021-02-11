@@ -19,11 +19,16 @@ Note: this repository contains a copy of several files from the [CsString librar
 | Observers          | bool **is_empty**(CharT * s)                | true if C-string is empty |
 | &nbsp;             | bool **is_empty**(StringT const & s)        | true if string is empty |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | bool **contains**(StringT const & s, CharT chr) | true if string contains chr |
+| &nbsp;             | bool **contains**(StringT const & s, SubT const & substr) | true if string contains substring (or -view) |
+| &nbsp;             | IterT **find**(StringT & s, SubT const & substr)          | provide iterator to substring |
+| &nbsp;             | IterT **find**(StringT const & s, SubT const & substr)    | provide const iterator to substring |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
 | Modifiers          | void **clear**(CharT * s)                   | make C-string empty |
 | &nbsp;             | void **clear**(StringT & s)                 | make string empty |
 | &nbsp;             | void **to_lowercase**(CharT * p)            | convert C-string to lowercase |
 | &nbsp;             | void **to_uppercase**(CharT * p)            | convert C-string to uppercase |
 | &nbsp;             | void **to_lowercase**(StringT & s)          | convert string to lowercase  |
 | &nbsp;             | void **to_uppercase**(StringT & s)          | convert string to uppercase  |
-| &nbsp;             | StringT **as_lowercase**(StringT const & s) | return string converted to lowercase |
-| &nbsp;             | StringT **as_uppercase**(StringT const & s) | return string converted to uppercase |
+| &nbsp;             | StringT **as_lowercase**(StringT const & s) | provide string converted to lowercase |
+| &nbsp;             | StringT **as_uppercase**(StringT const & s) | provide string converted to uppercase |

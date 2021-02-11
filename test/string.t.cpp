@@ -49,17 +49,42 @@ CASE( "string: Setting Windows console to print utf8 characters" "[unicode][wind
 
 CASE( "is_empty: true if string is empty - char *" )
 {
-    char const * es = "";
-    char const * ns = "a";
-
-    EXPECT(     is_empty( es ) );
-    EXPECT_NOT( is_empty( ns ) );
+    EXPECT(     is_empty("") );
+    EXPECT_NOT( is_empty("a") );
 }
 
 CASE( "is_empty: true if string is empty - string" )
 {
-    EXPECT(     is_empty( std::string(   ) ) );
-    EXPECT_NOT( is_empty( std::string("x") ) );
+    EXPECT(     is_empty(std::string()) );
+    EXPECT_NOT( is_empty(std::string("x")) );
+}
+
+CASE( "contains: true if string contains sub string - string-char" )
+{
+    EXPECT(     contains(std::string("abc123xyz"), '1') );
+    EXPECT_NOT( contains(std::string("abc123xyz"), '7') );
+}
+
+CASE( "contains: true if string contains sub string - string-char*" )
+{
+    EXPECT(     contains(std::string("abc123xyz"), "123") );
+    EXPECT_NOT( contains(std::string("abc123xyz"), "789") );
+}
+
+CASE( "contains: true if string contains sub string - string-string" )
+{
+    EXPECT(     contains(std::string("abc123xyz"), std::string("123")) );
+    EXPECT_NOT( contains(std::string("abc123xyz"), std::string("789")) );
+}
+
+CASE( "contains: true if string contains sub string - string-string_view" )
+{
+#if string_CPP17_000
+    EXPECT(     contains(std::string("abc123xyz"), std::string_view("123")) );
+    EXPECT_NOT( contains(std::string("abc123xyz"), std::string_view("789")) );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
 }
 
 // Modifiers:
@@ -89,7 +114,7 @@ CASE( "to_lowercase: Makes string lowercase - char *" )
 
     to_lowercase( s.get() );
 
-    EXPECT( std::strcmp( s, lstr() ) == 0 );
+    EXPECT( std::strcmp(s, lstr()) == 0 );
 }
 
 CASE( "to_uppercase: Makes string uppercase - char *" )
@@ -98,7 +123,7 @@ CASE( "to_uppercase: Makes string uppercase - char *" )
 
     to_uppercase( s.get() );
 
-    EXPECT( std::strcmp( s, ustr() ) == 0 );
+    EXPECT( std::strcmp(s, ustr()) == 0 );
 }
 
 CASE( "to_lowercase: Makes string lowercase - string" )
@@ -126,7 +151,7 @@ CASE( "as_lowercase: Returns string in lowercase - string" )
     std::string ls( lstr() );
     std::string us( ustr() );
 
-    EXPECT( as_lowercase( us ) == ls );
+    EXPECT( as_lowercase(us) == ls );
 }
 
 CASE( "as_uppercase: Returns string in uppercase - string" )
@@ -134,7 +159,7 @@ CASE( "as_uppercase: Returns string in uppercase - string" )
     std::string ls( lstr() );
     std::string us( ustr() );
 
-    EXPECT( as_uppercase( ls ) == us );
+    EXPECT( as_uppercase(ls) == us );
 }
 
 CASE( "clear: Makes string empty - string " "[unicode]" )

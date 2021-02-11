@@ -34,6 +34,10 @@
 
 #include <iostream>
 
+#if string_CPP17_000
+# include <string_view>
+#endif
+
 // Provide CsString with C++17 and later:
 
 #define string_HAS_CSSTRING string_CPP17_140
