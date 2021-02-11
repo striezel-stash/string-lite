@@ -84,6 +84,7 @@
 
 // Presence of C++ library features:
 
+#define string_HAVE_STRING_CONTAINS         string_CPP11_141
 #define string_HAVE_TYPE_TRAITS             string_CPP11_110
 
 // Usage of C++ language features:
@@ -472,7 +473,7 @@ string_constexpr CharT * find( CharT * text, SubT const & seek )
 
 // C++20-like string::contains():
 
-#if string_HAS_ENABLE_IF_
+#if string_HAVE_STRING_CONTAINS
 
 template< typename StringT, typename SubT
     string_ENABLE_IF_HAS_METHOD_(StringT, contains)
@@ -516,7 +517,7 @@ string_nodiscard string_constexpr bool contains( StringT const & text, char cons
 }
 
 template< typename StringT >
-string_nodiscard string_constexpr bool contains( StringT const & text, char seek ) string_noexcept
+string_nodiscard /*string_constexpr*/ bool contains( StringT const & text, char seek ) string_noexcept
 {
     char look[] = { seek, nullchr<char>() };
     return detail::cend( text ) != find( text, look );
