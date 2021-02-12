@@ -113,7 +113,7 @@
 
 // Presence of C++ library features:
 
-#define string_HAVE_REGEX                   string_CPP11_100
+#define string_HAVE_REGEX                  (string_CPP11_100 && !string_BETWEEN(string_COMPILER_GNUC_VERSION, 1, 490))
 #define string_HAVE_TYPE_TRAITS             string_CPP11_110
 
 // Usage of C++ language features:
