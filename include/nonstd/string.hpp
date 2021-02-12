@@ -165,10 +165,10 @@
 
 // Method detection:
 
-#if string_CPP11_OR_GREATER
-
-# define string_HAS_METHOD_( T, M )  \
+#define string_HAS_METHOD_( T, M )  \
     has_##M<T>::value
+
+#if string_CPP11_OR_GREATER
 
 # define string_MAKE_HAS_METHOD_( M )                   \
     template< typename T >                              \
