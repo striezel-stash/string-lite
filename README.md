@@ -21,6 +21,7 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | bool **contains**(StringT const & s, CharT chr) | true if string contains chr |
 | &nbsp;             | bool **contains**(StringT const & s, SubT const & substr) | true if string contains substring (or -view) |
+| &nbsp;             | bool **contains**(StringT const & s, std::regex const & substr) | true if string contains regular expressionst |
 | &nbsp;             | bool **contains_re**(StringT const & s, ReT const & re) | true if string contains regular expression (or -view) |
 | &nbsp;             | IterT **find**(StringT & s, SubT const & substr)          | provide iterator to substring |
 | &nbsp;             | IterT **find**(StringT const & s, SubT const & substr)    | provide const iterator to substring |

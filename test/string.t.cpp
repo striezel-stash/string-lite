@@ -87,7 +87,17 @@ CASE( "contains: true if string contains sub string - string-string_view" )
 #endif
 }
 
-CASE( "contains_re: true if string contains regular exression - string-char*" )
+CASE( "contains: true if string contains regular expression - string-std::regexp" )
+{
+#if string_HAVE_REGEX
+    EXPECT(     contains(std::string("abc123xyz"), std::regex("[0-9]+")) );
+    EXPECT_NOT( contains(std::string("abc123xyz"), std::regex("[4-9]+")) );
+#else
+    EXPECT( !!"contains_re is not available (pre C++11)." );
+#endif
+}
+
+CASE( "contains_re: true if string contains regular expression - string-char*" )
 {
 #if string_HAVE_REGEX
     EXPECT(     contains_re(std::string("abc123xyz"), "[0-9]+") );
@@ -97,11 +107,11 @@ CASE( "contains_re: true if string contains regular exression - string-char*" )
 #endif
 }
 
-CASE( "contains_re: true if string contains regular exression - string-string" )
+CASE( "contains_re: true if string contains regular expression - string-string" )
 {
 #if string_HAVE_REGEX
     EXPECT(     contains_re(std::string("abc123xyz"), std::string("[0-9]+")) );
-    EXPECT_NOT( contains_re(std::string("abc123xyz"), std::string("[4-9]+") ) );
+    EXPECT_NOT( contains_re(std::string("abc123xyz"), std::string("[4-9]+")) );
 #else
     EXPECT( !!"contains_re is not available (pre C++11)." );
 #endif

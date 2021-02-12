@@ -561,10 +561,16 @@ string_nodiscard /*string_constexpr*/ bool contains( StringT const & text, char 
 
 #if string_HAVE_REGEX
 
+template< typename StringT >
+string_nodiscard string_constexpr bool contains( StringT const & text, std::regex const & re ) string_noexcept
+{
+    return std::regex_search( text, re );
+}
+
 template< typename StringT, typename ReT >
 string_nodiscard string_constexpr bool contains_re( StringT const & text, ReT const & re ) string_noexcept
 {
-    return std::regex_search( text, std::regex(re) );
+    return contains( text, std::regex(re) );
 }
 
 #endif // string_HAVE_REGEX
