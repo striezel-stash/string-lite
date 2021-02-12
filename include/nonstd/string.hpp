@@ -46,6 +46,7 @@
 #define string_CPP14_OR_GREATER  ( string_CPLUSPLUS >= 201402L )
 #define string_CPP17_OR_GREATER  ( string_CPLUSPLUS >= 201703L )
 #define string_CPP20_OR_GREATER  ( string_CPLUSPLUS >= 202000L )
+#define string_CPP23_OR_GREATER  ( string_CPLUSPLUS >= 202300L )
 
 // MSVC version:
 
@@ -91,6 +92,7 @@
 #define string_CPP11_110  (string_CPP11_OR_GREATER || string_COMPILER_MSVC_VER >= 1700)
 #define string_CPP11_120  (string_CPP11_OR_GREATER || string_COMPILER_MSVC_VER >= 1800)
 #define string_CPP11_140  (string_CPP11_OR_GREATER || string_COMPILER_MSVC_VER >= 1900)
+#define string_CPP11_141  (string_CPP11_OR_GREATER || string_COMPILER_MSVC_VER >= 1910)
 
 #define string_CPP11_000  (string_CPP11_OR_GREATER)
 
@@ -111,7 +113,7 @@
 
 // Presence of C++ library features:
 
-#define string_HAVE_STRING_CONTAINS         string_CPP11_141
+#define string_HAVE_REGEX                   string_CPP11_100
 #define string_HAVE_TYPE_TRAITS             string_CPP11_110
 
 // Usage of C++ language features:
@@ -146,7 +148,8 @@
 # define string_explicit_cv /*explicit*/
 #endif
 
-#define string_HAS_ENABLE_IF_  (string_HAVE_TYPE_TRAITS && string_HAVE_DEFAULT_FN_TPL_ARGS)
+#define string_HAS_ENABLE_IF_           (string_HAVE_TYPE_TRAITS && string_HAVE_DEFAULT_FN_TPL_ARGS)
+#define string_TEST_STRING_CONTAINS     (string_HAS_ENABLE_IF_ && !string_BETWEEN(string_COMPILER_MSVC_VER, 1, 1910))
 
 // Method enabling (return type):
 
@@ -183,6 +186,10 @@
 #include <locale>
 #include <string>
 #include <cstring>
+
+#if string_HAVE_REGEX
+# include <regex>
+#endif
 
 #if string_HAVE_TYPE_TRAITS
 # include <type_traits>
@@ -498,9 +505,9 @@ string_constexpr CharT * find( CharT * text, SubT const & seek )
     return detail::find( text, seek );
 }
 
-// C++20-like string::contains():
+// C++23-like string::contains():
 
-#if string_HAVE_STRING_CONTAINS
+#if string_TEST_STRING_CONTAINS
 
 template< typename StringT, typename SubT
     string_ENABLE_IF_HAS_METHOD_(StringT, contains)
@@ -529,7 +536,7 @@ string_nodiscard /*string_constexpr*/ bool contains( StringT const & text, CharT
     return detail::end( text ) != find( text, look );
 }
 
-#else // string_HAS_ENABLE_IF_
+#else // string_TEST_STRING_CONTAINS
 
 template< typename StringT, typename SubT >
 string_nodiscard string_constexpr bool contains( StringT const & text, SubT const & seek ) string_noexcept
@@ -550,7 +557,17 @@ string_nodiscard /*string_constexpr*/ bool contains( StringT const & text, char 
     return detail::cend( text ) != find( text, look );
 }
 
-#endif // string_HAS_ENABLE_IF_
+#endif // string_TEST_STRING_CONTAINS
+
+#if string_HAVE_REGEX
+
+template< typename StringT, typename ReT >
+string_nodiscard string_constexpr bool contains_re( StringT const & text, ReT const & re ) string_noexcept
+{
+    return std::regex_search( text, std::regex(re) );
+}
+
+#endif // string_HAVE_REGEX
 
 // Modifiers:
 
