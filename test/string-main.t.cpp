@@ -25,6 +25,8 @@
 // MSVC++ 14.1  _MSC_VER >= 1910  string_COMPILER_MSVC_VERSION == 141  (Visual Studio 2017)
 // MSVC++ 14.2  _MSC_VER >= 1920  string_COMPILER_MSVC_VERSION == 142  (Visual Studio 2019)
 
+#if 0
+
 #if defined(_MSC_VER ) && !defined(__clang__)
 # define string_COMPILER_MSVC_VER           (_MSC_VER )
 # define string_COMPILER_MSVC_VERSION       (_MSC_VER / 10 - 10 * ( 5 + (_MSC_VER < 1900 ) ) )
@@ -52,6 +54,8 @@
 # define string_COMPILER_GNUC_VERSION string_COMPILER_VERSION( __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__ )
 #else
 # define string_COMPILER_GNUC_VERSION 0
+#endif
+
 #endif
 
 #define string_PRESENT( x ) \

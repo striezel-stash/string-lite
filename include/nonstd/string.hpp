@@ -50,9 +50,36 @@
 // MSVC version:
 
 #if defined(_MSC_VER ) && !defined(__clang__)
-# define string_COMPILER_MSVC_VER  (_MSC_VER )
+# define string_COMPILER_MSVC_VER           (_MSC_VER )
+# define string_COMPILER_MSVC_VERSION       (_MSC_VER / 10 - 10 * ( 5 + (_MSC_VER < 1900 ) ) )
+# define string_COMPILER_MSVC_VERSION_FULL  (_MSC_VER - 100 * ( 5 + (_MSC_VER < 1900 ) ) )
 #else
-# define string_COMPILER_MSVC_VER  0
+# define string_COMPILER_MSVC_VER           0
+# define string_COMPILER_MSVC_VERSION       0
+# define string_COMPILER_MSVC_VERSION_FULL  0
+#endif
+
+// clang version:
+
+#define string_COMPILER_VERSION( major, minor, patch ) ( 10 * ( 10 * (major) + (minor) ) + (patch) )
+
+#if defined( __apple_build_version__ )
+# define string_COMPILER_APPLECLANG_VERSION string_COMPILER_VERSION( __clang_major__, __clang_minor__, __clang_patchlevel__ )
+# define string_COMPILER_CLANG_VERSION 0
+#elif defined( __clang__ )
+# define string_COMPILER_APPLECLANG_VERSION 0
+# define string_COMPILER_CLANG_VERSION string_COMPILER_VERSION( __clang_major__, __clang_minor__, __clang_patchlevel__ )
+#else
+# define string_COMPILER_APPLECLANG_VERSION 0
+# define string_COMPILER_CLANG_VERSION 0
+#endif
+
+// GNUC version:
+
+#if defined(__GNUC__) && !defined(__clang__)
+# define string_COMPILER_GNUC_VERSION string_COMPILER_VERSION( __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__ )
+#else
+# define string_COMPILER_GNUC_VERSION 0
 #endif
 
 // half-open range [lo..hi):
@@ -168,7 +195,7 @@
 #define string_HAS_METHOD_( T, M )  \
     has_##M<T>::value
 
-#if string_CPP11_OR_GREATER
+#if string_CPP11_OR_GREATER && !string_BETWEEN(string_COMPILER_GNUC_VERSION, 1, 500)
 
 # define string_MAKE_HAS_METHOD_( M )                   \
     template< typename T >                              \
