@@ -633,16 +633,6 @@ string_nodiscard StringT as_uppercase( StringT const & text ) string_noexcept
     return result;
 }
 
-#if string_HAS_ENABLE_IF_
-// template< typename StringT
-//     string_ENABLE_IF_HAS_METHOD_(toUpper())
-// >
-// void to_upper( StringT & text ) string_noexcept
-// {
-//     text = text.toUpper();
-// }
-#endif
-
 } // namespace string
 } // namespace nonstd
 
