@@ -61,7 +61,7 @@ inline std::string::const_iterator text_end()
 
 inline std::string_view text_view()
 {
-    return text();
+    return { text().c_str(), text().length() };
 }
 
 inline std::string_view::const_iterator text_view_end()
@@ -148,8 +148,6 @@ inline std::ostream & operator<< ( std::ostream & os, std::string::const_iterato
 
 inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_iterator pos )
 {
-    // return os << "[sv_pos]";
-
     if ( pos == text_view_end() )
         return os << "[end-sv]";
 
