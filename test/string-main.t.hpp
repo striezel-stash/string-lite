@@ -133,6 +133,8 @@ namespace nonstd {
 
 inline std::ostream & operator<< ( std::ostream & os, std::string::const_iterator pos )
 {
+    return os << "[it]";
+
     if ( pos == text_end() )
         return os << "[end]";
 
@@ -148,6 +150,8 @@ inline std::ostream & operator<< ( std::ostream & os, std::string::const_iterato
 
 inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_iterator pos )
 {
+    return os << "[it-sv]";
+
     if ( pos == text_view_end() )
         return os << "[end-sv]";
 
