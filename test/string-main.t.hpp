@@ -46,16 +46,30 @@
 
 #include "cs_string/cs_string.h"
 
-
 namespace nonstd {
 
 // use oparator<< instead of to_string() overload;
 // see  http://stackoverflow.com/a/10651752/437272
 
-inline std::ostream & operator<< ( std::ostream & os, CsString::CsString const & s )
+template< typename CharT, typename AllocT >
+inline std::ostream & operator<< ( std::ostream & os, CsString::CsBasicString<CharT,AllocT> const & s )
 {
     return os << s.constData();
 }
+
+template< typename CharT, typename AllocT >
+inline std::ostream & operator<< ( std::ostream & os, typename CsString::CsBasicString<CharT,AllocT>::CsStringIterator pos )
+{
+    // return os << "[CsStringIterator]";
+
+    os << "\"";
+    for ( ; *pos; ++pos )
+    {
+        os << (*pos).unicode();
+    }
+    return os << "\"";
+}
+
 } // namespace nonstd
 
 #endif // string_HAS_CSSTRING
@@ -74,7 +88,7 @@ inline std::ostream & operator<< ( std::ostream & os, std::string::const_iterato
 
 #if string_CPP17_000
 
-inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_iterator pos )
+inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_iterator & pos )
 {
     os << "\"";
     for ( ; *pos; ++pos )
