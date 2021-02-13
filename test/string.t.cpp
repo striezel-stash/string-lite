@@ -87,6 +87,16 @@ CASE( "contains: true if string contains sub string - string-string_view" )
 #endif
 }
 
+CASE( "contains: true if string contains sub string - string_view-string_view" )
+{
+#if string_CPP17_000
+    EXPECT(     contains(std::string_view("abc123xyz"), std::string_view("123")) );
+    EXPECT_NOT( contains(std::string_view("abc123xyz"), std::string_view("789")) );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
 CASE( "contains: true if string contains regular expression - string-std::regexp" )
 {
 #if string_HAVE_REGEX
@@ -114,6 +124,46 @@ CASE( "contains_re: true if string contains regular expression - string-string" 
     EXPECT_NOT( contains_re(std::string("abc123xyz"), std::string("[4-9]+")) );
 #else
     EXPECT( !!"contains_re is not available (pre C++11)." );
+#endif
+}
+
+CASE( "find: iterator to sub string in string - string-char*" )
+{
+    std::string text("abc123xyz");
+
+    EXPECT( text.end() != find(text, "123") );
+    EXPECT( text.end() == find(text, "789") );
+}
+
+CASE( "find: iterator to sub string in string - string-string" )
+{
+    std::string text("abc123xyz");
+
+    EXPECT( text.end() != find(text, std::string("123")) );
+    EXPECT( text.end() == find(text, std::string("789")) );
+}
+
+CASE( "find: iterator to sub string in string - string-string_view" )
+{
+#if string_CPP17_000
+    std::string text("abc123xyz");
+
+    EXPECT( text.end() != find(text, std::string_view("123")) );
+    EXPECT( text.end() == find(text, std::string_view("789")) );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+CASE( "find: iterator to sub string in string_view - string_view-string_view" )
+{
+#if string_CPP17_000
+    std::string text("abc123xyz");
+
+    EXPECT( std::string_view(text).end() != find(std::string_view(text), std::string_view("123")) );
+    EXPECT( std::string_view(text).end() == find(std::string_view(text), std::string_view("789")) );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
 #endif
 }
 

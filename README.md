@@ -20,9 +20,9 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | bool **is_empty**(StringT const & s)        | true if string is empty |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | bool **contains**(StringT const & s, CharT chr) | true if string contains chr |
-| &nbsp;             | bool **contains**(StringT const & s, SubT const & substr) | true if string contains substring (or -view) |
-| &nbsp;             | bool **contains**(StringT const & s, std::regex const & substr) | true if string contains regular expressionst |
-| &nbsp;             | bool **contains_re**(StringT const & s, ReT const & re) | true if string contains regular expression (or -view) |
+| &nbsp;             | bool **contains**(StringT const & s, SubT const & substr) | true if string contains substring |
+| &nbsp;             | bool **contains**(StringT const & s, std::regex const & substr) | true if string contains regular expression |
+| &nbsp;             | bool **contains_re**(StringT const & s, ReT const & re) | true if string contains regular expression |
 | &nbsp;             | IterT **find**(StringT & s, SubT const & substr)          | provide iterator to substring |
 | &nbsp;             | IterT **find**(StringT const & s, SubT const & substr)    | provide const iterator to substring |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
@@ -34,3 +34,5 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | void **to_uppercase**(StringT & s)          | convert string to uppercase  |
 | &nbsp;             | StringT **as_lowercase**(StringT const & s) | provide string converted to lowercase |
 | &nbsp;             | StringT **as_uppercase**(StringT const & s) | provide string converted to uppercase |
+
+Note: string can also be string_view.
