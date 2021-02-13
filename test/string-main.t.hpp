@@ -144,14 +144,14 @@ inline std::ostream & operator<< ( std::ostream & os, std::string::const_iterato
     return os << "\"";
 }
 
-#if string_HAVE_STD_STRING_VIEW && !string_COMPILER_GNUC_VERSION
+#if string_HAVE_STD_STRING_VIEW && _MSC_VER
 
 inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_iterator pos )
 {
     // return os << "[sv_pos]";
 
     if ( pos == text_view_end() )
-        return os << "[end]";
+        return os << "[end-sv]";
 
     os << "\"";
     for ( ; *pos; ++pos )
