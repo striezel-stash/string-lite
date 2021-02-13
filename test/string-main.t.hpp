@@ -34,9 +34,42 @@
 
 #include <iostream>
 
-#if string_CPP17_000
-# include <string_view>
+#if string_CPP17_OR_GREATER && defined(__has_include )
+# if __has_include( <string_view> )
+#  define string_HAVE_STD_STRING_VIEW  1
+# else
+#  define string_HAVE_STD_STRING_VIEW  0
+# endif
+#else
+# define  string_HAVE_STD_STRING_VIEW  0
 #endif
+
+// String to use with iterators:
+
+inline std::string & text()
+{
+    static std::string text_("abc123xyz");
+    return text_;
+}
+
+inline std::string::const_iterator text_end()
+{
+    return text().end();
+}
+
+#if string_HAVE_STD_STRING_VIEW
+
+inline std::string_view text_view()
+{
+    return text();
+}
+
+inline std::string_view::const_iterator text_view_end()
+{
+    return text_view().end();
+}
+
+#endif // string_HAVE_STD_STRING_VIEW
 
 // Provide CsString with C++17 and later:
 
@@ -45,6 +78,25 @@
 #if string_HAS_CSSTRING
 
 #include "cs_string/cs_string.h"
+#include "cs_string/cs_string_view.h"
+
+// String to use with iterators:
+
+inline CsString::CsString & cstext()
+{
+    static CsString::CsString text_("αβγ123χψω");
+    return text_;
+}
+
+inline CsString::CsString::const_iterator cstext_end()
+{
+    return cstext().end();
+}
+
+inline CsString::CsStringView::const_iterator cstext_view_end()
+{
+    return CsString::CsStringView( cstext() ).end();
+}
 
 namespace nonstd {
 
@@ -60,7 +112,10 @@ inline std::ostream & operator<< ( std::ostream & os, CsString::CsBasicString<Ch
 template< typename CharT, typename AllocT >
 inline std::ostream & operator<< ( std::ostream & os, typename CsString::CsBasicString<CharT,AllocT>::CsStringIterator pos )
 {
-    // return os << "[CsStringIterator]";
+    return os << "[CsStringIterator]";
+
+    if ( pos == cstext_end() )
+        return os << "[end]";
 
     os << "\"";
     for ( ; *pos; ++pos )
@@ -78,6 +133,9 @@ namespace nonstd {
 
 inline std::ostream & operator<< ( std::ostream & os, std::string::const_iterator pos )
 {
+    if ( pos == text_end() )
+        return os << "[end]";
+
     os << "\"";
     for ( ; *pos; ++pos )
     {
@@ -86,10 +144,15 @@ inline std::ostream & operator<< ( std::ostream & os, std::string::const_iterato
     return os << "\"";
 }
 
-#if string_CPP17_000
+#if string_HAVE_STD_STRING_VIEW && !string_COMPILER_GNUC_VERSION
 
-inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_iterator & pos )
+inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_iterator pos )
 {
+    // return os << "[sv_pos]";
+
+    if ( pos == text_view_end() )
+        return os << "[end]";
+
     os << "\"";
     for ( ; *pos; ++pos )
     {
@@ -97,7 +160,7 @@ inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_it
     }
     return os << "\"";
 }
-#endif
+#endif // string_HAVE_STD_STRING_VIEW
 
 } // namespace nonstd
 

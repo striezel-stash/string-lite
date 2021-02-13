@@ -79,7 +79,7 @@ CASE( "contains: true if string contains sub string - string-string" )
 
 CASE( "contains: true if string contains sub string - string-string_view" )
 {
-#if string_CPP17_000
+#if string_HAVE_STD_STRING_VIEW
     EXPECT(     contains(std::string("abc123xyz"), std::string_view("123")) );
     EXPECT_NOT( contains(std::string("abc123xyz"), std::string_view("789")) );
 #else
@@ -89,7 +89,7 @@ CASE( "contains: true if string contains sub string - string-string_view" )
 
 CASE( "contains: true if string contains sub string - string_view-string_view" )
 {
-#if string_CPP17_000
+#if string_HAVE_STD_STRING_VIEW
     EXPECT(     contains(std::string_view("abc123xyz"), std::string_view("123")) );
     EXPECT_NOT( contains(std::string_view("abc123xyz"), std::string_view("789")) );
 #else
@@ -129,27 +129,27 @@ CASE( "contains_re: true if string contains regular expression - string-string" 
 
 CASE( "find: iterator to sub string in string - string-char*" )
 {
-    std::string text("abc123xyz");
+    // text((): "abc123xyz"
 
-    EXPECT( text.end() != find(text, "123") );
-    EXPECT( text.end() == find(text, "789") );
+    EXPECT( text_end() != find(text(), "123") );
+    EXPECT( text_end() == find(text(), "789") );
 }
 
 CASE( "find: iterator to sub string in string - string-string" )
 {
-    std::string text("abc123xyz");
+    // text((): "abc123xyz"
 
-    EXPECT( text.end() != find(text, std::string("123")) );
-    EXPECT( text.end() == find(text, std::string("789")) );
+    EXPECT( text_end() != find(text(), std::string("123")) );
+    EXPECT( text_end() == find(text(), std::string("789")) );
 }
 
 CASE( "find: iterator to sub string in string - string-string_view" )
 {
-#if string_CPP17_000
-    std::string text("abc123xyz");
+#if string_HAVE_STD_STRING_VIEW
+    // text((): "abc123xyz"
 
-    EXPECT( text.end() != find(text, std::string_view("123")) );
-    EXPECT( text.end() == find(text, std::string_view("789")) );
+    EXPECT( text_end() != find(text(), std::string_view("123")) );
+    EXPECT( text_end() == find(text(), std::string_view("789")) );
 #else
     EXPECT( !!"std::string_view is not available (pre C++17)." );
 #endif
@@ -157,11 +157,11 @@ CASE( "find: iterator to sub string in string - string-string_view" )
 
 CASE( "find: iterator to sub string in string_view - string_view-string_view" )
 {
-#if string_CPP17_000
-    std::string text("abc123xyz");
+#if string_HAVE_STD_STRING_VIEW
+    // text((): "abc123xyz"
 
-    EXPECT( std::string_view(text).end() != find(std::string_view(text), std::string_view("123")) );
-    EXPECT( std::string_view(text).end() == find(std::string_view(text), std::string_view("789")) );
+    EXPECT( text_view_end() != find(text_view(), std::string_view("123")) );
+    EXPECT( text_view_end() == find(text_view(), std::string_view("789")) );
 #else
     EXPECT( !!"std::string_view is not available (pre C++17)." );
 #endif
