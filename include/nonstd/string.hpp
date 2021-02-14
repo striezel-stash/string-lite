@@ -118,7 +118,7 @@
 
 // Presence of C++17 language features:
 
-#define string_HAVE_FREE_SIZE               string_CPP17_120
+#define string_HAVE_FREE_SIZE               string_CPP17_140
 #define string_HAVE_NODISCARD               string_CPP17_000
 
 // Presence of C++ library features:
