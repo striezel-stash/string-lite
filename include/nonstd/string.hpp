@@ -96,17 +96,24 @@
 
 #define string_CPP11_000  (string_CPP11_OR_GREATER)
 
+#define string_CPP14_000  (string_CPP14_OR_GREATER)
+#define string_CPP14_120  (string_CPP14_OR_GREATER || string_COMPILER_MSVC_VER >= 1800)
+
 #define string_CPP17_000  (string_CPP17_OR_GREATER)
 #define string_CPP17_140  (string_CPP17_OR_GREATER || string_COMPILER_MSVC_VER >= 1900)
 
 // Presence of C++11 language features:
 
-#define string_HAVE_FREE_BEGIN              string_CPP11_120
+#define string_HAVE_FREE_BEGIN              string_CPP14_120
 #define string_HAVE_CONSTEXPR_11            string_CPP11_140
 #define string_HAVE_NOEXCEPT                string_CPP11_140
 #define string_HAVE_NULLPTR                 string_CPP11_100
 #define string_HAVE_DEFAULT_FN_TPL_ARGS     string_CPP11_120
 #define string_HAVE_EXPLICIT_CONVERSION     string_CPP11_120
+
+// Presence of C++14 language features:
+
+#define string_HAVE_FREE_BEGIN              string_CPP14_120
 
 // Presence of C++17 language features:
 
@@ -186,9 +193,10 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstring>
+#include <iterator>
 #include <locale>
 #include <string>
-#include <cstring>
 
 #if string_HAVE_REGEX
 # include <regex>
