@@ -101,6 +101,7 @@
 
 // Presence of C++11 language features:
 
+#define string_HAVE_FREE_BEGIN              string_CPP11_120
 #define string_HAVE_CONSTEXPR_11            string_CPP11_140
 #define string_HAVE_NOEXCEPT                string_CPP11_140
 #define string_HAVE_NULLPTR                 string_CPP11_100
@@ -321,41 +322,16 @@ namespace detail {
 
 /*enum*/ class enabler{};
 
-template< typename CharT >
-string_nodiscard inline CharT * begin( CharT * text )
-{
-    return text;
-}
+#if string_HAVE_FREE_BEGIN
 
-template< typename CharT >
-string_nodiscard inline CharT * end( CharT * text )
-{
-    return std::strchr( text, '\0' );
-}
+using std::begin;
+using std::cbegin;
+using std::crbegin;
+using std::end;
+using std::cend;
+using std::crend;
 
-template< typename CharT >
-string_nodiscard inline CharT const * begin( CharT const * text )
-{
-    return text;
-}
-
-template< typename CharT >
-string_nodiscard inline CharT const * end( CharT const * text )
-{
-    return std::strchr( text, '\0' );
-}
-
-template< typename CharT >
-string_nodiscard inline CharT const * cbegin( CharT const * text )
-{
-    return text;
-}
-
-template< typename CharT >
-string_nodiscard inline CharT const * cend( CharT const * text )
-{
-    return std::strchr( text, '\0' );
-}
+#else // string_HAVE_FREE_BEGIN
 
 template< typename StringT >
 string_nodiscard inline typename StringT::iterator begin( StringT & text )
@@ -450,6 +426,45 @@ string_nodiscard inline typename StringT::const_reverse_iterator crend( StringT 
 }
 
 #endif // string_CPP11_000
+#endif // string_HAVE_FREE_BEGIN
+
+// non-standard begin(), end() for char*:
+
+template< typename CharT >
+string_nodiscard inline CharT * begin( CharT * text )
+{
+    return text;
+}
+
+template< typename CharT >
+string_nodiscard inline CharT * end( CharT * text )
+{
+    return std::strchr( text, '\0' );
+}
+
+template< typename CharT >
+string_nodiscard inline CharT const * begin( CharT const * text )
+{
+    return text;
+}
+
+template< typename CharT >
+string_nodiscard inline CharT const * end( CharT const * text )
+{
+    return std::strchr( text, '\0' );
+}
+
+template< typename CharT >
+string_nodiscard inline CharT const * cbegin( CharT const * text )
+{
+    return text;
+}
+
+template< typename CharT >
+string_nodiscard inline CharT const * cend( CharT const * text )
+{
+    return std::strchr( text, '\0' );
+}
 
 template< typename CharT >
 string_nodiscard inline CharT as_lowercase( CharT chr )
@@ -463,6 +478,8 @@ string_nodiscard inline CharT as_uppercase( CharT chr )
     return std::toupper( chr, std::locale() );
 }
 
+// case conversion:
+
 // Note: serve both CharT* and StringT&:
 
 template< typename StringT, typename Fn >
@@ -474,6 +491,8 @@ void to_case( StringT & text, Fn fn ) string_noexcept
         , fn
     );
 }
+
+// find_first():
 
 template< typename StringT, typename SubT >
 typename StringT::iterator find_first( StringT & text, SubT const & seek )
@@ -492,6 +511,8 @@ typename StringT::const_iterator find_first( StringT const & text, SubT const & 
         , detail::cbegin(seek), detail::cend(seek)
     );
 }
+
+// find_last():
 
 template< typename StringIt, typename SubIt, typename PredicateT >
 StringIt find_last( StringIt text_pos, StringIt text_end, SubIt seek_pos, SubIt seek_end, PredicateT compare )
@@ -539,6 +560,8 @@ typename StringT::const_iterator find_last( StringT const & text, SubT const & s
     );
 }
 
+// starts_with():
+
 template< typename StringIt, typename SubIt, typename PredicateT >
 bool starts_with( StringIt text_pos, StringIt text_end, SubIt seek_pos, SubIt seek_end, PredicateT compare )
 {
@@ -560,6 +583,8 @@ bool starts_with( StringT const & text, SubT const & seek, PredicateT compare )
         , compare
     );
 }
+
+// ends_with():
 
 template< typename StringT, typename SubT, typename PredicateT >
 bool ends_with( StringT const & text, SubT const & seek, PredicateT compare )
