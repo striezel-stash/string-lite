@@ -23,6 +23,10 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | bool **contains**(StringT const & s, SubT const & substr) | true if string contains substring |
 | &nbsp;             | bool **contains**(StringT const & s, std::regex const & substr) | true if string contains regular expression |
 | &nbsp;             | bool **contains_re**(StringT const & s, ReT const & re) | true if string contains regular expression |
+| &nbsp;             | bool **starts_with**(StringT const & s, CharT chr) | true if string starts with chr |
+| &nbsp;             | bool **starts_with**(StringT const & s, SubT const & substr) | true if string starts with substring |
+| &nbsp;             | bool **ends_with**(StringT const & s, CharT chr) | true if string ends with chr |
+| &nbsp;             | bool **ends_with**(StringT const & s, SubT const & substr) | true if string ends with substring |
 | &nbsp;             | IterT **find**(StringT & s, SubT const & substr)          | provide iterator to substring |
 | &nbsp;             | IterT **find**(StringT const & s, SubT const & substr)    | provide const iterator to substring |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
