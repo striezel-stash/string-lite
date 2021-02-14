@@ -48,7 +48,7 @@
 
 inline std::string & text()
 {
-    static std::string text_("abc123xyz");
+    static std::string text_("abc123mno123xyz");
     return text_;
 }
 

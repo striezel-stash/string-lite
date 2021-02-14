@@ -396,6 +396,18 @@ string_nodiscard inline typename StringT::const_iterator cend( StringT const & t
 }
 
 template< typename StringT >
+string_nodiscard inline typename StringT::reverse_iterator rbegin( StringT const & text )
+{
+    return text.rbegin();
+}
+
+template< typename StringT >
+string_nodiscard inline typename StringT::reverse_iterator rend( StringT const & text )
+{
+    return text.rend();
+}
+
+template< typename StringT >
 string_nodiscard inline typename StringT::const_reverse_iterator crbegin( StringT const & text )
 {
     return text.crbegin();
@@ -464,7 +476,7 @@ void to_case( StringT & text, Fn fn ) string_noexcept
 }
 
 template< typename StringT, typename SubT >
-typename StringT::iterator find( StringT & text, SubT const & seek )
+typename StringT::iterator find_first( StringT & text, SubT const & seek )
 {
     return std::search(
         detail::begin(text), detail::end(text)
@@ -473,11 +485,57 @@ typename StringT::iterator find( StringT & text, SubT const & seek )
 }
 
 template< typename StringT, typename SubT >
-typename StringT::const_iterator find( StringT const & text, SubT const & seek )
+typename StringT::const_iterator find_first( StringT const & text, SubT const & seek )
 {
     return std::search(
         detail::cbegin(text), detail::cend(text)
         , detail::cbegin(seek), detail::cend(seek)
+    );
+}
+
+template< typename StringIt, typename SubIt, typename PredicateT >
+StringIt find_last( StringIt text_pos, StringIt text_end, SubIt seek_pos, SubIt seek_end, PredicateT compare )
+{
+    if ( seek_pos == seek_end )
+        return text_end;
+
+    StringIt result = text_end;
+
+    while ( true )
+    {
+        StringIt new_result = std::search( text_pos, text_end, seek_pos, seek_end, compare );
+
+        if ( new_result == text_end )
+        {
+            break;
+        }
+        else
+        {
+            result = new_result;
+            text_pos = result;
+            ++text_pos;
+        }
+    }
+    return result;
+}
+
+template< typename StringT, typename SubT, typename PredicateT >
+typename StringT::iterator find_last( StringT & text, SubT const & seek, PredicateT compare )
+{
+    return detail::find_last(
+        detail::begin(text), detail::end(text)
+        , detail::cbegin(seek), detail::cend(seek)
+        , compare
+    );
+}
+
+template< typename StringT, typename SubT, typename PredicateT >
+typename StringT::const_iterator find_last( StringT const & text, SubT const & seek, PredicateT compare )
+{
+    return detail::find_last(
+        detail::cbegin(text), detail::cend(text)
+        , detail::cbegin(seek), detail::cend(seek)
+        , compare
     );
 }
 
@@ -530,6 +588,8 @@ string_nodiscard CharT nullchr() string_noexcept
 
 // Observers:
 
+// is_empty():
+
 template< typename CharT >
 string_nodiscard bool is_empty( CharT const * cp ) string_noexcept
 {
@@ -545,29 +605,59 @@ string_nodiscard bool is_empty( StringT const & text ) string_noexcept
     return text.empty();
 }
 
+// find_first():
+
 template< typename StringT, typename SubT
     string_ENABLE_IF_HAS_METHOD_(StringT, begin)
 >
-string_constexpr typename StringT::iterator find( StringT & text, SubT const & seek )
+string_constexpr typename StringT::iterator find_first( StringT & text, SubT const & seek )
 {
-    return detail::find( text, seek );
+    return detail::find_first( text, seek );
 }
 
 template< typename StringT, typename SubT
     string_ENABLE_IF_HAS_METHOD_(StringT, begin)
 >
-string_constexpr typename StringT::const_iterator find( StringT const & text, SubT const & seek )
+string_constexpr typename StringT::const_iterator find_first( StringT const & text, SubT const & seek )
 {
-    return detail::find( text, seek );
+    return detail::find_first( text, seek );
 }
 
 template< typename CharT, typename SubT >
-string_constexpr CharT * find( CharT * text, SubT const & seek )
+string_constexpr CharT * find_first( CharT * text, SubT const & seek )
 {
-    return detail::find( text, seek );
+    return detail::find_first( text, seek );
 }
 
-// C++23-like string::contains():
+// find_last():
+
+template< typename StringT, typename SubT
+    string_ENABLE_IF_HAS_METHOD_(StringT, begin)
+>
+string_constexpr typename StringT::iterator find_last( StringT & text, SubT const & seek )
+{
+    typedef typename StringT::value_type A;
+
+    return detail::find_last( text, seek, std::equal_to<A>() );
+}
+
+template< typename StringT, typename SubT
+    string_ENABLE_IF_HAS_METHOD_(StringT, begin)
+>
+string_constexpr typename StringT::const_iterator find_last( StringT const & text, SubT const & seek )
+{
+    typedef typename StringT::value_type A;
+
+    return detail::find_last( text, seek, std::equal_to<A>() );
+}
+
+template< typename CharT, typename SubT >
+string_constexpr CharT * find_last( CharT * text, SubT const & seek )
+{
+    return detail::find_last( text, seek, std::equal_to<CharT>() );
+}
+
+// contains(); C++23-like string::contains():
 
 #if string_TEST_STRING_CONTAINS
 
@@ -585,7 +675,7 @@ template< typename StringT, typename SubT
 >
 string_nodiscard string_constexpr bool contains( StringT const & text, SubT const & seek ) string_noexcept
 {
-    return detail::end( text ) != find( text, seek );
+    return detail::end( text ) != find_first( text, seek );
 }
 
 template< typename StringT, typename CharT
@@ -595,7 +685,7 @@ template< typename StringT, typename CharT
 string_nodiscard /*string_constexpr*/ bool contains( StringT const & text, CharT seek ) string_noexcept
 {
     CharT look[] = { seek, nullchr<CharT>() };
-    return detail::end( text ) != find( text, look );
+    return detail::end( text ) != find_first( text, look );
 }
 
 #else // string_TEST_STRING_CONTAINS
@@ -603,20 +693,20 @@ string_nodiscard /*string_constexpr*/ bool contains( StringT const & text, CharT
 template< typename StringT, typename SubT >
 string_nodiscard string_constexpr bool contains( StringT const & text, SubT const & seek ) string_noexcept
 {
-    return detail::cend( text ) != find( text, seek );
+    return detail::cend( text ) != find_first( text, seek );
 }
 
 template< typename StringT >
 string_nodiscard string_constexpr bool contains( StringT const & text, char const * seek ) string_noexcept
 {
-    return detail::cend( text ) != find( text, seek );
+    return detail::cend( text ) != find_first( text, seek );
 }
 
 template< typename StringT >
 string_nodiscard /*string_constexpr*/ bool contains( StringT const & text, char seek ) string_noexcept
 {
     char look[] = { seek, nullchr<char>() };
-    return detail::cend( text ) != find( text, look );
+    return detail::cend( text ) != find_first( text, look );
 }
 
 #endif // string_TEST_STRING_CONTAINS
@@ -636,6 +726,8 @@ string_nodiscard string_constexpr bool contains_re( StringT const & text, ReT co
 }
 
 #endif // string_HAVE_REGEX
+
+// starts_with():
 
 #if string_TEST_STRING_STARTS_WITH
 
@@ -697,6 +789,8 @@ string_nodiscard /*string_constexpr*/ bool starts_with( StringT const & text, ch
 }
 
 #endif // string_TEST_STRING_STARTS_WITH
+
+// ends_with():
 
 #if string_TEST_STRING_ENDS_WITH
 
@@ -760,6 +854,8 @@ string_nodiscard /*string_constexpr*/ bool ends_with( StringT const & text, char
 
 // Modifiers:
 
+// clear():
+
 template< typename CharT >
 void clear( CharT * cp ) string_noexcept
 {
@@ -773,6 +869,8 @@ void clear( StringT & text ) string_noexcept
 {
     text.clear();
 }
+
+// to_lowercase(), to_uppercase():
 
 template< typename CharT >
 void to_lowercase( CharT * cp ) string_noexcept

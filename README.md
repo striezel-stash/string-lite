@@ -27,8 +27,10 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | bool **starts_with**(StringT const & s, SubT const & substr) | true if string starts with substring |
 | &nbsp;             | bool **ends_with**(StringT const & s, CharT chr) | true if string ends with chr |
 | &nbsp;             | bool **ends_with**(StringT const & s, SubT const & substr) | true if string ends with substring |
-| &nbsp;             | IterT **find**(StringT & s, SubT const & substr)          | provide iterator to substring |
-| &nbsp;             | IterT **find**(StringT const & s, SubT const & substr)    | provide const iterator to substring |
+| &nbsp;             | IterT **find_first**(StringT & s, SubT const & substr)          | provide iterator to substring |
+| &nbsp;             | IterT **find_first**(StringT const & s, SubT const & substr)    | provide const iterator to substring |
+| &nbsp;             | IterT **find_last**(StringT & s, SubT const & substr)          | provide iterator to substring |
+| &nbsp;             | IterT **find_last**(StringT const & s, SubT const & substr)    | provide const iterator to substring |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | Modifiers          | void **clear**(CharT * s)                   | make C-string empty |
 | &nbsp;             | void **clear**(StringT & s)                 | make string empty |
