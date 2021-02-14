@@ -148,8 +148,10 @@
 # define string_explicit_cv /*explicit*/
 #endif
 
-#define string_HAS_ENABLE_IF_           (string_HAVE_TYPE_TRAITS && string_HAVE_DEFAULT_FN_TPL_ARGS)
-#define string_TEST_STRING_CONTAINS     (string_HAS_ENABLE_IF_ && !string_BETWEEN(string_COMPILER_MSVC_VER, 1, 1910))
+#define string_HAS_ENABLE_IF_          (string_HAVE_TYPE_TRAITS && string_HAVE_DEFAULT_FN_TPL_ARGS)
+#define string_TEST_STRING_CONTAINS    (string_HAS_ENABLE_IF_ && !string_BETWEEN(string_COMPILER_MSVC_VER, 1, 1910))
+#define string_TEST_STRING_STARTS_WITH  string_TEST_STRING_CONTAINS
+#define string_TEST_STRING_ENDS_WITH    string_TEST_STRING_CONTAINS
 
 // Method enabling (return type):
 
@@ -393,7 +395,19 @@ string_nodiscard inline typename StringT::const_iterator cend( StringT const & t
     return text.cend();
 }
 
-#else
+template< typename StringT >
+string_nodiscard inline typename StringT::const_reverse_iterator crbegin( StringT const & text )
+{
+    return text.crbegin();
+}
+
+template< typename StringT >
+string_nodiscard inline typename StringT::const_reverse_iterator crend( StringT const & text )
+{
+    return text.crend();
+}
+
+#else // string_CPP11_000
 
 template< typename StringT >
 string_nodiscard inline typename StringT::const_iterator cbegin( StringT const & text )
@@ -407,6 +421,20 @@ string_nodiscard inline typename StringT::const_iterator cend( StringT const & t
 {
     typedef typename StringT::const_iterator const_iterator;
     return const_iterator( text.end() );
+}
+
+template< typename StringT >
+string_nodiscard inline typename StringT::const_reverse_iterator crbegin( StringT const & text )
+{
+    typedef typename StringT::const_reverse_iterator const_reverse_iterator;
+    return const_reverse_iterator( text.rbegin() );
+}
+
+template< typename StringT >
+string_nodiscard inline typename StringT::const_reverse_iterator crend( StringT const & text )
+{
+    typedef typename StringT::const_reverse_iterator const_reverse_iterator;
+    return const_reverse_iterator( text.rend() );
 }
 
 #endif // string_CPP11_000
@@ -453,12 +481,46 @@ typename StringT::const_iterator find( StringT const & text, SubT const & seek )
     );
 }
 
+template< typename StringIt, typename SubIt, typename PredicateT >
+bool starts_with( StringIt text_pos, StringIt text_end, SubIt seek_pos, SubIt seek_end, PredicateT compare )
+{
+    for( ; text_pos != text_end && seek_pos != seek_end; ++text_pos, ++seek_pos )
+    {
+        if( !compare( *text_pos, *seek_pos ) )
+            return false;
+    }
+
+    return seek_pos == seek_end;
+}
+
+template< typename StringT, typename SubT, typename PredicateT >
+bool starts_with( StringT const & text, SubT const & seek, PredicateT compare )
+{
+    return detail::starts_with(
+        detail::cbegin(text), detail::cend(text)
+        , detail::cbegin(seek), detail::cend(seek)
+        , compare
+    );
+}
+
+template< typename StringT, typename SubT, typename PredicateT >
+bool ends_with( StringT const & text, SubT const & seek, PredicateT compare )
+{
+    return detail::starts_with(
+        detail::crbegin(text), detail::crend(text)
+        , detail::crbegin(seek), detail::crend(seek)
+        , compare
+    );
+}
+
 } // namespace detail
 
 string_MAKE_HAS_METHOD_( begin )
 string_MAKE_HAS_METHOD_( clear )
 string_MAKE_HAS_METHOD_( contains )
 string_MAKE_HAS_METHOD_( empty )
+string_MAKE_HAS_METHOD_( starts_with )
+string_MAKE_HAS_METHOD_( ends_with )
 
 template< typename CharT >
 string_nodiscard CharT nullchr() string_noexcept
@@ -574,6 +636,127 @@ string_nodiscard string_constexpr bool contains_re( StringT const & text, ReT co
 }
 
 #endif // string_HAVE_REGEX
+
+#if string_TEST_STRING_STARTS_WITH
+
+template< typename StringT, typename SubT
+    string_ENABLE_IF_HAS_METHOD_(StringT, starts_with)
+>
+string_nodiscard string_constexpr bool starts_with( StringT const & text, SubT const & seek ) string_noexcept
+{
+    return text.starts_with( seek );
+}
+
+template< typename StringT, typename SubT
+    string_DISABLE_IF_HAS_METHOD_(StringT, starts_with)
+    string_ENABLE_IF_( !std::is_arithmetic<SubT>::value )
+>
+string_nodiscard string_constexpr bool starts_with( StringT const & text, SubT const & seek ) string_noexcept
+{
+    typedef typename StringT::value_type A;
+
+    return detail::starts_with( text, seek, std::equal_to<A>() );
+}
+
+template< typename StringT, typename CharT
+    string_DISABLE_IF_HAS_METHOD_(StringT, starts_with)
+    string_ENABLE_IF_( std::is_arithmetic<CharT>::value )
+>
+string_nodiscard /*string_constexpr*/ bool starts_with( StringT const & text, CharT seek ) string_noexcept
+{
+    CharT look[] = { seek, nullchr<CharT>() };
+
+    // return detail::starts_with( text, look, std::equal_to<CharT>() );
+    return detail::starts_with( text, StringT(look), std::equal_to<CharT>() );
+}
+
+#else // string_TEST_STRING_STARTS_WITH
+
+template< typename StringT, typename SubT >
+string_nodiscard string_constexpr bool starts_with( StringT const & text, SubT const & seek ) string_noexcept
+{
+    typedef typename StringT::value_type A;
+
+    return detail::starts_with( text, seek, std::equal_to<A>() );
+}
+
+template< typename StringT >
+string_nodiscard string_constexpr bool starts_with( StringT const & text, char const * seek ) string_noexcept
+{
+    typedef typename StringT::value_type A;
+
+    return detail::starts_with( text, seek, std::equal_to<A>() );
+}
+
+template< typename StringT >
+string_nodiscard /*string_constexpr*/ bool starts_with( StringT const & text, char seek ) string_noexcept
+{
+    char look[] = { seek, nullchr<char>() };
+
+    return detail::starts_with( text, StringT(look), std::equal_to<char>() );
+}
+
+#endif // string_TEST_STRING_STARTS_WITH
+
+#if string_TEST_STRING_ENDS_WITH
+
+template< typename StringT, typename SubT
+    string_ENABLE_IF_HAS_METHOD_(StringT, ends_with)
+>
+string_nodiscard string_constexpr bool ends_with( StringT const & text, SubT const & seek ) string_noexcept
+{
+    return text.ends_with( seek );
+}
+
+template< typename StringT, typename SubT
+    string_DISABLE_IF_HAS_METHOD_(StringT, ends_with)
+    string_ENABLE_IF_( !std::is_arithmetic<SubT>::value )
+>
+string_nodiscard string_constexpr bool ends_with( StringT const & text, SubT const & seek ) string_noexcept
+{
+    typedef typename StringT::value_type A;
+
+    return detail::ends_with( text, StringT(seek), std::equal_to<A>() );
+}
+
+template< typename StringT, typename CharT
+    string_DISABLE_IF_HAS_METHOD_(StringT, ends_with)
+    string_ENABLE_IF_( std::is_arithmetic<CharT>::value )
+>
+string_nodiscard /*string_constexpr*/ bool ends_with( StringT const & text, CharT seek ) string_noexcept
+{
+    CharT look[] = { seek, nullchr<CharT>() };
+
+    return detail::ends_with( text, StringT(look), std::equal_to<CharT>() );
+}
+
+#else // string_TEST_STRING_ENDS_WITH
+
+template< typename StringT, typename SubT >
+string_nodiscard string_constexpr bool ends_with( StringT const & text, SubT const & seek ) string_noexcept
+{
+    typedef typename StringT::value_type A;
+
+    return detail::ends_with( text, seek, std::equal_to<A>() );
+}
+
+template< typename StringT >
+string_nodiscard string_constexpr bool ends_with( StringT const & text, char const * seek ) string_noexcept
+{
+    typedef typename StringT::value_type A;
+
+    return detail::ends_with( text, StringT(seek), std::equal_to<A>() );
+}
+
+template< typename StringT >
+string_nodiscard /*string_constexpr*/ bool ends_with( StringT const & text, char seek ) string_noexcept
+{
+    char look[] = { seek, nullchr<char>() };
+
+    return detail::ends_with( text, StringT(look), std::equal_to<char>() );
+}
+
+#endif // string_TEST_STRING_ENDS_WITH
 
 // Modifiers:
 

@@ -127,6 +127,82 @@ CASE( "contains_re: true if string contains regular expression - string-string" 
 #endif
 }
 
+CASE( "starts_with: true if string starts with sub string - string-char" )
+{
+    EXPECT(     starts_with(std::string("abc123xyz"), 'a') );
+    EXPECT_NOT( starts_with(std::string("abc123xyz"), 'b') );
+}
+
+CASE( "starts_with: true if string starts with sub string - string-char*" )
+{
+    EXPECT(     starts_with(std::string("abc123xyz"), "a") );
+    EXPECT_NOT( starts_with(std::string("abc123xyz"), "b") );
+}
+
+CASE( "starts_with: true if string starts with sub string - string-string" )
+{
+    EXPECT(     starts_with(std::string("abc123xyz"), std::string("a")) );
+    EXPECT_NOT( starts_with(std::string("abc123xyz"), std::string("b")) );
+}
+
+CASE( "starts_with: true if string starts with sub string - string-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+    EXPECT(     starts_with(std::string("abc123xyz"), std::string_view("a")) );
+    EXPECT_NOT( starts_with(std::string("abc123xyz"), std::string_view("b")) );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+CASE( "starts_with: true if string starts with sub string - string_view-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+    EXPECT(     starts_with(std::string_view("abc123xyz"), std::string_view("a")) );
+    EXPECT_NOT( starts_with(std::string_view("abc123xyz"), std::string_view("b")) );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+CASE( "ends_with: true if string ends with sub string - string-char" )
+{
+    EXPECT(     ends_with(std::string("abc123xyz"), 'z') );
+    EXPECT_NOT( ends_with(std::string("abc123xyz"), 'y') );
+}
+
+CASE( "ends_with: true if string ends with sub string - string-char*" )
+{
+    EXPECT(     ends_with(std::string("abc123xyz"), "z") );
+    EXPECT_NOT( ends_with(std::string("abc123xyz"), "y") );
+}
+
+CASE( "ends_with: true if string ends with sub string - string-string" )
+{
+    EXPECT(     ends_with(std::string("abc123xyz"), std::string("z")) );
+    EXPECT_NOT( ends_with(std::string("abc123xyz"), std::string("y")) );
+}
+
+CASE( "ends_with: true if string ends with sub string - string-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+    EXPECT(     ends_with(std::string("abc123xyz"), std::string_view("z")) );
+    EXPECT_NOT( ends_with(std::string("abc123xyz"), std::string_view("y")) );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+CASE( "ends_with: true if string ends with sub string - string_view-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+    EXPECT(     ends_with(std::string_view("abc123xyz"), std::string_view("z")) );
+    EXPECT_NOT( ends_with(std::string_view("abc123xyz"), std::string_view("y")) );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
 CASE( "find: iterator to sub string in string - string-char*" )
 {
     // text((): "abc123xyz"
