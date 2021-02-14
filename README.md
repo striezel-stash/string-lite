@@ -27,7 +27,8 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | bool **starts_with**(StringT const & s, SubT const & substr) | true if string starts with substring |
 | &nbsp;             | bool **ends_with**(StringT const & s, CharT chr) | true if string ends with chr |
 | &nbsp;             | bool **ends_with**(StringT const & s, SubT const & substr) | true if string ends with substring |
-| &nbsp;             | IterT **find_first**(StringT & s, SubT const & substr)          | provide iterator to substring |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
+| Searching          | IterT **find_first**(StringT & s, SubT const & substr)          | provide iterator to substring |
 | &nbsp;             | IterT **find_first**(StringT const & s, SubT const & substr)    | provide const iterator to substring |
 | &nbsp;             | IterT **find_last**(StringT & s, SubT const & substr)          | provide iterator to substring |
 | &nbsp;             | IterT **find_last**(StringT const & s, SubT const & substr)    | provide const iterator to substring |
@@ -40,5 +41,11 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | void **to_uppercase**(StringT & s)          | convert string to uppercase  |
 | &nbsp;             | StringT **as_lowercase**(StringT const & s) | provide string converted to lowercase |
 | &nbsp;             | StringT **as_uppercase**(StringT const & s) | provide string converted to uppercase |
+| &nbsp;             | StringT & **replace_all**(StringT & s, FromT const & from, ToT const to) |xxx |
+| &nbsp;             | StringT **replaced_all**(StringT const & s, FromT const & from, ToT const to) |xxx |
+| &nbsp;             | StringT & **replace_first**(StringT & s, FromT const & from, ToT const to) |xxx |
+| &nbsp;             | StringT **replaced_first**(StringT const & s, FromT const & from, ToT const to) |xxx |
+| &nbsp;             | StringT & **replace_last**(StringT & s, FromT const & from, ToT const to) |xxx |
+| &nbsp;             | StringT **replaced_last**(StringT const & s, FromT const & from, ToT const to) |xxx |
 
-Note: string can also be string_view.
+Note: with `StringT const &` the string type can also be `string_view`.

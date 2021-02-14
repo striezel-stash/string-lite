@@ -100,6 +100,7 @@
 #define string_CPP14_120  (string_CPP14_OR_GREATER || string_COMPILER_MSVC_VER >= 1800)
 
 #define string_CPP17_000  (string_CPP17_OR_GREATER)
+#define string_CPP17_120  (string_CPP17_OR_GREATER || string_COMPILER_MSVC_VER >= 1800)
 #define string_CPP17_140  (string_CPP17_OR_GREATER || string_COMPILER_MSVC_VER >= 1900)
 
 // Presence of C++11 language features:
@@ -117,6 +118,7 @@
 
 // Presence of C++17 language features:
 
+#define string_HAVE_FREE_SIZE               string_CPP17_120
 #define string_HAVE_NODISCARD               string_CPP17_000
 
 // Presence of C++ library features:
@@ -211,7 +213,7 @@
 // Method detection:
 
 #define string_HAS_METHOD_( T, M )  \
-    has_##M<T>::value
+    nonstd::string::has_##M<T>::value
 
 #if string_CPP11_OR_GREATER && !string_BETWEEN(string_COMPILER_GNUC_VERSION, 1, 500)
 
@@ -323,7 +325,18 @@ using is_detected = typename detail::detector<nonesuch, void, Op, Args...>::valu
 
 #endif // string_CPP11_OR_GREATER
 
+// for string_HAS_METHOD_:
+
+string_MAKE_HAS_METHOD_( begin )
+string_MAKE_HAS_METHOD_( clear )
+string_MAKE_HAS_METHOD_( contains )
+string_MAKE_HAS_METHOD_( empty )
+string_MAKE_HAS_METHOD_( starts_with )
+string_MAKE_HAS_METHOD_( ends_with )
+string_MAKE_HAS_METHOD_( replace )
+
 // string-lite API functions:
+
 namespace detail {
 
 // for string_ENABLE_IF_():
@@ -486,6 +499,27 @@ string_nodiscard inline CharT as_uppercase( CharT chr )
     return std::toupper( chr, std::locale() );
 }
 
+#if string_HAVE_FREE_SIZE
+
+using std::size;
+
+#else // string_HAVE_FREE_SIZE
+
+template< typename Cont >
+string_nodiscard inline size_t size( Cont const & c )
+{
+    return c.size();
+}
+
+#endif // string_HAVE_FREE_SIZE
+
+// nonstd size(C-string)
+
+string_nodiscard inline size_t size( char const * s )
+{
+    return std::strlen( s );
+}
+
 // case conversion:
 
 // Note: serve both CharT* and StringT&:
@@ -604,14 +638,52 @@ bool ends_with( StringT const & text, SubT const & seek, PredicateT compare )
     );
 }
 
+// TODO replace_all() - alg:
+
+template< typename StringIt, typename FromIt, typename ToIt, typename PredicateT >
+bool replace_all
+(
+    StringIt text_pos, StringIt text_end
+    , FromIt from_pos, FromIt from_end
+    , ToIt to_pos, ToIt to_end
+    , PredicateT compare
+)
+{
+    return true; // error
+}
+
+template< typename CharT, typename FromT, typename ToT >
+std::basic_string<CharT> & replace_all( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    for ( ;; )
+    {
+        const size_t pos = text.find( from );
+
+        if ( pos == std::string::npos )
+            return text;
+
+        text.replace( pos, size(from), to );
+    }
+}
+
+template< typename StringT, typename FromT, typename ToT >
+StringT & replace_all( StringT & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    typedef typename StringT::value_type A;
+
+    (void) detail::replace_all(
+        detail::begin(text), detail::end(text)
+        , detail::cbegin(from), detail::cend(from)
+        , detail::cbegin(to), detail::cend(to)
+        , std::equal_to<A>()
+    );
+
+    return text;
+}
+
 } // namespace detail
 
-string_MAKE_HAS_METHOD_( begin )
-string_MAKE_HAS_METHOD_( clear )
-string_MAKE_HAS_METHOD_( contains )
-string_MAKE_HAS_METHOD_( empty )
-string_MAKE_HAS_METHOD_( starts_with )
-string_MAKE_HAS_METHOD_( ends_with )
+// Utilities:
 
 template< typename CharT >
 string_nodiscard CharT nullchr() string_noexcept
@@ -886,6 +958,54 @@ string_nodiscard /*string_constexpr*/ bool ends_with( StringT const & text, char
 #endif // string_TEST_STRING_ENDS_WITH
 
 // Modifiers:
+
+// TODO replace_all():
+
+template< typename CharT, typename FromT, typename ToT
+    // string_ENABLE_IF_HAS_METHOD_(StringT, replace)
+>
+string_nodiscard string_constexpr std::basic_string<CharT> &
+replace_all( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    return detail::replace_all( text, from, to );
+}
+
+template< typename StringT, typename FromT, typename ToT
+    string_ENABLE_IF_HAS_METHOD_(StringT, begin)
+>
+string_nodiscard string_constexpr StringT &
+replace_all( StringT & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    return detail::replace_all( text, from, to );
+}
+
+// TODO replaced_all():
+
+template< typename CharT, typename FromT, typename ToT >
+string_nodiscard /*string_constexpr*/ std::basic_string<CharT>
+replaced_all( CharT const * text, FromT const & from, ToT const & to ) string_noexcept
+{
+    std::basic_string<CharT> result( text );
+
+    return replace_all( result, from, to );
+}
+
+template< typename StringT, typename FromT, typename ToT >
+string_nodiscard /*string_constexpr*/ StringT
+replaced_all( StringT const & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    StringT result( text );
+
+    return replace_all( result, from, to );
+}
+
+// TODO replace_first():
+
+// TODO replaced_first():
+
+// TODO replace_last():
+
+// TODO replaced_last():
 
 // clear():
 

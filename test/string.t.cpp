@@ -47,6 +47,8 @@ CASE( "string: Setting Windows console to print utf8 characters" "[unicode][wind
 
 // Observers:
 
+// is_empty():
+
 CASE( "is_empty: true if string is empty - char *" )
 {
     EXPECT(     is_empty("") );
@@ -58,6 +60,8 @@ CASE( "is_empty: true if string is empty - string" )
     EXPECT(     is_empty(std::string()) );
     EXPECT_NOT( is_empty(std::string("x")) );
 }
+
+// contains():
 
 CASE( "contains: true if string contains sub string - string-char" )
 {
@@ -127,6 +131,8 @@ CASE( "contains_re: true if string contains regular expression - string-string" 
 #endif
 }
 
+// ends_with():
+
 CASE( "starts_with: true if string starts with sub string - string-char" )
 {
     EXPECT(     starts_with(std::string("abc123mno123xyz"), 'a') );
@@ -165,6 +171,8 @@ CASE( "starts_with: true if string starts with sub string - string_view-string_v
 #endif
 }
 
+// ends_with():
+
 CASE( "ends_with: true if string ends with sub string - string-char" )
 {
     EXPECT(     ends_with(std::string("abc123mno123xyz"), 'z') );
@@ -202,6 +210,8 @@ CASE( "ends_with: true if string ends with sub string - string_view-string_view"
     EXPECT( !!"std::string_view is not available (pre C++17)." );
 #endif
 }
+
+// find_last():
 
 CASE( "find_first: iterator to sub string in string - string-char*" )
 {
@@ -242,6 +252,8 @@ CASE( "find_first: iterator to sub string in string_view - string_view-string_vi
     EXPECT( !!"std::string_view is not available (pre C++17)." );
 #endif
 }
+
+// find_last():
 
 CASE( "find_last: iterator to sub string in string - string-char*" )
 {
@@ -285,6 +297,8 @@ CASE( "find_last: iterator to sub string in string_view - string_view-string_vie
 
 // Modifiers:
 
+// clear():
+
 CASE( "clear: Makes string empty - char *" )
 {
     scoped_str s( lstr() );
@@ -303,6 +317,128 @@ CASE( "clear: Makes string empty - string" )
     EXPECT( s  == "" );
     EXPECT( s.length() == 0u );
 }
+
+// TODO replace_all():
+
+CASE( "replace_all: Change all occurrences of sub string - string-char*" )
+{
+    std::string result( "abc123mno123xyz" );
+
+    (void) replace_all( result, "123", "789");
+
+    EXPECT( result == std::string("abc789mno789xyz") );
+}
+
+CASE( "replace_all: Change all occurrences of sub string - string-string" )
+{
+    std::string result( "abc123mno123xyz" );
+
+    (void) replace_all( result, std::string("123"), std::string("789"));
+
+    EXPECT( result == std::string("abc789mno789xyz") );
+}
+
+CASE( "replace_all: Change all occurrences of sub string - string-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+    std::string result( "abc123mno123xyz" );
+
+    (void) replace_all( result, std::string_view("123"), std::string("789"));
+
+    EXPECT( result == std::string("abc789mno789xyz") );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+// TODO replaced_all():
+
+CASE( "replaced_all: Returns string with all occurrences of sub string changed - char*-char*" )
+{
+    EXPECT( replaced_all( "abc123mno123xyz", "123", "789") == std::string("abc789mno789xyz") );
+}
+
+CASE( "replaced_all: Returns string with all occurrences of sub string changed - string-string" )
+{
+    EXPECT( replaced_all( std::string("abc123mno123xyz"), std::string("123"), std::string("789") ) == std::string("abc789mno789xyz") );
+}
+
+CASE( "replaced_all: Returns string with all occurrences of sub string changed - string-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+    EXPECT( replaced_all( std::string("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+CASE( "replaced_all: Returns string with all occurrences of sub string changed - string_view-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+// TODO : implement detail::replace_all(it...)
+    // EXPECT( replaced_all( std::string_view("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+// TODO replace_first():
+
+CASE( "replace_first: Change the first occurrence of sub string - string-char*" )
+{
+}
+
+CASE( "replace_first: Change the first occurrence of sub string - string-string" )
+{
+}
+
+CASE( "replace_first: Change the first occurrence of sub string - string-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+CASE( "replace_first: Change the first occurrence of sub string - string_view-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+// TODO replaced_first():
+
+// TODO replace_last():
+
+CASE( "replace_last: Change the last occurrence of sub string - string-char*" )
+{
+}
+
+CASE( "replace_last: Change the last occurrence of sub string - string-string" )
+{
+}
+
+CASE( "replace_last: Change the last occurrence of sub string - string-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+CASE( "replace_last: Change the last occurrence of sub string - string_view-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+// TODO replaced_last():
+
+// to_lowercase(), to_uppercase:
 
 CASE( "to_lowercase: Makes string lowercase - char *" )
 {
@@ -342,6 +478,8 @@ CASE( "to_uppercase: Makes string uppercase - string" )
     EXPECT( s == us );
 }
 
+// as_lowercase(), as_uppercase:
+
 CASE( "as_lowercase: Returns string in lowercase - string" )
 {
     std::string ls( lstr() );
@@ -358,6 +496,8 @@ CASE( "as_uppercase: Returns string in uppercase - string" )
     EXPECT( as_uppercase(ls) == us );
 }
 
+// clear():
+
 CASE( "clear: Makes string empty - string " "[unicode]" )
 {
 #if string_HAS_CSSTRING
@@ -373,6 +513,8 @@ CASE( "clear: Makes string empty - string " "[unicode]" )
     EXPECT( !!"Unicode via CsString is not available (pre C++17)." );
 #endif
 }
+
+// TODO Unicode:
 
 CASE( "to_upper: Makes string uppercase - string " "[unicode][.todo]" )
 {
