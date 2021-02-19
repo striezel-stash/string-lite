@@ -681,6 +681,32 @@ StringT & replace_all( StringT & text, FromT const & from, ToT const & to ) stri
     return text;
 }
 
+// replace_first() - alg:
+
+template< typename CharT, typename FromT, typename ToT >
+std::basic_string<CharT> & replace_first( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    const size_t pos = text.find( from );
+
+    if ( pos == std::string::npos )
+        return text;
+
+    return text.replace( pos, size(from), to );
+}
+
+// replace_last() - alg:
+
+template< typename CharT, typename FromT, typename ToT >
+std::basic_string<CharT> & replace_last( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    const size_t pos = text.rfind( from );
+
+    if ( pos == std::string::npos )
+        return text;
+
+    return text.replace( pos, size(from), to );
+}
+
 } // namespace detail
 
 // Utilities:
@@ -959,7 +985,7 @@ string_nodiscard /*string_constexpr*/ bool ends_with( StringT const & text, char
 
 // Modifiers:
 
-// TODO replace_all():
+// replace_all():
 
 template< typename CharT, typename FromT, typename ToT
     // string_ENABLE_IF_HAS_METHOD_(StringT, replace)
@@ -979,7 +1005,7 @@ replace_all( StringT & text, FromT const & from, ToT const & to ) string_noexcep
     return detail::replace_all( text, from, to );
 }
 
-// TODO replaced_all():
+// replaced_all():
 
 template< typename CharT, typename FromT, typename ToT >
 string_nodiscard /*string_constexpr*/ std::basic_string<CharT>
@@ -999,13 +1025,85 @@ replaced_all( StringT const & text, FromT const & from, ToT const & to ) string_
     return replace_all( result, from, to );
 }
 
-// TODO replace_first():
+// replace_first():
 
-// TODO replaced_first():
+template< typename CharT, typename FromT, typename ToT
+    // string_ENABLE_IF_HAS_METHOD_(StringT, replace)
+>
+string_nodiscard string_constexpr std::basic_string<CharT> &
+replace_first( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    return detail::replace_first( text, from, to );
+}
 
-// TODO replace_last():
+template< typename StringT, typename FromT, typename ToT
+    string_ENABLE_IF_HAS_METHOD_(StringT, begin)
+>
+string_nodiscard string_constexpr StringT &
+replace_first( StringT & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    return detail::replace_first( text, from, to );
+}
 
-// TODO replaced_last():
+// replaced_first():
+
+template< typename CharT, typename FromT, typename ToT >
+string_nodiscard /*string_constexpr*/ std::basic_string<CharT>
+replaced_first( CharT const * text, FromT const & from, ToT const & to ) string_noexcept
+{
+    std::basic_string<CharT> result( text );
+
+    return replace_first( result, from, to );
+}
+
+template< typename StringT, typename FromT, typename ToT >
+string_nodiscard /*string_constexpr*/ StringT
+replaced_first( StringT const & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    StringT result( text );
+
+    return replace_first( result, from, to );
+}
+
+// replace_last():
+
+template< typename CharT, typename FromT, typename ToT
+    // string_ENABLE_IF_HAS_METHOD_(StringT, replace)
+>
+string_nodiscard string_constexpr std::basic_string<CharT> &
+replace_last( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    return detail::replace_last( text, from, to );
+}
+
+template< typename StringT, typename FromT, typename ToT
+    string_ENABLE_IF_HAS_METHOD_(StringT, begin)
+>
+string_nodiscard string_constexpr StringT &
+replaced_last( StringT & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    return detail::replace_last( text, from, to );
+}
+
+// replaced_last():
+
+template< typename CharT, typename FromT, typename ToT >
+string_nodiscard /*string_constexpr*/ std::basic_string<CharT>
+replaced_last( CharT const * text, FromT const & from, ToT const & to ) string_noexcept
+{
+    std::basic_string<CharT> result( text );
+
+    return replaced_last( result, from, to );
+}
+
+template< typename StringT, typename FromT, typename ToT >
+string_nodiscard /*string_constexpr*/ StringT
+replaced_last( StringT const & text, FromT const & from, ToT const & to ) string_noexcept
+{
+    StringT result( text );
+
+    return replaced_last( result, from, to );
+}
 
 // clear():
 

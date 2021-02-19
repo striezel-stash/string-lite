@@ -318,7 +318,7 @@ CASE( "clear: Makes string empty - string" )
     EXPECT( s.length() == 0u );
 }
 
-// TODO replace_all():
+// replace_all():
 
 CASE( "replace_all: Change all occurrences of sub string - string-char*" )
 {
@@ -351,7 +351,7 @@ CASE( "replace_all: Change all occurrences of sub string - string-string_view" )
 #endif
 }
 
-// TODO replaced_all():
+// replaced_all():
 
 CASE( "replaced_all: Returns string with all occurrences of sub string changed - char*-char*" )
 {
@@ -372,7 +372,7 @@ CASE( "replaced_all: Returns string with all occurrences of sub string changed -
 #endif
 }
 
-CASE( "replaced_all: Returns string with all occurrences of sub string changed - string_view-string_view" )
+CASE( "replaced_all: Returns string with all occurrences of sub string changed - string_view-string_view" " [TODO]" )
 {
 #if string_HAVE_STD_STRING_VIEW
 // TODO : implement detail::replace_all(it...)
@@ -382,19 +382,34 @@ CASE( "replaced_all: Returns string with all occurrences of sub string changed -
 #endif
 }
 
-// TODO replace_first():
+// replace_first():
 
 CASE( "replace_first: Change the first occurrence of sub string - string-char*" )
 {
+    std::string result( "abc123mno123xyz" );
+
+    (void) replace_first( result, "123", "789");
+
+    EXPECT( result == std::string("abc789mno123xyz") );
 }
 
 CASE( "replace_first: Change the first occurrence of sub string - string-string" )
 {
+    std::string result( "abc123mno123xyz" );
+
+    (void) replace_first( result, std::string("123"), std::string("789"));
+
+    EXPECT( result == std::string("abc789mno123xyz") );
 }
 
 CASE( "replace_first: Change the first occurrence of sub string - string-string_view" )
 {
 #if string_HAVE_STD_STRING_VIEW
+    std::string result( "abc123mno123xyz" );
+
+    (void) replace_first( result, std::string_view("123"), std::string("789"));
+
+    EXPECT( result == std::string("abc789mno123xyz") );
 #else
     EXPECT( !!"std::string_view is not available (pre C++17)." );
 #endif
@@ -408,21 +423,65 @@ CASE( "replace_first: Change the first occurrence of sub string - string_view-st
 #endif
 }
 
-// TODO replaced_first():
+// replaced_first():
 
-// TODO replace_last():
+CASE( "replaced_first: Returns string with first occurrence of sub string changed - char*-char*" )
+{
+    EXPECT( replaced_first( "abc123mno123xyz", "123", "789") == std::string("abc789mno123xyz") );
+}
+
+CASE( "replaced_first: Returns string with first occurrence of sub string changed - string-string" )
+{
+    EXPECT( replaced_first( std::string("abc123mno123xyz"), std::string("123"), std::string("789") ) == std::string("abc789mno123xyz") );
+}
+
+CASE( "replaced_first: Returns string with first occurrence of sub string changed - string-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+    EXPECT( replaced_first( std::string("abc123mno123xyz"), "123", "789") == std::string("abc789mno123xyz") );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+CASE( "replaced_first: Returns string with first occurrence of sub string changed - string_view-string_view" " [TODO]" )
+{
+#if string_HAVE_STD_STRING_VIEW
+// TODO : implement detail::replaced_first(it...)
+    // EXPECT( replaced_first( std::string_view("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+// replace_last():
 
 CASE( "replace_last: Change the last occurrence of sub string - string-char*" )
 {
+    std::string result( "abc123mno123xyz" );
+
+    (void) replace_last( result, "123", "789");
+
+    EXPECT( result == std::string("abc123mno789xyz") );
 }
 
 CASE( "replace_last: Change the last occurrence of sub string - string-string" )
 {
+    std::string result( "abc123mno123xyz" );
+
+    (void) replace_last( result, std::string("123"), std::string("789"));
+
+    EXPECT( result == std::string("abc123mno789xyz") );
 }
 
 CASE( "replace_last: Change the last occurrence of sub string - string-string_view" )
 {
 #if string_HAVE_STD_STRING_VIEW
+    std::string result( "abc123mno123xyz" );
+
+    (void) replace_last( result, std::string_view("123"), std::string("789"));
+
+    EXPECT( result == std::string("abc123mno789xyz") );
 #else
     EXPECT( !!"std::string_view is not available (pre C++17)." );
 #endif
@@ -436,7 +495,36 @@ CASE( "replace_last: Change the last occurrence of sub string - string_view-stri
 #endif
 }
 
-// TODO replaced_last():
+// replaced_last():
+
+CASE( "replaced_last: Returns string with last occurrence of sub string changed - char*-char*" )
+{
+    EXPECT( replaced_last( "abc123mno123xyz", "123", "789") == std::string("abc123mno789xyz") );
+}
+
+CASE( "replaced_last: Returns string with last occurrence of sub string changed - string-string" )
+{
+    EXPECT( replaced_last( std::string("abc123mno123xyz"), std::string("123"), std::string("789") ) == std::string("abc123mno789xyz") );
+}
+
+CASE( "replaced_last: Returns string with last occurrence of sub string changed - string-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+    EXPECT( replaced_last( std::string("abc123mno123xyz"), "123", "789") == std::string("abc123mno789xyz") );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+CASE( "replaced_last: Returns string with last occurrence of sub string changed - string_view-string_view" " [TODO]" )
+{
+#if string_HAVE_STD_STRING_VIEW
+// TODO : implement detail::replaced_last(it...)
+    // EXPECT( replaced_last( std::string_view("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
 
 // to_lowercase(), to_uppercase:
 
