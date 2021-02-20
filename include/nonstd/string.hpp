@@ -119,7 +119,7 @@
 // Presence of C++11 language features:
 
 #define string_HAVE_FREE_BEGIN              string_CPP14_120
-#define string_HAVE_CONSTEXPR_11            string_CPP11_140
+#define string_HAVE_CONSTEXPR_11           (string_CPP11_000 && !string_BETWEEN(string_COMPILER_MSVC_VER, 1, 1910))
 #define string_HAVE_NOEXCEPT                string_CPP11_140
 #define string_HAVE_NULLPTR                 string_CPP11_100
 #define string_HAVE_DEFAULT_FN_TPL_ARGS     string_CPP11_120
@@ -137,7 +137,7 @@
 
 // Presence of C++ library features:
 
-#define string_HAVE_REGEX                  (string_CPP11_100 && !string_BETWEEN(string_COMPILER_GNUC_VERSION, 1, 490))
+#define string_HAVE_REGEX                  (string_CPP11_000 && !string_BETWEEN(string_COMPILER_GNUC_VERSION, 1, 490))
 #define string_HAVE_TYPE_TRAITS             string_CPP11_110
 
 // Usage of C++ language features:
@@ -662,6 +662,8 @@ bool ends_with( StringT const & text, SubT const & seek, PredicateT compare )
 
 // replace_all():
 
+// TODO replace_all() - alg:
+
 template< typename StringIt, typename FromIt, typename ToIt, typename PredicateT >
 bool replace_all
 (
@@ -687,8 +689,6 @@ std::basic_string<CharT> & replace_all( std::basic_string<CharT> & text, FromT c
         text.replace( pos, size(from), to );
     }
 }
-
-// TODO replace_all() - alg:
 
 template< typename StringT, typename FromT, typename ToT >
 StringT & replace_all( StringT & text, FromT const & from, ToT const & to ) string_noexcept
