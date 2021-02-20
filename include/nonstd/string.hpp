@@ -30,6 +30,19 @@
 //# pragma message("string.hpp: Note: Tweak header not supported.")
 #endif
 
+// Control presence of exception handling (try and auto discover):
+
+#ifndef string_CONFIG_NO_EXCEPTIONS
+# if _MSC_VER
+# include <cstddef>     // for _HAS_EXCEPTIONS
+# endif
+# if defined(__cpp_exceptions) || defined(__EXCEPTIONS) || (_HAS_EXCEPTIONS)
+#  define string_CONFIG_NO_EXCEPTIONS  0
+# else
+#  define string_CONFIG_NO_EXCEPTIONS  1
+# endif
+#endif
+
 // C++ language version detection (C++20 is speculative):
 // Note: VC14.0/1900 (VS2015) lacks too much from C++14.
 
@@ -134,7 +147,7 @@
 # define string_constexpr /*constexpr*/
 #endif
 
-#if string_HAVE_NOEXCEPT
+#if string_HAVE_NOEXCEPT && !string_CONFIG_NO_EXCEPTIONS
 # define string_noexcept noexcept
 #else
 # define string_noexcept /*noexcept*/
@@ -640,7 +653,7 @@ bool ends_with( StringT const & text, SubT const & seek, PredicateT compare )
     );
 }
 
-// TODO replace_all() - alg:
+// replace_all():
 
 template< typename StringIt, typename FromIt, typename ToIt, typename PredicateT >
 bool replace_all
@@ -668,6 +681,8 @@ std::basic_string<CharT> & replace_all( std::basic_string<CharT> & text, FromT c
     }
 }
 
+// TODO replace_all() - alg:
+
 template< typename StringT, typename FromT, typename ToT >
 StringT & replace_all( StringT & text, FromT const & from, ToT const & to ) string_noexcept
 {
@@ -683,7 +698,7 @@ StringT & replace_all( StringT & text, FromT const & from, ToT const & to ) stri
     return text;
 }
 
-// replace_first() - alg:
+// replace_first():
 
 template< typename CharT, typename FromT, typename ToT >
 std::basic_string<CharT> & replace_first( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
@@ -696,10 +711,11 @@ std::basic_string<CharT> & replace_first( std::basic_string<CharT> & text, FromT
     return text.replace( pos, size(from), to );
 }
 
-// replace_last() - alg:
+// replace_last():
 
 template< typename CharT, typename FromT, typename ToT >
-std::basic_string<CharT> & replace_last( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
+std::basic_string<CharT> &
+replace_last( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
 {
     const size_t pos = text.rfind( from );
 
@@ -708,6 +724,27 @@ std::basic_string<CharT> & replace_last( std::basic_string<CharT> & text, FromT 
 
     return text.replace( pos, size(from), to );
 }
+
+// append():
+
+template< typename CharT, typename TailT >
+string_constexpr CharT *
+append( CharT * text, TailT const & tail ) string_noexcept
+{
+    return std::strcat( text, tail );
+}
+
+template< typename CharT, typename TailT >
+string_constexpr std::basic_string<CharT> &
+append( std::basic_string<CharT> & text, TailT const & tail ) string_noexcept
+{
+    return text.append( tail );
+}
+
+// TODO join() - alg
+
+// TODO split() - alg
+
 
 } // namespace detail
 
@@ -815,7 +852,7 @@ template< typename StringT, typename CharT
     string_DISABLE_IF_HAS_METHOD_(StringT, contains)
     string_ENABLE_IF_( std::is_arithmetic<CharT>::value )
 >
-string_nodiscard /*string_constexpr*/ bool contains( StringT const & text, CharT seek ) string_noexcept
+string_nodiscard string_constexpr bool contains( StringT const & text, CharT seek ) string_noexcept
 {
     CharT look[] = { seek, nullchr<CharT>() };
     return detail::end( text ) != find_first( text, look );
@@ -836,7 +873,7 @@ string_nodiscard string_constexpr bool contains( StringT const & text, char cons
 }
 
 template< typename StringT >
-string_nodiscard /*string_constexpr*/ bool contains( StringT const & text, char seek ) string_noexcept
+string_nodiscard string_constexpr bool contains( StringT const & text, char seek ) string_noexcept
 {
     char look[] = { seek, nullchr<char>() };
     return detail::cend( text ) != find_first( text, look );
@@ -887,7 +924,7 @@ template< typename StringT, typename CharT
     string_DISABLE_IF_HAS_METHOD_(StringT, starts_with)
     string_ENABLE_IF_( std::is_arithmetic<CharT>::value )
 >
-string_nodiscard /*string_constexpr*/ bool starts_with( StringT const & text, CharT seek ) string_noexcept
+string_nodiscard string_constexpr bool starts_with( StringT const & text, CharT seek ) string_noexcept
 {
     CharT look[] = { seek, nullchr<CharT>() };
 
@@ -914,7 +951,7 @@ string_nodiscard string_constexpr bool starts_with( StringT const & text, char c
 }
 
 template< typename StringT >
-string_nodiscard /*string_constexpr*/ bool starts_with( StringT const & text, char seek ) string_noexcept
+string_nodiscard string_constexpr bool starts_with( StringT const & text, char seek ) string_noexcept
 {
     char look[] = { seek, nullchr<char>() };
 
@@ -950,7 +987,7 @@ template< typename StringT, typename CharT
     string_DISABLE_IF_HAS_METHOD_(StringT, ends_with)
     string_ENABLE_IF_( std::is_arithmetic<CharT>::value )
 >
-string_nodiscard /*string_constexpr*/ bool ends_with( StringT const & text, CharT seek ) string_noexcept
+string_nodiscard string_constexpr bool ends_with( StringT const & text, CharT seek ) string_noexcept
 {
     CharT look[] = { seek, nullchr<CharT>() };
 
@@ -976,7 +1013,7 @@ string_nodiscard string_constexpr bool ends_with( StringT const & text, char con
 }
 
 template< typename StringT >
-string_nodiscard /*string_constexpr*/ bool ends_with( StringT const & text, char seek ) string_noexcept
+string_nodiscard string_constexpr bool ends_with( StringT const & text, char seek ) string_noexcept
 {
     char look[] = { seek, nullchr<char>() };
 
@@ -1010,7 +1047,7 @@ replace_all( StringT & text, FromT const & from, ToT const & to ) string_noexcep
 // replaced_all():
 
 template< typename CharT, typename FromT, typename ToT >
-string_nodiscard /*string_constexpr*/ std::basic_string<CharT>
+string_nodiscard string_constexpr std::basic_string<CharT>
 replaced_all( CharT const * text, FromT const & from, ToT const & to ) string_noexcept
 {
     std::basic_string<CharT> result( text );
@@ -1019,7 +1056,7 @@ replaced_all( CharT const * text, FromT const & from, ToT const & to ) string_no
 }
 
 template< typename StringT, typename FromT, typename ToT >
-string_nodiscard /*string_constexpr*/ StringT
+string_nodiscard string_constexpr StringT
 replaced_all( StringT const & text, FromT const & from, ToT const & to ) string_noexcept
 {
     StringT result( text );
@@ -1029,9 +1066,14 @@ replaced_all( StringT const & text, FromT const & from, ToT const & to ) string_
 
 // replace_first():
 
-template< typename CharT, typename FromT, typename ToT
-    // string_ENABLE_IF_HAS_METHOD_(StringT, replace)
->
+template< typename CharT, typename FromT, typename ToT >
+string_nodiscard string_constexpr CharT *
+replace_first( CharT * text, FromT const & from, ToT const & to ) string_noexcept
+{
+    return detail::replace_first( text, from, to );
+}
+
+template< typename CharT, typename FromT, typename ToT >
 string_nodiscard string_constexpr std::basic_string<CharT> &
 replace_first( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
 {
@@ -1050,7 +1092,7 @@ replace_first( StringT & text, FromT const & from, ToT const & to ) string_noexc
 // replaced_first():
 
 template< typename CharT, typename FromT, typename ToT >
-string_nodiscard /*string_constexpr*/ std::basic_string<CharT>
+string_nodiscard string_constexpr std::basic_string<CharT>
 replaced_first( CharT const * text, FromT const & from, ToT const & to ) string_noexcept
 {
     std::basic_string<CharT> result( text );
@@ -1059,7 +1101,7 @@ replaced_first( CharT const * text, FromT const & from, ToT const & to ) string_
 }
 
 template< typename StringT, typename FromT, typename ToT >
-string_nodiscard /*string_constexpr*/ StringT
+string_nodiscard string_constexpr StringT
 replaced_first( StringT const & text, FromT const & from, ToT const & to ) string_noexcept
 {
     StringT result( text );
@@ -1069,9 +1111,14 @@ replaced_first( StringT const & text, FromT const & from, ToT const & to ) strin
 
 // replace_last():
 
-template< typename CharT, typename FromT, typename ToT
-    // string_ENABLE_IF_HAS_METHOD_(StringT, replace)
->
+template< typename CharT, typename FromT, typename ToT >
+string_nodiscard string_constexpr CharT *
+replace_last( CharT * text, FromT const & from, ToT const & to ) string_noexcept
+{
+    return detail::replace_last( text, from, to );
+}
+
+template< typename CharT, typename FromT, typename ToT >
 string_nodiscard string_constexpr std::basic_string<CharT> &
 replace_last( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
 {
@@ -1082,7 +1129,7 @@ template< typename StringT, typename FromT, typename ToT
     string_ENABLE_IF_HAS_METHOD_(StringT, begin)
 >
 string_nodiscard string_constexpr StringT &
-replaced_last( StringT & text, FromT const & from, ToT const & to ) string_noexcept
+replace_last( StringT & text, FromT const & from, ToT const & to ) string_noexcept
 {
     return detail::replace_last( text, from, to );
 }
@@ -1090,21 +1137,21 @@ replaced_last( StringT & text, FromT const & from, ToT const & to ) string_noexc
 // replaced_last():
 
 template< typename CharT, typename FromT, typename ToT >
-string_nodiscard /*string_constexpr*/ std::basic_string<CharT>
+string_nodiscard string_constexpr std::basic_string<CharT>
 replaced_last( CharT const * text, FromT const & from, ToT const & to ) string_noexcept
 {
     std::basic_string<CharT> result( text );
 
-    return replaced_last( result, from, to );
+    return replace_last( result, from, to );
 }
 
 template< typename StringT, typename FromT, typename ToT >
-string_nodiscard /*string_constexpr*/ StringT
+string_nodiscard string_constexpr StringT
 replaced_last( StringT const & text, FromT const & from, ToT const & to ) string_noexcept
 {
     StringT result( text );
 
-    return replaced_last( result, from, to );
+    return replace_last( result, from, to );
 }
 
 // clear():
@@ -1174,6 +1221,67 @@ string_nodiscard StringT as_uppercase( StringT const & text ) string_noexcept
     to_uppercase( result );
     return result;
 }
+
+// append():
+
+template< typename CharT, typename TailT >
+string_constexpr CharT *
+append( CharT * text, TailT const & tail ) string_noexcept
+{
+    return detail::append( text, tail );
+}
+
+template< typename StringT, typename TailT >
+string_constexpr StringT &
+append( StringT & text, TailT const & tail ) string_noexcept
+{
+    return detail::append( text, tail );
+}
+
+// appended():
+
+template< typename StringT, typename TailT
+    string_ENABLE_IF_HAS_METHOD_(StringT, begin)
+>
+string_nodiscard string_constexpr StringT
+appended( StringT const & text, TailT const & tail ) string_noexcept
+{
+    StringT result( text );
+
+    return detail::append( result, tail );
+}
+
+// TODO join():
+
+// Note: add way to defined return type:
+
+template< typename Coll, typename SepT
+//    string_ENABLE_IF_( !std::is_pointer<typename Coll::value_type>::value )
+>
+string_nodiscard string_constexpr typename Coll::value_type
+join( Coll const & coll, SepT const & sep ) string_noexcept
+{
+    typename Coll::value_type result;
+
+    typename Coll::const_iterator const collbegin = detail::cbegin(coll);
+    typename Coll::const_iterator const collend   = detail::cend(coll);
+
+    for ( typename Coll::const_iterator pos = collbegin; pos != collend; ++pos )
+    {
+        if ( pos != collbegin )
+            append( result, sep );
+
+        append( result, *pos );
+    }
+
+    return result;
+}
+
+// TODO split():
+
+
+
+
 
 } // namespace string
 } // namespace nonstd

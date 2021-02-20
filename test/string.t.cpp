@@ -353,17 +353,17 @@ CASE( "replace_all: Change all occurrences of sub string - string-string_view" )
 
 // replaced_all():
 
-CASE( "replaced_all: Returns string with all occurrences of sub string changed - char*-char*" )
+CASE( "replaced_all: Return new string with all occurrences of sub string changed - char*-char*" )
 {
     EXPECT( replaced_all( "abc123mno123xyz", "123", "789") == std::string("abc789mno789xyz") );
 }
 
-CASE( "replaced_all: Returns string with all occurrences of sub string changed - string-string" )
+CASE( "replaced_all: Return new string with all occurrences of sub string changed - string-string" )
 {
     EXPECT( replaced_all( std::string("abc123mno123xyz"), std::string("123"), std::string("789") ) == std::string("abc789mno789xyz") );
 }
 
-CASE( "replaced_all: Returns string with all occurrences of sub string changed - string-string_view" )
+CASE( "replaced_all: Return new string with all occurrences of sub string changed - string-string_view" )
 {
 #if string_HAVE_STD_STRING_VIEW
     EXPECT( replaced_all( std::string("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
@@ -372,7 +372,7 @@ CASE( "replaced_all: Returns string with all occurrences of sub string changed -
 #endif
 }
 
-CASE( "replaced_all: Returns string with all occurrences of sub string changed - string_view-string_view" " [TODO]" )
+CASE( "replaced_all: Return new string with all occurrences of sub string changed - string_view-string_view" " [TODO]" )
 {
 #if string_HAVE_STD_STRING_VIEW
 // TODO : implement detail::replace_all(it...)
@@ -383,6 +383,15 @@ CASE( "replaced_all: Returns string with all occurrences of sub string changed -
 }
 
 // replace_first():
+
+CASE( "replace_first: Change the first occurrence of sub string - char*-char*" "[TODO]" )
+{
+    // char result[] = "abc123mno123xyz";
+
+    // (void) replace_first( result, "123", "789");
+
+    // EXPECT( result == std::string("abc789mno123xyz") );
+}
 
 CASE( "replace_first: Change the first occurrence of sub string - string-char*" )
 {
@@ -425,17 +434,17 @@ CASE( "replace_first: Change the first occurrence of sub string - string_view-st
 
 // replaced_first():
 
-CASE( "replaced_first: Returns string with first occurrence of sub string changed - char*-char*" )
+CASE( "replaced_first: Return new string with first occurrence of sub string changed - char*-char*" )
 {
     EXPECT( replaced_first( "abc123mno123xyz", "123", "789") == std::string("abc789mno123xyz") );
 }
 
-CASE( "replaced_first: Returns string with first occurrence of sub string changed - string-string" )
+CASE( "replaced_first: Return new string with first occurrence of sub string changed - string-string" )
 {
     EXPECT( replaced_first( std::string("abc123mno123xyz"), std::string("123"), std::string("789") ) == std::string("abc789mno123xyz") );
 }
 
-CASE( "replaced_first: Returns string with first occurrence of sub string changed - string-string_view" )
+CASE( "replaced_first: Return new string with first occurrence of sub string changed - string-string_view" )
 {
 #if string_HAVE_STD_STRING_VIEW
     EXPECT( replaced_first( std::string("abc123mno123xyz"), "123", "789") == std::string("abc789mno123xyz") );
@@ -444,7 +453,7 @@ CASE( "replaced_first: Returns string with first occurrence of sub string change
 #endif
 }
 
-CASE( "replaced_first: Returns string with first occurrence of sub string changed - string_view-string_view" " [TODO]" )
+CASE( "replaced_first: Return new string with first occurrence of sub string changed - string_view-string_view" " [TODO]" )
 {
 #if string_HAVE_STD_STRING_VIEW
 // TODO : implement detail::replaced_first(it...)
@@ -455,6 +464,15 @@ CASE( "replaced_first: Returns string with first occurrence of sub string change
 }
 
 // replace_last():
+
+CASE( "replace_last: Change the first occurrence of sub string - char*-char*" "[TODO]" )
+{
+    // char result[] = "abc123mno123xyz";
+
+    // (void) replace_last( result, "123", "789");
+
+    // EXPECT( result == std::string("abc789mno123xyz") );
+}
 
 CASE( "replace_last: Change the last occurrence of sub string - string-char*" )
 {
@@ -497,17 +515,17 @@ CASE( "replace_last: Change the last occurrence of sub string - string_view-stri
 
 // replaced_last():
 
-CASE( "replaced_last: Returns string with last occurrence of sub string changed - char*-char*" )
+CASE( "replaced_last: Return new string with last occurrence of sub string changed - char*-char*" )
 {
     EXPECT( replaced_last( "abc123mno123xyz", "123", "789") == std::string("abc123mno789xyz") );
 }
 
-CASE( "replaced_last: Returns string with last occurrence of sub string changed - string-string" )
+CASE( "replaced_last: Return new string with last occurrence of sub string changed - string-string" )
 {
     EXPECT( replaced_last( std::string("abc123mno123xyz"), std::string("123"), std::string("789") ) == std::string("abc123mno789xyz") );
 }
 
-CASE( "replaced_last: Returns string with last occurrence of sub string changed - string-string_view" )
+CASE( "replaced_last: Return new string with last occurrence of sub string changed - string-string_view" )
 {
 #if string_HAVE_STD_STRING_VIEW
     EXPECT( replaced_last( std::string("abc123mno123xyz"), "123", "789") == std::string("abc123mno789xyz") );
@@ -516,7 +534,7 @@ CASE( "replaced_last: Returns string with last occurrence of sub string changed 
 #endif
 }
 
-CASE( "replaced_last: Returns string with last occurrence of sub string changed - string_view-string_view" " [TODO]" )
+CASE( "replaced_last: Return new string with last occurrence of sub string changed - string_view-string_view" " [TODO]" )
 {
 #if string_HAVE_STD_STRING_VIEW
 // TODO : implement detail::replaced_last(it...)
@@ -568,7 +586,7 @@ CASE( "to_uppercase: Makes string uppercase - string" )
 
 // as_lowercase(), as_uppercase:
 
-CASE( "as_lowercase: Returns string in lowercase - string" )
+CASE( "as_lowercase: Return new string in lowercase - string" )
 {
     std::string ls( lstr() );
     std::string us( ustr() );
@@ -576,7 +594,7 @@ CASE( "as_lowercase: Returns string in lowercase - string" )
     EXPECT( as_lowercase(us) == ls );
 }
 
-CASE( "as_uppercase: Returns string in uppercase - string" )
+CASE( "as_uppercase: Return new string in uppercase - string" )
 {
     std::string ls( lstr() );
     std::string us( ustr() );
@@ -600,6 +618,87 @@ CASE( "clear: Makes string empty - string " "[unicode]" )
 #else
     EXPECT( !!"Unicode via CsString is not available (pre C++17)." );
 #endif
+}
+
+// append():
+
+CASE( "append: Append a string to a string in-place - char*-char* - Note: be careful!" )
+{
+    char pa[] = "abc\x00xxx";
+    char pb[] = "xyz";
+
+    EXPECT( std::string(append(pa, pb)) == std::string("abcxyz") );
+}
+
+CASE( "append: Append a string to a string in-place - string-char*" )
+{
+    std::string text("abc");
+
+    EXPECT( append(text, "xyz") == std::string("abcxyz") );
+}
+
+CASE( "append: Append a string to a string in-place - string-string" )
+{
+    std::string text("abc");
+
+    EXPECT( append(text, std::string("xyz")) == std::string("abcxyz") );
+}
+
+CASE( "append: Append a string to a string in-place - string-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+    std::string text("abc");
+
+    EXPECT( append(text, std::string_view("xyz")) == std::string("abcxyz") );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+// appended():
+
+CASE( "appended: Return new string with second string appended to first string - string-char*" )
+{
+    EXPECT( appended(std::string("abc"), "xyz") == std::string("abcxyz") );
+}
+
+CASE( "appended: Return new string with second string appended to first string - string-string" )
+{
+    EXPECT( appended(std::string("abc"), std::string("xyz")) == std::string("abcxyz") );
+}
+
+CASE( "appended: Return new string with second string appended to first string - string-string_view" )
+{
+#if string_HAVE_STD_STRING_VIEW
+    EXPECT( appended(std::string("abc"), std::string_view("xyz")) == std::string("abcxyz") );
+#else
+    EXPECT( !!"std::string_view is not available (pre C++17)." );
+#endif
+}
+
+// TODO join():
+
+CASE( "join: " "[TODO]" )
+{
+    std::vector<std::string> coll; coll.push_back("abc"); coll.push_back("def"); coll.push_back("ghi");
+
+    EXPECT( join( coll, "..") == "abc..def..ghi" );
+}
+
+// CASE( "join: " "[TODO]" )
+// {
+//     std::vector<char *> coll; coll.push_back("abc"); coll.push_back("def"); coll.push_back("ghi");
+
+//     EXPECT( join( coll, "..") == "abc..def..ghi" );
+// }
+
+// TODO split()
+
+CASE( "split: " "[TODO]" )
+{
+    std::vector<std::string> golden; golden.push_back("abc"); golden.push_back("def"); golden.push_back("ghi");
+
+    // EXPECT( split("abc..def..ghi", "..") == golden );
 }
 
 // TODO Unicode:
