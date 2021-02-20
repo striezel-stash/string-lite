@@ -1,4 +1,4 @@
-# string lite: string facilities for C++98 and later
+# string lite: string facilities for C++98 and later (In Progress)
 
 [![Language](https://img.shields.io/badge/C%2B%2B-98/11/14/17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/badge/license-BSL-blue.svg)](https://opensource.org/licenses/BSL-1.0) [![Build Status](https://travis-ci.org/martinmoene/string-lite.svg?branch=master)](https://travis-ci.org/martinmoene/string-lite) [![Build status](https://ci.appveyor.com/api/projects/status/1ha3wnxtam547m8p?svg=true)](https://ci.appveyor.com/project/martinmoene/string-lite) [![Version](https://badge.fury.io/gh/martinmoene%2Fstring-lite.svg)](https://github.com/martinmoene/string-lite/releases) [![download](https://img.shields.io/badge/latest-download-blue.svg)](https://github.com/martinmoene/string-lite/blob/master/include/nonstd/string.hpp) [![Conan](https://img.shields.io/badge/on-conan-blue.svg)](https://conan.io/center/string-lite) [![Try it on wandbox](https://img.shields.io/badge/on-wandbox-blue.svg)](https://wandbox.org/) [![Try it on godbolt online](https://img.shields.io/badge/on-godbolt-blue.svg)](https://godbolt.org/)
 
@@ -103,7 +103,7 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | StringT & **append**(StringT & s, TailT const & tail)       |&nbsp;|
 | &nbsp;             | StringT **appended**(StringT const & s, TailT const & tail) |&nbsp;|
 | &nbsp;             | StringT **join**(Coll const & coll, SepT const & sep)       |&nbsp;|
-| &nbsp;             | split()                                                     |&nbsp;|
+| &nbsp;             | **split**()                                                 |&nbsp;|
 
 Note: with `StringT const &` the string type can also be `string_view`.
 
@@ -125,3 +125,94 @@ Define this to 1 if you want to compile without exceptions. If not defined, the 
 ## Notes and references
 
 TODO
+
+Appendix
+--------
+
+<a id="a1"></a>
+### A.1 Compile-time information
+
+In the test runner, the version of *string-lite* is available via tag `[.version]`. The following tags are available for information on the compiler and on the C++ standard library used: `[.compiler]`, `[.stdc++]`, `[.stdlanguage]` and `[.stdlibrary]`.
+
+<a id="a2"></a>
+### A.2 *string-lite* test specification
+
+<details>
+<summary>click to expand</summary>
+<p>
+
+```
+string: Setting Windows console to print utf8 characters[unicode][windows]
+is_empty: true if string is empty - char *
+is_empty: true if string is empty - string
+contains: true if string contains sub string - string-char
+contains: true if string contains sub string - string-char*
+contains: true if string contains sub string - string-string
+contains: true if string contains sub string - string-string_view
+contains: true if string contains sub string - string_view-string_view
+contains: true if string contains regular expression - string-std::regexp
+contains_re: true if string contains regular expression - string-char*
+contains_re: true if string contains regular expression - string-string
+starts_with: true if string starts with sub string - string-char
+starts_with: true if string starts with sub string - string-char*
+starts_with: true if string starts with sub string - string-string
+starts_with: true if string starts with sub string - string-string_view
+starts_with: true if string starts with sub string - string_view-string_view
+ends_with: true if string ends with sub string - string-char
+ends_with: true if string ends with sub string - string-char*
+ends_with: true if string ends with sub string - string-string
+ends_with: true if string ends with sub string - string-string_view
+ends_with: true if string ends with sub string - string_view-string_view
+find_first: iterator to sub string in string - string-char*
+find_first: iterator to sub string in string - string-string
+find_first: iterator to sub string in string - string-string_view
+find_first: iterator to sub string in string_view - string_view-string_view
+find_last: iterator to sub string in string - string-char*
+find_last: iterator to sub string in string - string-string
+find_last: iterator to sub string in string - string-string_view
+find_last: iterator to sub string in string_view - string_view-string_view
+clear: Makes string empty - char *
+clear: Makes string empty - string
+replace_all: Change all occurrences of sub string - string-char*
+replace_all: Change all occurrences of sub string - string-string
+replace_all: Change all occurrences of sub string - string-string_view
+replaced_all: Return new string with all occurrences of sub string changed - char*-char*
+replaced_all: Return new string with all occurrences of sub string changed - string-string
+replaced_all: Return new string with all occurrences of sub string changed - string-string_view
+replaced_all: Return new string with all occurrences of sub string changed - string_view-string_view [TODO]
+replace_first: Change the first occurrence of sub string - char*-char*[TODO]
+replace_first: Change the first occurrence of sub string - string-char*
+replace_first: Change the first occurrence of sub string - string-string
+replace_first: Change the first occurrence of sub string - string-string_view
+replace_first: Change the first occurrence of sub string - string_view-string_view
+replaced_first: Return new string with first occurrence of sub string changed - char*-char*
+replaced_first: Return new string with first occurrence of sub string changed - string-string
+replaced_first: Return new string with first occurrence of sub string changed - string-string_view
+replaced_first: Return new string with first occurrence of sub string changed - string_view-string_view [TODO]
+replace_last: Change the first occurrence of sub string - char*-char*[TODO]
+replace_last: Change the last occurrence of sub string - string-char*
+replace_last: Change the last occurrence of sub string - string-string
+replace_last: Change the last occurrence of sub string - string-string_view
+replace_last: Change the last occurrence of sub string - string_view-string_view
+replaced_last: Return new string with last occurrence of sub string changed - char*-char*
+replaced_last: Return new string with last occurrence of sub string changed - string-string
+replaced_last: Return new string with last occurrence of sub string changed - string-string_view
+replaced_last: Return new string with last occurrence of sub string changed - string_view-string_view [TODO]
+to_lowercase: Makes string lowercase - char *
+to_uppercase: Makes string uppercase - char *
+to_lowercase: Makes string lowercase - string
+to_uppercase: Makes string uppercase - string
+as_lowercase: Return new string in lowercase - string
+as_uppercase: Return new string in uppercase - string
+clear: Makes string empty - string [unicode]
+append: Append a string to a string in-place - char*-char* - Note: be careful!
+append: Append a string to a string in-place - string-char*
+append: Append a string to a string in-place - string-string
+append: Append a string to a string in-place - string-string_view
+appended: Return new string with second string appended to first string - string-char*
+appended: Return new string with second string appended to first string - string-string
+appended: Return new string with second string appended to first string - string-string_view
+join: [TODO]
+split: [TODO]
+tweak header: Reads tweak header if supported [tweak]
+```
