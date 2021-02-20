@@ -127,6 +127,7 @@
 
 // Presence of C++14 language features:
 
+#define string_HAVE_CONSTEXPR_14            string_CPP14_000
 #define string_HAVE_FREE_BEGIN              string_CPP14_120
 
 // Presence of C++17 language features:
@@ -145,6 +146,12 @@
 # define string_constexpr constexpr
 #else
 # define string_constexpr /*constexpr*/
+#endif
+
+#if string_HAVE_CONSTEXPR_14
+# define string_constexpr14  constexpr
+#else
+# define string_constexpr14  /*constexpr*/
 #endif
 
 #if string_HAVE_NOEXCEPT && !string_CONFIG_NO_EXCEPTIONS
@@ -852,7 +859,7 @@ template< typename StringT, typename CharT
     string_DISABLE_IF_HAS_METHOD_(StringT, contains)
     string_ENABLE_IF_( std::is_arithmetic<CharT>::value )
 >
-string_nodiscard string_constexpr bool contains( StringT const & text, CharT seek ) string_noexcept
+string_nodiscard string_constexpr14 bool contains( StringT const & text, CharT seek ) string_noexcept
 {
     CharT look[] = { seek, nullchr<CharT>() };
     return detail::end( text ) != find_first( text, look );
@@ -924,7 +931,7 @@ template< typename StringT, typename CharT
     string_DISABLE_IF_HAS_METHOD_(StringT, starts_with)
     string_ENABLE_IF_( std::is_arithmetic<CharT>::value )
 >
-string_nodiscard string_constexpr bool starts_with( StringT const & text, CharT seek ) string_noexcept
+string_nodiscard string_constexpr14 bool starts_with( StringT const & text, CharT seek ) string_noexcept
 {
     CharT look[] = { seek, nullchr<CharT>() };
 
@@ -951,7 +958,7 @@ string_nodiscard string_constexpr bool starts_with( StringT const & text, char c
 }
 
 template< typename StringT >
-string_nodiscard string_constexpr bool starts_with( StringT const & text, char seek ) string_noexcept
+string_nodiscard string_constexpr14 bool starts_with( StringT const & text, char seek ) string_noexcept
 {
     char look[] = { seek, nullchr<char>() };
 
@@ -987,7 +994,7 @@ template< typename StringT, typename CharT
     string_DISABLE_IF_HAS_METHOD_(StringT, ends_with)
     string_ENABLE_IF_( std::is_arithmetic<CharT>::value )
 >
-string_nodiscard string_constexpr bool ends_with( StringT const & text, CharT seek ) string_noexcept
+string_nodiscard string_constexpr14 bool ends_with( StringT const & text, CharT seek ) string_noexcept
 {
     CharT look[] = { seek, nullchr<CharT>() };
 
