@@ -1265,7 +1265,7 @@ appended( StringT const & text, TailT const & tail ) string_noexcept
 template< typename Coll, typename SepT
 //    string_ENABLE_IF_( !std::is_pointer<typename Coll::value_type>::value )
 >
-string_nodiscard string_constexpr typename Coll::value_type
+string_nodiscard string_constexpr14 typename Coll::value_type
 join( Coll const & coll, SepT const & sep ) string_noexcept
 {
     typename Coll::value_type result;
