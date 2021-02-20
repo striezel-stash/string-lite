@@ -525,13 +525,15 @@ string_nodiscard inline size_t size( char const * s )
 // Note: serve both CharT* and StringT&:
 
 template< typename StringT, typename Fn >
-void to_case( StringT & text, Fn fn ) string_noexcept
+StringT & to_case( StringT & text, Fn fn ) string_noexcept
 {
     std::transform(
         detail::begin( text ), detail::end( text )
         , detail::begin( text )
         , fn
     );
+
+    return text;
 }
 
 // find_first():
@@ -1108,47 +1110,49 @@ replaced_last( StringT const & text, FromT const & from, ToT const & to ) string
 // clear():
 
 template< typename CharT >
-void clear( CharT * cp ) string_noexcept
+CharT * clear( CharT * cp ) string_noexcept
 {
     *cp = nullchr<CharT>();
+    return cp;
 }
 
 template< typename StringT
     string_ENABLE_IF_HAS_METHOD_(StringT, clear)
 >
-void clear( StringT & text ) string_noexcept
+StringT & clear( StringT & text ) string_noexcept
 {
     text.clear();
+    return text;
 }
 
 // to_lowercase(), to_uppercase():
 
 template< typename CharT >
-void to_lowercase( CharT * cp ) string_noexcept
+CharT * to_lowercase( CharT * cp ) string_noexcept
 {
-    detail::to_case( cp, detail::as_lowercase<CharT> );
+    return detail::to_case( cp, detail::as_lowercase<CharT> );
 }
 
 template< typename CharT >
-void to_uppercase( CharT * cp ) string_noexcept
+CharT * to_uppercase( CharT * cp ) string_noexcept
 {
-    detail::to_case( cp, detail::as_uppercase<CharT> );
+    return detail::to_case( cp, detail::as_uppercase<CharT> );
 }
 
 template< typename StringT
     string_ENABLE_IF_HAS_METHOD_(StringT, begin)
 >
-void to_lowercase( StringT & text ) string_noexcept
+StringT & to_lowercase( StringT & text ) string_noexcept
 {
-    detail::to_case( text, detail::as_lowercase<typename StringT::value_type> );
+    return detail::to_case( text, detail::as_lowercase<typename StringT::value_type> );
 }
 
 template< typename StringT
     string_ENABLE_IF_HAS_METHOD_(StringT, begin)
 >
-void to_uppercase( StringT & text ) string_noexcept
+StringT & to_uppercase( StringT & text ) string_noexcept
 {
-    detail::to_case( text, detail::as_uppercase<typename StringT::value_type> );
+    return detail::to_case( text, detail::as_uppercase<typename StringT::value_type> );
 }
 
 template< typename StringT
