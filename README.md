@@ -62,54 +62,65 @@ Note: this repository contains a copy of several files from the [CsString librar
 |--------------------|---------------------------------------------|-------|
 | **Type**           | **xxx**                                     | ... |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
-| **Free function**  | CharT **nullchr**()                         | null character of template type |
+| Utilities          | CharT **nullchr**()                         | null character of template type |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
-| Utilities          | size_t **size**(CharT * s)                  | length of C-string |
-| &nbsp;             | size_t **size**(CollT * c)                  | size of collection, C++string |
-| &nbsp;             | size_t **begin**(CharT * c)                 | iterator to C-string |
-| &nbsp;             | size_t **end**(CharT * c)                   | iterator past C-string |
-| &nbsp;             | size_t **cbegin**(CharT * c)                | const iterator to C-string |
-| &nbsp;             | size_t **cend**(CharT * c)                  | const iterator past C-string |
-| &nbsp;             | size_t **begin**(CollT * c)                 | iterator to collection, C++string |
-| &nbsp;             | size_t **end**(CollT * c)                   | iterator past collection, C++string |
-| &nbsp;             | size_t **cbegin**(CollT * c)                | const iterator to collection, C++string |
-| &nbsp;             | size_t **cend**(CollT * c)                  | const iterator past collection, C++string |
+| &nbsp;             | size_t **size**(CharT \* s)                 | length of C-string |
+| &nbsp;             | size_t **size**(CollT & c)                  | size of collection, C++string |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
-| Observers          | bool **is_empty**(CharT * s)                | true if C-string is empty |
+| &nbsp;             | CharT \* **begin**(CharT \* c)              | iterator to C-string |
+| &nbsp;             | CharT \* **end**(CharT \* c)                | iterator past C-string |
+| &nbsp;             | CharT const \* **cbegin**(CharT \* c)       | const iterator to C-string |
+| &nbsp;             | CharT const \* **cend**(CharT \* c)         | const iterator past C-string |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | CollT::iterator **begin**(CollT & c)        | iterator to collection, C++string |
+| &nbsp;             | CollT::iterator **end**(CollT & c)          | iterator past collection, C++string |
+| &nbsp;             | CollT::const_iterator **cbegin**(CollT & c) | const iterator to collection, C++string |
+| &nbsp;             | CollT::const_iterator **cend**(CollT & c)   | const iterator past collection, C++string |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
+| Observers          | bool **is_empty**(CharT \* s)               | true if C-string is empty |
 | &nbsp;             | bool **is_empty**(StringT const & s)        | true if string is empty |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | bool **contains**(StringT const & s, CharT chr) | true if string contains chr |
 | &nbsp;             | bool **contains**(StringT const & s, SubT const & substr) | true if string contains substring |
 | &nbsp;             | bool **contains**(StringT const & s, std::regex const & substr) | true if string contains regular expression |
 | &nbsp;             | bool **contains_re**(StringT const & s, ReT const & re) | true if string contains regular expression |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | bool **starts_with**(StringT const & s, CharT chr) | true if string starts with chr |
 | &nbsp;             | bool **starts_with**(StringT const & s, SubT const & substr) | true if string starts with substring |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | bool **ends_with**(StringT const & s, CharT chr) | true if string ends with chr |
 | &nbsp;             | bool **ends_with**(StringT const & s, SubT const & substr) | true if string ends with substring |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | Searching          | IterT **find_first**(StringT & s, SubT const & substr)       | provide iterator to substring |
 | &nbsp;             | IterT **find_first**(StringT const & s, SubT const & substr) | provide const iterator to substring |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | IterT **find_last**(StringT & s, SubT const & substr)        | provide iterator to substring |
 | &nbsp;             | IterT **find_last**(StringT const & s, SubT const & substr)  | provide const iterator to substring |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
-| Modifiers          | CharT * **clear**(CharT * s)                | make C-string empty |
+| Modifiers          | CharT \* **clear**(CharT \* s)              | make C-string empty |
 | &nbsp;             | StringT & **clear**(StringT & s)            | make string empty |
-| &nbsp;             | CharT * **to_lowercase**(CharT * p)         | convert C-string to lowercase |
-| &nbsp;             | CharT * **to_uppercase**(CharT * p)         | convert C-string to uppercase |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | CharT \* **to_lowercase**(CharT \* p)       | convert C-string to lowercase |
+| &nbsp;             | CharT \* **to_uppercase**(CharT \* p)       | convert C-string to uppercase |
 | &nbsp;             | StringT & **to_lowercase**(StringT & s)     | convert string to lowercase  |
 | &nbsp;             | StringT & **to_uppercase**(StringT & s)     | convert string to uppercase  |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | StringT **as_lowercase**(StringT const & s) | provide string converted to lowercase |
 | &nbsp;             | StringT **as_uppercase**(StringT const & s) | provide string converted to uppercase |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | StringT & **replace_all**(StringT & s, FromT const & from, ToT const to) |xxx |
 | &nbsp;             | StringT **replaced_all**(StringT const & s, FromT const & from, ToT const to) |xxx |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | StringT & **replace_first**(StringT & s, FromT const & from, ToT const to) |xxx |
 | &nbsp;             | StringT **replaced_first**(StringT const & s, FromT const & from, ToT const to) |xxx |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | StringT & **replace_last**(StringT & s, FromT const & from, ToT const to) |xxx |
 | &nbsp;             | StringT **replaced_last**(StringT const & s, FromT const & from, ToT const to) |xxx |
 | &nbsp;             | &nbsp;                                                      |&nbsp;|
-| Combining          | CharT * **append**(CharT * s, TailT const & tail)           |&nbsp;|
+| Combining          | CharT \* **append**(CharT \* s, TailT const & tail)         |&nbsp;|
 | &nbsp;             | StringT & **append**(StringT & s, TailT const & tail)       |&nbsp;|
 | &nbsp;             | StringT **appended**(StringT const & s, TailT const & tail) |&nbsp;|
+| &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | StringT **join**(Coll const & coll, SepT const & sep)       |&nbsp;|
 | &nbsp;             | **split**()                                                 |&nbsp;|
 
