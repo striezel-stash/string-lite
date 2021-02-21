@@ -415,6 +415,48 @@ string_nodiscard inline size_t size( wchar_t const * s )
 #if string_HAVE_CHAR16_T
 #endif
 
+// non-standard begin(), end() for char*:
+
+// TODO Add char16_t, char32_t, wchar_t variations - begin(), end()
+
+template< typename CharT >
+string_nodiscard inline CharT * begin( CharT * text )
+{
+    return text;
+}
+
+template< typename CharT >
+string_nodiscard inline CharT * end( CharT * text )
+{
+    return text + size( text );
+}
+
+template< typename CharT >
+string_nodiscard inline CharT const * begin( CharT const * text )
+{
+    return text;
+}
+
+template< typename CharT >
+string_nodiscard inline CharT const * end( CharT const * text )
+{
+    return text + size( text );
+}
+
+template< typename CharT >
+string_nodiscard inline CharT const * cbegin( CharT const * text )
+{
+    return text;
+}
+
+template< typename CharT >
+string_nodiscard inline CharT const * cend( CharT const * text )
+{
+    return text + size( text );
+}
+
+// standard begin() and end():
+
 #if string_HAVE_FREE_BEGIN
 
 using std::begin;
@@ -520,46 +562,6 @@ string_nodiscard inline typename StringT::const_reverse_iterator crend( StringT 
 
 #endif // string_CPP11_000
 #endif // string_HAVE_FREE_BEGIN
-
-// non-standard begin(), end() for char*:
-
-// TODO Add char16_t, char32_t, wchar_t variations - begin(), end()
-
-template< typename CharT >
-string_nodiscard inline CharT * begin( CharT * text )
-{
-    return text;
-}
-
-template< typename CharT >
-string_nodiscard inline CharT * end( CharT * text )
-{
-    return text + size( text );
-}
-
-template< typename CharT >
-string_nodiscard inline CharT const * begin( CharT const * text )
-{
-    return text;
-}
-
-template< typename CharT >
-string_nodiscard inline CharT const * end( CharT const * text )
-{
-    return text + size( text );
-}
-
-template< typename CharT >
-string_nodiscard inline CharT const * cbegin( CharT const * text )
-{
-    return text;
-}
-
-template< typename CharT >
-string_nodiscard inline CharT const * cend( CharT const * text )
-{
-    return text + size( text );
-}
 
 // namespace details:
 namespace detail {
