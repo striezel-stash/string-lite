@@ -64,6 +64,17 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | **Free function**  | CharT **nullchr**()                         | null character of template type |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
+| Utilities          | size_t **size**(CharT * s)                  | length of C-string |
+| &nbsp;             | size_t **size**(CollT * c)                  | size of collection, C++string |
+| &nbsp;             | size_t **begin**(CharT * c)                 | iterator to C-string |
+| &nbsp;             | size_t **end**(CharT * c)                   | iterator past C-string |
+| &nbsp;             | size_t **cbegin**(CharT * c)                | const iterator to C-string |
+| &nbsp;             | size_t **cend**(CharT * c)                  | const iterator past C-string |
+| &nbsp;             | size_t **begin**(CollT * c)                 | iterator to collection, C++string |
+| &nbsp;             | size_t **end**(CollT * c)                   | iterator past collection, C++string |
+| &nbsp;             | size_t **cbegin**(CollT * c)                | const iterator to collection, C++string |
+| &nbsp;             | size_t **cend**(CollT * c)                  | const iterator past collection, C++string |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
 | Observers          | bool **is_empty**(CharT * s)                | true if C-string is empty |
 | &nbsp;             | bool **is_empty**(StringT const & s)        | true if string is empty |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
