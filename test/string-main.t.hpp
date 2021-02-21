@@ -164,11 +164,30 @@ inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_it
 }
 #endif // string_HAVE_STD_STRING_VIEW
 
+template< typename T >
+inline std::ostream & operator<< ( std::ostream & os, std::vector<T> vec )
+{
+    os << "[vector:";
+
+    for ( typename std::vector<T>::const_iterator pos = vec.begin(); pos != vec.end(); ++pos )
+    {
+        os << " '" << *pos << "'";
+    }
+    return os << "]";
+}
+
+template< typename T >
+inline bool operator==( std::vector<T> const & a, std::vector<T> const & b )
+{
+    return false;
+}
+
 } // namespace nonstd
 
 namespace lest {
 
 using ::nonstd::operator<<;
+using ::nonstd::operator==;
 
 } // namespace lest
 

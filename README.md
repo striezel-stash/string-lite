@@ -30,9 +30,9 @@ prompt >g++ -std=c++11 -Wall -I../include -o 01-basic.exe 01-basic.cpp && 01-bas
 
 ## In a nutshell
 
-**string lite** is a single-file header-only library to provide various string algorithms.
+**string lite** is a single-file header-only library to provide various string algorithms. Firstly meant to get you up and running easily, not necessarily to provide everything that might be useful and in the most efficient manner.
 
-*string lite* is inspired on...
+Creating *string lite* I've had a look at the [C++ standard](https://eel.is/c++draft/#strings), [Boost](https://www.boost.org/doc/libs/1_60_0/doc/html/string_algo.html), [Facebook Folly](https://github.com/facebook/folly/blob/master/folly/String.h), the [Python standard library](https://docs.python.org/3/library/string.html) and several algorithms I created over time.
 
 **Features and properties of string lite** are ease of installation (single header), freedom of dependencies other than the standard library.
 
@@ -57,9 +57,6 @@ Note: this repository contains a copy of several files from the [CsString librar
 [Configuration](#configuration)  
 
 ### Documentation of `nonstd::string`
-
-
-### API
 
 | Kind               | Type or function                            | Notes |
 |--------------------|---------------------------------------------|-------|
@@ -119,7 +116,7 @@ If the compiler supports [`__has_include()`](https://en.cppreference.com/w/cpp/p
 Define this macro to override the auto-detection of the supported C++ standard, if your compiler does not set the `__cplusplus` macro correctly.
 
 #### Disable exceptions
--D<b>optional_CONFIG_NO_EXCEPTIONS</b>=0
+-D<b>string_CONFIG_NO_EXCEPTIONS</b>=0
 Define this to 1 if you want to compile without exceptions. If not defined, the header tries and detect if exceptions have been disabled (e.g. via `-fno-exceptions`). Default is undefined.
 
 ## Notes and references
@@ -204,7 +201,6 @@ to_lowercase: Makes string lowercase - string
 to_uppercase: Makes string uppercase - string
 as_lowercase: Return new string in lowercase - string
 as_uppercase: Return new string in uppercase - string
-clear: Makes string empty - string [unicode]
 append: Append a string to a string in-place - char*-char* - Note: be careful!
 append: Append a string to a string in-place - string-char*
 append: Append a string to a string in-place - string-string
@@ -214,5 +210,6 @@ appended: Return new string with second string appended to first string - string
 appended: Return new string with second string appended to first string - string-string_view
 join: [TODO]
 split: [TODO]
+clear: Makes string empty - string [unicode]
 tweak header: Reads tweak header if supported [tweak]
 ```

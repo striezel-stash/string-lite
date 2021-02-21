@@ -116,6 +116,8 @@
 #define string_CPP17_120  (string_CPP17_OR_GREATER || string_COMPILER_MSVC_VER >= 1800)
 #define string_CPP17_140  (string_CPP17_OR_GREATER || string_COMPILER_MSVC_VER >= 1900)
 
+#define string_CPP20_000  (string_CPP20_OR_GREATER)
+
 // Presence of C++11 language features:
 
 #define string_HAVE_FREE_BEGIN              string_CPP14_120
@@ -124,6 +126,8 @@
 #define string_HAVE_NULLPTR                 string_CPP11_100
 #define string_HAVE_DEFAULT_FN_TPL_ARGS     string_CPP11_120
 #define string_HAVE_EXPLICIT_CONVERSION     string_CPP11_120
+#define string_HAVE_CHAR16_T                string_CPP11_000
+#define string_HAVE_CHAR32_T                string_HAVE_CHAR16_T
 
 // Presence of C++14 language features:
 
@@ -134,6 +138,10 @@
 
 #define string_HAVE_FREE_SIZE               string_CPP17_140
 #define string_HAVE_NODISCARD               string_CPP17_000
+
+// Presence of C++20 language features:
+
+#define string_HAVE_CHAR8_T                 string_CPP20_000
 
 // Presence of C++ library features:
 
@@ -219,6 +227,7 @@
 #include <iterator>
 #include <locale>
 #include <string>
+#include <vector>
 
 #if string_HAVE_REGEX
 # include <regex>
@@ -357,11 +366,54 @@ string_MAKE_HAS_METHOD_( replace )
 
 // string-lite API functions:
 
-namespace detail {
+// Utilities:
 
-// for string_ENABLE_IF_():
+template< typename CharT >
+string_nodiscard CharT nullchr() string_noexcept
+{
+    return 0;
+}
 
-/*enum*/ class enabler{};
+#if string_HAVE_FREE_SIZE
+
+using std::size;
+
+#else // string_HAVE_FREE_SIZE
+
+template< typename Cont >
+string_nodiscard inline size_t size( Cont const & c )
+{
+    return c.size();
+}
+
+#endif // string_HAVE_FREE_SIZE
+
+// nonstd size(C-string)
+
+// TODO Add char16_t, char32_t, wchar_t variations - size()
+
+string_nodiscard inline size_t size( char * s )
+{
+    return strlen( s );
+}
+
+string_nodiscard inline size_t size( char const * s )
+{
+    return strlen( s );
+}
+
+string_nodiscard inline size_t size( wchar_t * s )
+{
+    return wcslen( s );
+}
+
+string_nodiscard inline size_t size( wchar_t const * s )
+{
+    return wcslen( s );
+}
+
+#if string_HAVE_CHAR16_T
+#endif
 
 #if string_HAVE_FREE_BEGIN
 
@@ -471,6 +523,8 @@ string_nodiscard inline typename StringT::const_reverse_iterator crend( StringT 
 
 // non-standard begin(), end() for char*:
 
+// TODO Add char16_t, char32_t, wchar_t variations - begin(), end()
+
 template< typename CharT >
 string_nodiscard inline CharT * begin( CharT * text )
 {
@@ -480,7 +534,7 @@ string_nodiscard inline CharT * begin( CharT * text )
 template< typename CharT >
 string_nodiscard inline CharT * end( CharT * text )
 {
-    return std::strchr( text, '\0' );
+    return text + size( text );
 }
 
 template< typename CharT >
@@ -492,7 +546,7 @@ string_nodiscard inline CharT const * begin( CharT const * text )
 template< typename CharT >
 string_nodiscard inline CharT const * end( CharT const * text )
 {
-    return std::strchr( text, '\0' );
+    return text + size( text );
 }
 
 template< typename CharT >
@@ -504,8 +558,15 @@ string_nodiscard inline CharT const * cbegin( CharT const * text )
 template< typename CharT >
 string_nodiscard inline CharT const * cend( CharT const * text )
 {
-    return std::strchr( text, '\0' );
+    return text + size( text );
 }
+
+// namespace details:
+namespace detail {
+
+// for string_ENABLE_IF_():
+
+/*enum*/ class enabler{};
 
 template< typename CharT >
 string_nodiscard inline CharT as_lowercase( CharT chr )
@@ -519,27 +580,6 @@ string_nodiscard inline CharT as_uppercase( CharT chr )
     return std::toupper( chr, std::locale() );
 }
 
-#if string_HAVE_FREE_SIZE
-
-using std::size;
-
-#else // string_HAVE_FREE_SIZE
-
-template< typename Cont >
-string_nodiscard inline size_t size( Cont const & c )
-{
-    return c.size();
-}
-
-#endif // string_HAVE_FREE_SIZE
-
-// nonstd size(C-string)
-
-string_nodiscard inline size_t size( char const * s )
-{
-    return std::strlen( s );
-}
-
 // case conversion:
 
 // Note: serve both CharT* and StringT&:
@@ -548,8 +588,8 @@ template< typename StringT, typename Fn >
 StringT & to_case( StringT & text, Fn fn ) string_noexcept
 {
     std::transform(
-        detail::begin( text ), detail::end( text )
-        , detail::begin( text )
+        string::begin( text ), string::end( text )
+        , string::begin( text )
         , fn
     );
 
@@ -562,8 +602,8 @@ template< typename StringT, typename SubT >
 typename StringT::iterator find_first( StringT & text, SubT const & seek )
 {
     return std::search(
-        detail::begin(text), detail::end(text)
-        , detail::cbegin(seek), detail::cend(seek)
+        string::begin(text), string::end(text)
+        , string::cbegin(seek), string::cend(seek)
     );
 }
 
@@ -571,8 +611,8 @@ template< typename StringT, typename SubT >
 typename StringT::const_iterator find_first( StringT const & text, SubT const & seek )
 {
     return std::search(
-        detail::cbegin(text), detail::cend(text)
-        , detail::cbegin(seek), detail::cend(seek)
+        string::cbegin(text), string::cend(text)
+        , string::cbegin(seek), string::cend(seek)
     );
 }
 
@@ -608,8 +648,8 @@ template< typename StringT, typename SubT, typename PredicateT >
 typename StringT::iterator find_last( StringT & text, SubT const & seek, PredicateT compare )
 {
     return detail::find_last(
-        detail::begin(text), detail::end(text)
-        , detail::cbegin(seek), detail::cend(seek)
+        string::begin(text), string::end(text)
+        , string::cbegin(seek), string::cend(seek)
         , compare
     );
 }
@@ -618,8 +658,8 @@ template< typename StringT, typename SubT, typename PredicateT >
 typename StringT::const_iterator find_last( StringT const & text, SubT const & seek, PredicateT compare )
 {
     return detail::find_last(
-        detail::cbegin(text), detail::cend(text)
-        , detail::cbegin(seek), detail::cend(seek)
+        string::cbegin(text), string::cend(text)
+        , string::cbegin(seek), string::cend(seek)
         , compare
     );
 }
@@ -642,8 +682,8 @@ template< typename StringT, typename SubT, typename PredicateT >
 bool starts_with( StringT const & text, SubT const & seek, PredicateT compare )
 {
     return detail::starts_with(
-        detail::cbegin(text), detail::cend(text)
-        , detail::cbegin(seek), detail::cend(seek)
+        string::cbegin(text), string::cend(text)
+        , string::cbegin(seek), string::cend(seek)
         , compare
     );
 }
@@ -654,8 +694,8 @@ template< typename StringT, typename SubT, typename PredicateT >
 bool ends_with( StringT const & text, SubT const & seek, PredicateT compare )
 {
     return detail::starts_with(
-        detail::crbegin(text), detail::crend(text)
-        , detail::crbegin(seek), detail::crend(seek)
+        string::crbegin(text), string::crend(text)
+        , string::crbegin(seek), string::crend(seek)
         , compare
     );
 }
@@ -696,9 +736,9 @@ StringT & replace_all( StringT & text, FromT const & from, ToT const & to ) stri
     typedef typename StringT::value_type A;
 
     (void) detail::replace_all(
-        detail::begin(text), detail::end(text)
-        , detail::cbegin(from), detail::cend(from)
-        , detail::cbegin(to), detail::cend(to)
+        string::begin(text), string::end(text)
+        , string::cbegin(from), string::cend(from)
+        , string::cbegin(to), string::cend(to)
         , std::equal_to<A>()
     );
 
@@ -754,14 +794,6 @@ append( std::basic_string<CharT> & text, TailT const & tail ) string_noexcept
 
 
 } // namespace detail
-
-// Utilities:
-
-template< typename CharT >
-string_nodiscard CharT nullchr() string_noexcept
-{
-    return 0;
-}
 
 // Observers:
 
@@ -852,7 +884,7 @@ template< typename StringT, typename SubT
 >
 string_nodiscard string_constexpr bool contains( StringT const & text, SubT const & seek ) string_noexcept
 {
-    return detail::end( text ) != find_first( text, seek );
+    return string::end( text ) != find_first( text, seek );
 }
 
 template< typename StringT, typename CharT
@@ -862,7 +894,7 @@ template< typename StringT, typename CharT
 string_nodiscard string_constexpr14 bool contains( StringT const & text, CharT seek ) string_noexcept
 {
     CharT look[] = { seek, nullchr<CharT>() };
-    return detail::end( text ) != find_first( text, look );
+    return string::end( text ) != find_first( text, look );
 }
 
 #else // string_TEST_STRING_CONTAINS
@@ -870,20 +902,20 @@ string_nodiscard string_constexpr14 bool contains( StringT const & text, CharT s
 template< typename StringT, typename SubT >
 string_nodiscard string_constexpr bool contains( StringT const & text, SubT const & seek ) string_noexcept
 {
-    return detail::cend( text ) != find_first( text, seek );
+    return string::cend( text ) != find_first( text, seek );
 }
 
 template< typename StringT >
 string_nodiscard string_constexpr bool contains( StringT const & text, char const * seek ) string_noexcept
 {
-    return detail::cend( text ) != find_first( text, seek );
+    return string::cend( text ) != find_first( text, seek );
 }
 
 template< typename StringT >
 string_nodiscard string_constexpr bool contains( StringT const & text, char seek ) string_noexcept
 {
     char look[] = { seek, nullchr<char>() };
-    return detail::cend( text ) != find_first( text, look );
+    return string::cend( text ) != find_first( text, look );
 }
 
 #endif // string_TEST_STRING_CONTAINS
@@ -1265,20 +1297,25 @@ appended( StringT const & text, TailT const & tail ) string_noexcept
 template< typename Coll, typename SepT
 //    string_ENABLE_IF_( !std::is_pointer<typename Coll::value_type>::value )
 >
-string_nodiscard string_constexpr14 typename Coll::value_type
+string_nodiscard string_constexpr14
+typename Coll::value_type
 join( Coll const & coll, SepT const & sep ) string_noexcept
 {
     typename Coll::value_type result;
 
-    typename Coll::const_iterator const collbegin = detail::cbegin(coll);
-    typename Coll::const_iterator const collend   = detail::cend(coll);
+    typename Coll::const_iterator const coll_begin = string::cbegin(coll);
+    typename Coll::const_iterator const coll_end   = string::cend(coll);
 
-    for ( typename Coll::const_iterator pos = collbegin; pos != collend; ++pos )
+    typename Coll::const_iterator pos = coll_begin;
+
+    if ( pos != coll_end )
     {
-        if ( pos != collbegin )
-            append( result, sep );
+        append( result, *pos++ );
+    }
 
-        append( result, *pos );
+    for ( ; pos != coll_end; ++pos )
+    {
+        append( append( result,  sep ), *pos );
     }
 
     return result;
@@ -1286,9 +1323,30 @@ join( Coll const & coll, SepT const & sep ) string_noexcept
 
 // TODO split():
 
+template< typename StringT, typename SepT >
+string_nodiscard string_constexpr14
+std::vector< StringT >
+split( StringT const & text, SepT const & sep ) string_noexcept
+{
+    // const auto text_end = cend( text );
 
+    // auto last_pos = cbegin( text );
+    // auto pos = find_first( text, sep );
 
+    std::vector< StringT > result;
 
+    result.push_back( "///" );
+
+    // for ( ; pos != text_end; )
+    // {
+    //     result.push_back( StringT(last_pos, pos) );
+
+    //     pos_prev = pos;
+    //     pos = find_first( text, sep )
+    // }
+
+    return result;
+}
 
 } // namespace string
 } // namespace nonstd

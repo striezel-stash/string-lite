@@ -602,24 +602,6 @@ CASE( "as_uppercase: Return new string in uppercase - string" )
     EXPECT( as_uppercase(ls) == us );
 }
 
-// clear():
-
-CASE( "clear: Makes string empty - string " "[unicode]" )
-{
-#if string_HAS_CSSTRING
-    CsString::CsString s( "α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ ς σ τ υ φ χ ψ ω" );
-
-    EXPECT( s  == s );
-
-    clear( s );
-
-    EXPECT( s  == "" );
-    EXPECT( s.length() == 0u );
-#else
-    EXPECT( !!"Unicode via CsString is not available (pre C++17)." );
-#endif
-}
-
 // append():
 
 CASE( "append: Append a string to a string in-place - char*-char* - Note: be careful!" )
@@ -680,7 +662,10 @@ CASE( "appended: Return new string with second string appended to first string -
 
 CASE( "join: " "[TODO]" )
 {
-    std::vector<std::string> coll; coll.push_back("abc"); coll.push_back("def"); coll.push_back("ghi");
+    std::vector<std::string> coll;
+    coll.push_back("abc");
+    coll.push_back("def");
+    coll.push_back("ghi");
 
     EXPECT( join( coll, "..") == "abc..def..ghi" );
 }
@@ -696,14 +681,55 @@ CASE( "join: " "[TODO]" )
 
 CASE( "split: " "[TODO]" )
 {
-    std::vector<std::string> golden; golden.push_back("abc"); golden.push_back("def"); golden.push_back("ghi");
+    std::vector<std::string> golden;
+    golden.push_back("abc");
+    golden.push_back("def");
+    golden.push_back("ghi");
 
-    // EXPECT( split("abc..def..ghi", "..") == golden );
+    // EXPECT( split(std::string("abc..def..ghi"), std::string("..")) == golden );
 }
 
 // TODO Unicode:
 
-CASE( "to_upper: Makes string uppercase - string " "[unicode][.todo]" )
+// clear():
+
+CASE( "clear: Makes string empty - string " "[unicode]" )
+{
+#if string_HAS_CSSTRING
+    CsString::CsString s( "α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ ς σ τ υ φ χ ψ ω" );
+
+    EXPECT( s  == s );
+
+    clear( s );
+
+    EXPECT( s  == "" );
+    EXPECT( s.length() == 0u );
+#else
+    EXPECT( !!"Unicode via CsString is not available (pre C++17)." );
+#endif
+}
+
+CASE( "to_lowercase: Makes string lowercase - string " "[unicode][.todo]" )
+{
+#if string_HAS_CSSTRING
+    // el_EU ISO-8859-7x   Greek language locale for Europe (Euro symbol added)
+    // el_GR ISO-8859-7    Greek language locale for Greece
+
+    // std::locale::global(std::locale("el_GR"));
+
+    CsString::CsString ls( "α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ τ υ φ χ ψ ω" );
+    CsString::CsString us( "Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω" );
+    CsString::CsString  s( us );
+
+    // to_lowercase( s );
+
+    EXPECT( s == ls );
+#else
+    EXPECT( !!"Unicode via CsString is not available (pre C++17)." );
+#endif
+}
+
+CASE( "to_uppercase: Makes string uppercase - string " "[unicode][.todo]" )
 {
 #if string_HAS_CSSTRING
     // el_EU ISO-8859-7x   Greek language locale for Europe (Euro symbol added)
@@ -715,7 +741,7 @@ CASE( "to_upper: Makes string uppercase - string " "[unicode][.todo]" )
     CsString::CsString us( "Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω" );
     CsString::CsString  s( ls );
 
-    // to_upper( s );
+    // to_uppercase( s );
 
     EXPECT( s == us );
 #else
