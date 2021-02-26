@@ -127,8 +127,8 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | StringT **appended**(StringT const & s, TailT const & tail) |&nbsp;|
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | StringT **join**(Coll const & coll, SepT const & sep)       |&nbsp;|
-| &nbsp;             | **split**(string_view text, Delimiter d)    |&nbsp;|
-| &nbsp;             | **split**(string_view text, char const * d) |&nbsp;|
+| &nbsp;             | std::vector&lt;string_view&gt; **split**(string_view text, Delimiter d)    |&nbsp;|
+| &nbsp;             | std::vector&lt;string_view&gt; **split**(string_view text, char const * d) |&nbsp;|
 
 Note: with `StringT const &` the string type can also be `string_view`.
 
