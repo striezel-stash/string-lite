@@ -34,15 +34,17 @@
 
 #include <iostream>
 
-#if string_CPP17_OR_GREATER && defined(__has_include )
-# if __has_include( <string_view> )
-#  define string_HAVE_STD_STRING_VIEW  1
-# else
-#  define string_HAVE_STD_STRING_VIEW  0
-# endif
-#else
+// #if string_CPP17_OR_GREATER && defined(__has_include )
+// # if __has_include( <string_view> )
+// #  define string_HAVE_STD_STRING_VIEW  1
+// # else
+// #  define string_HAVE_STD_STRING_VIEW  0
+// # endif
+// #else
+// # define  string_HAVE_STD_STRING_VIEW  0
+// #endif
+
 # define  string_HAVE_STD_STRING_VIEW  0
-#endif
 
 // String to use with iterators:
 
@@ -65,6 +67,18 @@ inline std::string_view text_view()
 }
 
 inline std::string_view::const_iterator text_view_end()
+{
+    return text_view().end();
+}
+
+#else
+
+inline nonstd::string::string_view text_view()
+{
+    return { text().c_str(), text().length() };
+}
+
+inline nonstd::string::string_view::const_iterator text_view_end()
 {
     return text_view().end();
 }
@@ -146,6 +160,45 @@ inline std::ostream & operator<< ( std::ostream & os, std::string::const_iterato
     return os << "\"";
 }
 
+namespace string {
+
+inline std::ostream & operator<< ( std::ostream & os, string_view sv )
+{
+    return os << to_string(sv);
+}
+
+// inline std::ostream & operator<< ( std::ostream & os, string_view::const_iterator pos )
+// {
+//     // return os << "[it-sv]";
+
+//     if ( pos == text_view_end() )
+//         return os << "[end-sv]";
+
+//     os << "\"";
+//     for ( ; pos != text_view_end(); ++pos )
+//     {
+//         os << *pos;
+//     }
+//     return os << "\"";
+// }
+
+inline bool operator==( string_view const & a, std::string const & b )
+{
+    return std::string(a.begin(), a.end()) == b;
+}
+
+inline bool operator==( std::vector<string_view> const & a, std::vector<std::string> const & b )
+{
+    return std::equal( a.begin(), a.end(), b.begin() );
+}
+
+inline bool operator==( std::vector<std::string> const & a, std::vector<string_view> const & b )
+{
+    return b == a;
+}
+
+} // namespace string
+
 #if string_HAVE_STD_STRING_VIEW && _MSC_VER
 
 inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_iterator pos )
@@ -179,17 +232,32 @@ inline std::ostream & operator<< ( std::ostream & os, std::vector<T> vec )
 template< typename T >
 inline bool operator==( std::vector<T> const & a, std::vector<T> const & b )
 {
-    return false;
+    return std::equal( a.begin(), a.end(), b.begin() );
 }
+
+// inline bool operator==( std::vector<std::string> const & a, std::vector<std::string> const & b )
+// {
+//     return false;
+// }
 
 } // namespace nonstd
 
 namespace lest {
 
 using ::nonstd::operator<<;
-using ::nonstd::operator==;
+// using ::nonstd::operator==;
+using ::nonstd::string::operator<<;
+// using ::nonstd::string::operator==;
 
 } // namespace lest
+
+namespace std {
+
+using ::nonstd::operator<<;
+using ::nonstd::string::operator<<;
+
+}
+
 
 #include "lest_cpp03.hpp"
 

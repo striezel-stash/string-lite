@@ -374,6 +374,22 @@ string_nodiscard CharT nullchr() string_noexcept
     return 0;
 }
 
+// free function min():
+
+template< typename T >
+inline T min(T a, T b)
+{
+    return a < b ? a : b;
+}
+
+// free function length():
+
+template< typename Coll >
+string_nodiscard size_t length( Coll const & coll )
+{
+    return coll.length();
+}
+
 #if string_HAVE_FREE_SIZE
 
 using std::size;
@@ -562,6 +578,154 @@ string_nodiscard inline typename StringT::const_reverse_iterator crend( StringT 
 
 #endif // string_CPP11_000
 #endif // string_HAVE_FREE_BEGIN
+
+// Minimal string_view for string algorithm library:
+
+template
+<
+    class CharT,
+    class Traits = std::char_traits<CharT>
+>
+class basic_string_view
+{
+public:
+    // Member types:
+
+    typedef Traits traits_type;
+    typedef CharT  value_type;
+
+    typedef CharT       * pointer;
+    typedef CharT const * const_pointer;
+    typedef CharT       & reference;
+    typedef CharT const & const_reference;
+
+    typedef const_pointer iterator;
+    typedef const_pointer const_iterator;
+    typedef std::reverse_iterator< const_iterator > reverse_iterator;
+    typedef	std::reverse_iterator< const_iterator > const_reverse_iterator;
+
+    typedef std::size_t     size_type;
+    typedef std::ptrdiff_t  difference_type;
+
+    // 24.4.2.1 Construction and assignment:
+
+    string_constexpr basic_string_view() string_noexcept
+        : data_( string_nullptr )
+        , size_( 0 )
+    {}
+
+    string_constexpr basic_string_view( CharT const * s ) string_noexcept // non-standard noexcept
+        : data_( s )
+        , size_( Traits::length(s) )
+    {}
+
+    string_constexpr basic_string_view( CharT const * s, size_type count ) string_noexcept // non-standard noexcept
+        : data_( s )
+        , size_( count )
+    {}
+
+    string_constexpr basic_string_view( CharT const * b, CharT const * e ) string_noexcept // non-standard noexcept
+        : data_( b )
+        , size_( e - b )
+    {}
+
+    string_constexpr basic_string_view( std::basic_string<CharT> & s ) string_noexcept // non-standard noexcept
+        : data_( s.data() )
+        , size_( s.size() )
+    {}
+
+    string_constexpr basic_string_view( std::basic_string<CharT> const & s ) string_noexcept // non-standard noexcept
+        : data_( s.data() )
+        , size_( s.size() )
+    {}
+
+    string_constexpr14 size_type find( basic_string_view v, size_type pos = 0 ) const string_noexcept  // (1)
+    {
+        return assert( v.size() == 0 || v.data() != string_nullptr )
+            , pos >= size()
+            ? npos
+            : to_pos( std::search( cbegin() + pos, cend(), v.cbegin(), v.cend(), Traits::eq ) );
+    }
+
+    string_constexpr14 size_type find( CharT c, size_type pos = 0 ) const string_noexcept  // (2)
+    {
+        return find( basic_string_view( &c, 1 ), pos );
+    }
+
+    string_constexpr size_type find_first_of( basic_string_view v, size_type pos = 0 ) const string_noexcept  // (1)
+    {
+        return pos >= size()
+            ? npos
+            : to_pos( std::find_first_of( cbegin() + pos, cend(), v.cbegin(), v.cend(), Traits::eq ) );
+    }
+
+    string_constexpr size_type     size()   const string_noexcept { return size_; }
+    string_constexpr size_type     length() const string_noexcept { return size_; }
+    string_constexpr const_pointer data()   const string_noexcept { return data_; }
+
+    string_constexpr14 basic_string_view substr( size_type pos = 0, size_type n = npos ) const
+    {
+#if string_CONFIG_NO_EXCEPTIONS
+        assert( pos <= size() );
+#else
+        if ( pos > size() )
+        {
+            throw std::out_of_range("string_view::substr()");
+        }
+#endif
+        return basic_string_view( data() + pos, (std::min)( n, size() - pos ) );
+    }
+
+    string_constexpr const_iterator begin()  const string_noexcept { return data_;         }
+    string_constexpr const_iterator end()    const string_noexcept { return data_ + size_; }
+
+    string_constexpr const_iterator cbegin() const string_noexcept { return begin(); }
+    string_constexpr const_iterator cend()   const string_noexcept { return end();   }
+
+    string_constexpr size_type to_pos( const_iterator it ) const
+    {
+        return it == cend() ? npos : size_type( it - cbegin() );
+    }
+
+    // Constants:
+
+#if string_CPP17_OR_GREATER
+    static string_constexpr size_type npos = size_type(-1);
+#elif string_CPP11_OR_GREATER
+    enum : size_type { npos = size_type(-1) };
+#else
+    enum { npos = size_type(-1) };
+#endif
+
+private:
+    const_pointer data_;
+    size_type     size_;
+};
+
+typedef basic_string_view<char>      string_view;
+typedef basic_string_view<wchar_t>   wstring_view;
+
+#if string_HAVE_CHAR16_T
+
+typedef basic_string_view<char16_t>  u16string_view;
+typedef basic_string_view<char32_t>  u32string_view;
+#endif
+
+// Convert string_view to std::string:
+
+template< class CharT, class Traits >
+std::basic_string<CharT, Traits>
+to_string( basic_string_view<CharT, Traits> v )
+{
+    return std::basic_string<CharT, Traits>( v.begin(), v.end() );
+}
+
+template< class CharT, class Traits, class Allocator >
+std::basic_string<CharT, Traits, Allocator>
+to_string( basic_string_view<CharT, Traits> v, Allocator const & a )
+{
+    return std::basic_string<CharT, Traits, Allocator>( v.begin(), v.end(), a );
+}
 
 // namespace details:
 namespace detail {
@@ -1325,31 +1489,367 @@ join( Coll const & coll, SepT const & sep ) string_noexcept
 
 // TODO split():
 
-template< typename StringT, typename SepT >
-string_nodiscard string_constexpr14
-std::vector< StringT >
-split( StringT const & text, SepT const & sep ) string_noexcept
+// Various kinds of delimiters:
+// - literal_delimiter - a single string delimiter
+// - any_of_delimiter - any of given characters as delimiter
+// - fixed_delimiter - fixed length delimiter
+// - limit_delimiter - not implemented
+// - regex_delimiter - regular expression delimiter
+// - char_delimiter - single-char delimiter
+
+// a single string delimiter:
+
+template< typename CharT >
+class basic_literal_delimiter
 {
-    // const auto text_end = cend( text );
+    const std::basic_string<CharT> delimiter_;
 
-    // auto last_pos = cbegin( text );
-    // auto pos = find_first( text, sep );
+public:
+    explicit basic_literal_delimiter(basic_string_view<CharT> sv)
+        : delimiter_(to_string(sv))
+    {}
 
-    std::vector< StringT > result;
+    size_t length() const
+    {
+        return delimiter_.length();
+    }
 
-    result.push_back( "///" );
+    basic_string_view<CharT> operator()(basic_string_view<CharT> text, size_t pos) const
+    {
+        return find(text, pos);
+    }
 
-    // for ( ; pos != text_end; )
-    // {
-    //     result.push_back( StringT(last_pos, pos) );
+    basic_string_view<CharT> find(basic_string_view<CharT> text, size_t pos) const
+    {
+        // out of range, return 'done':
+        if ( pos > text.length())
+            return basic_string_view<CharT>(text.cend(), size_t(0));
 
-    //     pos_prev = pos;
-    //     pos = find_first( text, sep )
-    // }
+        // a single character at a time:
+        if (0 == delimiter_.length())
+        {
+            return text.substr(pos, 1);
+        }
+
+        size_t found = text.find(delimiter_, pos);
+
+        // at a delimiter, or searching past the last delimiter:
+        if (found == pos || pos == text.length())
+        {
+            return basic_string_view<CharT>();
+        }
+
+        // no delimiter found:
+        if (found == basic_string_view<CharT>::npos)
+        {
+            // return remaining text:
+            if (pos < text.length())
+            {
+                return text.substr(pos);
+            }
+
+            // nothing left, return 'done':
+            return basic_string_view<CharT>(text.cend(), size_t(0));
+        }
+
+        // delimited text:
+        return text.substr(pos, found - pos);
+    }
+};
+
+// any of given characters as delimiter:
+
+template< typename CharT >
+class basic_any_of_delimiter
+{
+    const std::basic_string<CharT> delimiters_;
+
+public:
+    explicit basic_any_of_delimiter(basic_string_view<CharT> sv)
+        : delimiters_(to_string(sv)) {}
+
+    size_t length() const
+    {
+        return (min)( size_t(1), delimiters_.length());
+    }
+
+    basic_string_view<CharT> operator()(basic_string_view<CharT> text, size_t pos) const
+    {
+        return find(text, pos);
+    }
+
+    basic_string_view<CharT> find(basic_string_view<CharT> text, size_t pos) const
+    {
+        // out of range, return 'done':
+        if ( pos > text.length())
+            return basic_string_view<CharT>(text.cend(), size_t(0));
+
+        // a single character at a time:
+        if (0 == delimiters_.length())
+        {
+            return text.substr(pos, 1);
+        }
+
+        size_t found = text.find_first_of(delimiters_, pos);
+
+        // at a delimiter, or searching past the last delimiter:
+        if (found == pos || (pos == text.length()))
+        {
+            return basic_string_view<CharT>();
+        }
+
+        // no delimiter found:
+        if (found == basic_string_view<CharT>::npos)
+        {
+            // return remaining text:
+            if (pos < text.length())
+            {
+                return text.substr(pos);
+            }
+
+            // nothing left, return 'done':
+            return basic_string_view<CharT>(text.cend(), size_t(0));
+        }
+
+        // delimited text:
+        return text.substr(pos, found - pos);
+    }
+};
+
+// fixed length delimiter:
+
+template< typename CharT >
+class basic_fixed_delimiter
+{
+    size_t len_;
+
+public:
+    explicit basic_fixed_delimiter(size_t len)
+        : len_(len) {}
+
+    size_t length() const
+    {
+        return 0;
+    }
+
+    string_view operator()(basic_string_view<CharT> text, size_t pos) const
+    {
+        return find(text, pos);
+    }
+
+    string_view find(basic_string_view<CharT> text, size_t pos) const
+    {
+        // out of range, return 'done':
+        if ( pos > text.length())
+            return basic_string_view<CharT>(text.cend(), size_t(0));
+
+        // current slice:
+        return text.substr(pos, len_);
+    }
+};
+
+// TODO limit_delimiter - Delimiter template would take another Delimiter and a size_t limiting
+// the given delimiter to matching a max numbers of times. This is similar to the 3rd argument to
+// perl's split() function.
+
+template< typename CharT, typename DelimiterT >
+class basic_limit_delimiter;
+
+// regular expression delimiter:
+
+#if string_HAVE_REGEX
+
+template< typename CharT >
+class basic_regex_delimiter
+{
+    std::regex     delimiter_re_;               // the regular expression designating delimiters
+    size_t         delimiter_len_;              // the length of
+    mutable size_t matched_delimiter_length_;   // the length of the actually matched delimiter
+    mutable bool   trailing_delimiter_seen;     // whether to provide last empty result
+
+public:
+    explicit basic_regex_delimiter(basic_string_view<CharT> sv)
+        : delimiter_re_(to_string(sv))
+        , delimiter_len_(sv.length())
+        , matched_delimiter_length_(0u)
+        , trailing_delimiter_seen(false)
+    {}
+
+    size_t length() const
+    {
+        return matched_delimiter_length_;
+    }
+
+    basic_string_view<CharT> operator()(basic_string_view<CharT> text, size_t pos) const
+    {
+        return find(text, pos);
+    }
+
+    basic_string_view<CharT> find(basic_string_view<CharT> text, size_t pos) const
+    {
+        // trailing empty entry:
+        // TODO this feels like a hack, don't know any better at this moment
+        if (trailing_delimiter_seen)
+        {
+            trailing_delimiter_seen = false;
+            return basic_string_view<CharT>();
+        }
+
+        // out of range, return 'done':
+        if ( pos > text.length())
+            return basic_string_view<CharT>(text.cend(), size_t(0));
+
+        // a single character at a time:
+        if (0 == delimiter_len_)
+        {
+            return text.substr(pos, 1);
+        }
+
+        std::smatch m;
+        std::basic_string<CharT> s = to_string(text.substr(pos));
+
+        const bool found = std::regex_search(s, m, delimiter_re_);
+
+        matched_delimiter_length_ = m.length();
+
+        // no delimiter found:
+        if (!found)
+        {
+            // return remaining text:
+            if (pos < text.length())
+            {
+                return text.substr(pos);
+            }
+
+            // nothing left, return 'done':
+            return basic_string_view<CharT>(text.cend(), size_t(0));
+        }
+
+        // at a trailing delimiter, remember for next round:
+        else if ((size_t(m.position()) == s.length() - 1))
+        {
+            trailing_delimiter_seen = true;
+        }
+
+        // delimited text, the match in the input string:
+        return text.substr(pos, m.position());
+    }
+};
+
+#endif // string_HAVE_REGEX
+
+// single-char delimiter:
+
+template< typename CharT >
+class basic_char_delimiter
+{
+    CharT c_;
+
+public:
+    explicit basic_char_delimiter(CharT c)
+        : c_(c) {}
+
+    size_t length() const
+    {
+        return 1;
+    }
+
+    basic_string_view<CharT> operator()(basic_string_view<CharT> text, size_t pos) const
+    {
+        return find(text, pos);
+    }
+
+    basic_string_view<CharT> find(basic_string_view<CharT> text, size_t pos) const
+    {
+        // out of range, return 'done':
+        if ( pos > text.length())
+            return basic_string_view<CharT>(text.cend(), size_t(0));
+
+        size_t found = text.find(c_, pos);
+
+        // nothing left, return 'done':
+        if (found == basic_string_view<CharT>::npos)
+            return basic_string_view<CharT>(text.cend(), size_t(0));
+
+        // the c_ in the input string:
+        return text.substr(found, 1);
+    }
+};
+
+ // typedefs:
+
+typedef basic_literal_delimiter< char  >  literal_delimiter;
+typedef basic_literal_delimiter<wchar_t> wliteral_delimiter;
+typedef basic_any_of_delimiter<  char  >  any_of_delimiter;
+typedef basic_any_of_delimiter< wchar_t> wany_of_delimiter;
+typedef basic_fixed_delimiter<   char  >  fixed_delimiter;
+typedef basic_fixed_delimiter<  wchar_t> wfixed_delimiter;
+typedef basic_char_delimiter<    char  >  char_delimiter;
+typedef basic_char_delimiter<   wchar_t> wchar_t_delimiter;
+// typedef basic_limit_delimiter<   char  >  limit_delimiter;
+// typedef basic_limit_delimiter<  wchar_t> wlimit_delimiter;
+
+#if string_HAVE_REGEX
+typedef basic_regex_delimiter<   char  >  regex_delimiter;
+typedef basic_regex_delimiter<  wchar_t> wregex_delimiter;
+#endif
+
+#if string_HAVE_CHAR16_T
+
+typedef basic_literal_delimiter<char16_t> u16literal_delimiter;
+typedef basic_literal_delimiter<char32_t> u32literal_delimiter;
+typedef basic_any_of_delimiter< char16_t> u16any_of_delimiter;
+typedef basic_any_of_delimiter< char32_t> u32any_of_delimiter;
+typedef basic_fixed_delimiter<  char16_t> u16fixed_delimiter;
+typedef basic_fixed_delimiter<  char32_t> u32fixed_delimiter;
+typedef basic_char_delimiter<   char16_t> u16char_delimiter;
+typedef basic_char_delimiter<   char32_t> u32char_delimiter;
+// typedef basic_limit_delimiter<  char16_t> u16limit_delimiter;
+// typedef basic_limit_delimiter<  char32_t> u32limit_delimiter;
+
+#if string_HAVE_REGEX
+typedef basic_regex_delimiter<  char16_t> u16regex_delimiter;
+typedef basic_regex_delimiter<  char32_t> u32regex_delimiter;
+#endif
+
+#endif // string_HAVE_CHAR16_T
+
+// split():
+
+namespace detail {
+
+template< typename CharT, typename Delimiter >
+std::vector<basic_string_view<CharT> >
+split(basic_string_view<CharT> text, Delimiter delimiter)
+{
+    std::vector<basic_string_view<CharT> > result;
+
+    size_t pos = 0;
+
+    for( basic_string_view<CharT> sv = delimiter(text, pos); sv.cbegin() != text.cend(); sv = delimiter(text, pos) )
+    {
+        result.push_back(sv);
+        pos = (sv.end() - text.begin()) + length(delimiter);
+    }
 
     return result;
 }
+} // namespace detail
 
+template<typename Delimiter> std::vector< string_view> split( string_view text, Delimiter delimiter) { return detail::split(text, delimiter); }
+template<typename Delimiter> std::vector<wstring_view> split(wstring_view text, Delimiter delimiter) { return detail::split(text, delimiter); }
+
+#if string_HAVE_CHAR16_T
+template<typename Delimiter> std::vector<u16string_view> split(u16string_view text, Delimiter delimiter) { return detail::split(text, delimiter); }
+template<typename Delimiter> std::vector<u32string_view> split(u32string_view text, Delimiter delimiter) { return detail::split(text, delimiter); }
+#endif
+
+inline
+std::vector<string_view>
+split(string_view text, char const * d)
+{
+    return detail::split(text, literal_delimiter(d));
+}
 } // namespace string
 } // namespace nonstd
 

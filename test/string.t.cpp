@@ -679,14 +679,78 @@ CASE( "join: " "[TODO]" )
 
 // TODO split()
 
-CASE( "split: " "[TODO]" )
-{
-    std::vector<std::string> golden;
-    golden.push_back("abc");
-    golden.push_back("def");
-    golden.push_back("ghi");
+// - literal_delimiter - a single string delimiter
+// - any_of_delimiter - any of given characters as delimiter
+// - fixed_delimiter - fixed length delimiter
+// - limit_delimiter - not implemented
+// - regex_delimiter - regular expression delimiter
+// - char_delimiter - single-char delimiter
+// - above as empty limiters
 
-    // EXPECT( split(std::string("abc..def..ghi"), std::string("..")) == golden );
+std::vector<std::string>
+make_split_result( char const * p="abc", char const * q="def", char const * r="ghi")
+{
+    std::vector<std::string> result;
+    result.push_back(p);
+    result.push_back(q);
+    result.push_back(r);
+    return result;
+}
+
+CASE( "split: literal_delimiter" )
+{
+    std::vector<std::string> golden( make_split_result() );
+
+    EXPECT( split("abc..def..ghi", "..") == golden );
+    EXPECT( split("abc..def..ghi", literal_delimiter("..")) == golden );
+}
+
+CASE( "split: any_of_delimiter" )
+{
+    std::vector<std::string> golden( make_split_result() );
+
+    EXPECT( split("abc+def-ghi", any_of_delimiter("+-")) == golden );
+}
+
+CASE( "split: fixed_delimiter" )
+{
+    std::vector<std::string> golden( make_split_result() );
+
+    EXPECT( split("abcdefghi", fixed_delimiter(3)) == golden );
+}
+
+CASE( "split: limit_delimiter" "[.TODO]" )
+{
+    std::vector<std::string> golden( make_split_result() );
+}
+
+CASE( "split: regex_delimiter" )
+{
+    std::vector<std::string> golden( make_split_result() );
+
+    EXPECT( split("abc+-def-+ghi", regex_delimiter("[+-]+")) == golden );
+}
+
+CASE( "split: char_delimiter" )
+{
+    std::vector<std::string> golden( make_split_result("&", "&", "&") );
+
+    EXPECT( split("abc&def&ghi&jkl", char_delimiter('&')) == golden );
+}
+
+CASE( "split: empty delimiters" )
+{
+    std::vector<std::string> golden( make_split_result("a", "b", "c") );
+
+    EXPECT( split("abc", "") == golden );
+    EXPECT( split("abc", literal_delimiter("")) == golden );
+    EXPECT( split("abc", any_of_delimiter("")) == golden );
+    EXPECT( split("abc", fixed_delimiter(1)) == golden );
+    EXPECT( split("abc", regex_delimiter("")) == golden );
+
+    // Not eligable:
+    // EXPECT( split("abc", limit_delimiter("")) == golden );
+    // EXPECT( split("abc", char_delimiter('x')) == golden );
 }
 
 // TODO Unicode:

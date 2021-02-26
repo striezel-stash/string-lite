@@ -234,7 +234,12 @@ appended: Return new string with second string appended to first string - string
 appended: Return new string with second string appended to first string - string-string
 appended: Return new string with second string appended to first string - string-string_view
 join: [TODO]
-split: [TODO]
+split: literal_delimiter
+split: any_of_delimiter
+split: fixed_delimiter
+split: regex_delimiter
+split: char_delimiter
+split: empty delimiters
 clear: Makes string empty - string [unicode]
 tweak header: Reads tweak header if supported [tweak]
 ```
