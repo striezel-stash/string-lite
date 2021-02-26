@@ -726,9 +726,13 @@ CASE( "split: limit_delimiter" "[.TODO]" )
 
 CASE( "split: regex_delimiter" )
 {
+#if string_HAVE_REGEX
     std::vector<std::string> golden( make_split_result() );
 
     EXPECT( split("abc+-def-+ghi", regex_delimiter("[+-]+")) == golden );
+#else
+    EXPECT( !!"regex_delimiter is not available (pre C++11)." );
+#endif
 }
 
 CASE( "split: char_delimiter" )
@@ -746,8 +750,10 @@ CASE( "split: empty delimiters" )
     EXPECT( split("abc", literal_delimiter("")) == golden );
     EXPECT( split("abc", any_of_delimiter("")) == golden );
     EXPECT( split("abc", fixed_delimiter(1)) == golden );
-    EXPECT( split("abc", regex_delimiter("")) == golden );
 
+#if string_HAVE_REGEX
+    EXPECT( split("abc", regex_delimiter("")) == golden );
+#endif
     // Not eligable:
     // EXPECT( split("abc", limit_delimiter("")) == golden );
     // EXPECT( split("abc", char_delimiter('x')) == golden );

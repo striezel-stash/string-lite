@@ -75,7 +75,7 @@ inline std::string_view::const_iterator text_view_end()
 
 inline nonstd::string::string_view text_view()
 {
-    return { text().c_str(), text().length() };
+    return nonstd::string::string_view( text().c_str(), text().length() );
 }
 
 inline nonstd::string::string_view::const_iterator text_view_end()
