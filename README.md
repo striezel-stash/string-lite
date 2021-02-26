@@ -60,7 +60,12 @@ Note: this repository contains a copy of several files from the [CsString librar
 
 | Kind               | Type or function                            | Notes |
 |--------------------|---------------------------------------------|-------|
-| **Type**           | **xxx**                                     | ... |
+| **Type**           | **literal_delimiter**                       | a single string |
+| &nbsp;             | **any_of_delimiter**                        | any of given characters |
+| &nbsp;             | **fixed_delimiter**                         | fixed length |
+| &nbsp;             | **limit_delimiter**                         | not implemented |
+| &nbsp;             | **regex_delimiter**                         | regular expression |
+| &nbsp;             | **char_delimiter**                          | character position |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | Utilities          | CharT **nullchr**()                         | null character of template type |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
@@ -122,7 +127,8 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | StringT **appended**(StringT const & s, TailT const & tail) |&nbsp;|
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | StringT **join**(Coll const & coll, SepT const & sep)       |&nbsp;|
-| &nbsp;             | **split**()                                                 |&nbsp;|
+| &nbsp;             | **split**(string_view text, Delimiter d)    |&nbsp;|
+| &nbsp;             | **split**(string_view text, char const * d) |&nbsp;|
 
 Note: with `StringT const &` the string type can also be `string_view`.
 
