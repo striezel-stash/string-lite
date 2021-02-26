@@ -233,6 +233,10 @@
 # include <regex>
 #endif
 
+#if ! string_CONFIG_NO_EXCEPTIONS
+# include <stdexcept>
+#endif
+
 #if string_HAVE_TYPE_TRAITS
 # include <type_traits>
 #elif string_HAVE_TR1_TYPE_TRAITS
@@ -1662,9 +1666,9 @@ class basic_limit_delimiter;
 template< typename CharT >
 class basic_regex_delimiter
 {
-    std::regex     delimiter_re_;               // the regular expression designating delimiters
-    size_t         delimiter_len_;              // the length of
-    mutable size_t matched_delimiter_length_;   // the length of the actually matched delimiter
+    std::regex     delimiter_re_;               // regular expression designating delimiters
+    size_t         delimiter_len_;              // length of regular expression
+    mutable size_t matched_delimiter_length_;   // length of the actually matched delimiter
     mutable bool   trailing_delimiter_seen;     // whether to provide last empty result
 
 public:
