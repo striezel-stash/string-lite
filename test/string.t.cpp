@@ -658,37 +658,10 @@ CASE( "appended: Return new string with second string appended to first string -
 #endif
 }
 
-// TODO join():
-
-CASE( "join: " "[TODO]" )
-{
-    std::vector<std::string> coll;
-    coll.push_back("abc");
-    coll.push_back("def");
-    coll.push_back("ghi");
-
-    EXPECT( join( coll, "..") == "abc..def..ghi" );
-}
-
-// CASE( "join: " "[TODO]" )
-// {
-//     std::vector<char *> coll; coll.push_back("abc"); coll.push_back("def"); coll.push_back("ghi");
-
-//     EXPECT( join( coll, "..") == "abc..def..ghi" );
-// }
-
-// TODO split()
-
-// - literal_delimiter - a single string delimiter
-// - any_of_delimiter - any of given characters as delimiter
-// - fixed_delimiter - fixed length delimiter
-// - limit_delimiter - not implemented
-// - regex_delimiter - regular expression delimiter
-// - char_delimiter - single-char delimiter
-// - above as empty limiters
+// join(), split():
 
 std::vector<std::string>
-make_split_result( char const * p="abc", char const * q="def", char const * r="ghi")
+make_vec_of_strings( char const * p="abc", char const * q="def", char const * r="ghi")
 {
     std::vector<std::string> result;
     result.push_back(p);
@@ -697,37 +670,56 @@ make_split_result( char const * p="abc", char const * q="def", char const * r="g
     return result;
 }
 
-CASE( "split: literal_delimiter" )
+// join():
+
+CASE( "join: Join strings from collection into a string separated by given separator" )
 {
-    std::vector<std::string> golden( make_split_result() );
+    std::vector<std::string> coll = make_vec_of_strings();
+
+    EXPECT( join( coll, "..") == "abc..def..ghi" );
+}
+
+// split():
+//
+// - literal_delimiter - a single string delimiter
+// - any_of_delimiter - any of given characters as delimiter
+// - fixed_delimiter - fixed length delimiter
+// - limit_delimiter - not implemented
+// - regex_delimiter - regular expression delimiter
+// - char_delimiter - single-char delimiter
+// - above as empty limiters
+
+CASE( "split: Split string into vector of string_view given delimiter - literal_delimiter" )
+{
+    std::vector<std::string> golden( make_vec_of_strings() );
 
     EXPECT( split("abc..def..ghi", "..") == golden );
     EXPECT( split("abc..def..ghi", literal_delimiter("..")) == golden );
 }
 
-CASE( "split: any_of_delimiter" )
+CASE( "split: Split string into vector of string_view given delimiter - any_of_delimiter" )
 {
-    std::vector<std::string> golden( make_split_result() );
+    std::vector<std::string> golden( make_vec_of_strings() );
 
     EXPECT( split("abc+def-ghi", any_of_delimiter("+-")) == golden );
 }
 
-CASE( "split: fixed_delimiter" )
+CASE( "split: Split string into vector of string_view given delimiter - fixed_delimiter" )
 {
-    std::vector<std::string> golden( make_split_result() );
+    std::vector<std::string> golden( make_vec_of_strings() );
 
     EXPECT( split("abcdefghi", fixed_delimiter(3)) == golden );
 }
 
-CASE( "split: limit_delimiter" "[.TODO]" )
+CASE( "split: Split string into vector of string_view given delimiter - limit_delimiter" "[.TODO]" )
 {
-    std::vector<std::string> golden( make_split_result() );
+    std::vector<std::string> golden( make_vec_of_strings() );
 }
 
-CASE( "split: regex_delimiter" )
+CASE( "split: Split string into vector of string_view given delimiter - regex_delimiter" )
 {
 #if string_HAVE_REGEX
-    std::vector<std::string> golden( make_split_result() );
+    std::vector<std::string> golden( make_vec_of_strings() );
 
     EXPECT( split("abc+-def-+ghi", regex_delimiter("[+-]+")) == golden );
 #else
@@ -735,16 +727,16 @@ CASE( "split: regex_delimiter" )
 #endif
 }
 
-CASE( "split: char_delimiter" )
+CASE( "split: Split string into vector of string_view given delimiter - char_delimiter" )
 {
-    std::vector<std::string> golden( make_split_result("&", "&", "&") );
+    std::vector<std::string> golden( make_vec_of_strings("&", "&", "&") );
 
     EXPECT( split("abc&def&ghi&jkl", char_delimiter('&')) == golden );
 }
 
-CASE( "split: empty delimiters" )
+CASE( "split: Split string into single characters given empty delimiter" )
 {
-    std::vector<std::string> golden( make_split_result("a", "b", "c") );
+    std::vector<std::string> golden( make_vec_of_strings("a", "b", "c") );
 
     EXPECT( split("abc", "") == golden );
     EXPECT( split("abc", literal_delimiter("")) == golden );
