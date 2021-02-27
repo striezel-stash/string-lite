@@ -960,8 +960,24 @@ append( std::basic_string<CharT> & text, TailT const & tail ) string_noexcept
 
 // TODO join() - alg
 
-// TODO split() - alg
+// split():
 
+template< typename CharT, typename Delimiter >
+std::vector<basic_string_view<CharT> >
+split(basic_string_view<CharT> text, Delimiter delimiter)
+{
+    std::vector<basic_string_view<CharT> > result;
+
+    size_t pos = 0;
+
+    for( basic_string_view<CharT> sv = delimiter(text, pos); sv.cbegin() != text.cend(); sv = delimiter(text, pos) )
+    {
+        result.push_back(sv);
+        pos = (sv.end() - text.begin()) + length(delimiter);
+    }
+
+    return result;
+}
 
 } // namespace detail
 
@@ -1491,7 +1507,7 @@ join( Coll const & coll, SepT const & sep ) string_noexcept
     return result;
 }
 
-// TODO split():
+// split():
 
 // Various kinds of delimiters:
 // - literal_delimiter - a single string delimiter
@@ -1819,26 +1835,6 @@ typedef basic_regex_delimiter<  char32_t> u32regex_delimiter;
 #endif // string_HAVE_CHAR16_T
 
 // split():
-
-namespace detail {
-
-template< typename CharT, typename Delimiter >
-std::vector<basic_string_view<CharT> >
-split(basic_string_view<CharT> text, Delimiter delimiter)
-{
-    std::vector<basic_string_view<CharT> > result;
-
-    size_t pos = 0;
-
-    for( basic_string_view<CharT> sv = delimiter(text, pos); sv.cbegin() != text.cend(); sv = delimiter(text, pos) )
-    {
-        result.push_back(sv);
-        pos = (sv.end() - text.begin()) + length(delimiter);
-    }
-
-    return result;
-}
-} // namespace detail
 
 template<typename Delimiter> std::vector< string_view> split( string_view text, Delimiter delimiter) { return detail::split(text, delimiter); }
 template<typename Delimiter> std::vector<wstring_view> split(wstring_view text, Delimiter delimiter) { return detail::split(text, delimiter); }
