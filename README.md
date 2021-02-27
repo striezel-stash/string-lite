@@ -16,16 +16,42 @@
 ## Example usage
 
 ```cpp
-#include "nonstd/string.hpp"
+// Use nonstd::string's split():
 
-TODO
+#include "nonstd/string.hpp"
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+
+template< typename T >
+std::string contents(std::vector<T> const & coll)
+{
+    // using to_string() for nonstd::string::string_view:
+
+    std::stringstream os;
+    for ( auto const & elem : coll )
+        os << "'" << to_string(elem) << "', ";
+    return os.str();
+}
+
+template< typename T >
+std::ostream & operator<<(std::ostream & os, std::vector<T> const & coll )
+{
+    return os << "[" << contents(coll) << "]";
+}
+
+int main()
+{
+    std::cout << nonstd::string::split("Hello, world", ",");
+}
 ```
 
 ### Compile and run
 
 ```bash
-prompt >g++ -std=c++11 -Wall -I../include -o 01-basic.exe 01-basic.cpp && 01-basic.exe
-... TODO 
+prompt> g++ -std=c++98 -Wall -I../include -o 01-basic.exe 01-basic.cpp && 01-basic.exe
+['Hello', ' world', ]
 ```
 
 ## In a nutshell
@@ -53,10 +79,10 @@ Note: this repository contains a copy of several files from the [CsString librar
 ## Synopsis
 
 **Contents**  
-[Documentation of `nonstd::string`](#documentation-of-nonstdstring)  
+[Documentation of *string lite*](#documentation-of-string-lite)  
 [Configuration](#configuration)  
 
-### Documentation of `nonstd::string`
+### Documentation of *string lite*
 
 | Kind               | Type or function                            | Notes |
 |--------------------|---------------------------------------------|-------|
@@ -67,10 +93,10 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | **regex_delimiter**                         | regular expression |
 | &nbsp;             | **char_delimiter**                          | character position |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
-| Utilities          | CharT **nullchr**()                         | null character of template type |
+| **Utilities**      | CharT **nullchr**()                         | null character of template type |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
-| &nbsp;             | size_t **size**(CharT \* s)                 | length of C-string |
 | &nbsp;             | size_t **size**(CollT & c)                  | size of collection, C++string |
+| &nbsp;             | size_t **size**(CharT \* s)                 | length of C-string, char, wchar, u16char, u32char |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | CharT \* **begin**(CharT \* c)              | iterator to C-string |
 | &nbsp;             | CharT \* **end**(CharT \* c)                | iterator past C-string |
@@ -82,7 +108,10 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | CollT::const_iterator **cbegin**(CollT & c) | const iterator to collection, C++string |
 | &nbsp;             | CollT::const_iterator **cend**(CollT & c)   | const iterator past collection, C++string |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
-| Observers          | bool **is_empty**(CharT \* s)               | true if C-string is empty |
+| &nbsp;             | std::basic_string&lt;&gt;<br>**to_string**(basic_string_view&lt;&gt; v) |&nbsp;|
+| &nbsp;             | std::basic_string&lt;&gt;<br>**to_string**(basic_string_view&lt;&gt; v, Allocator const & a) |&nbsp;|
+| &nbsp;             | &nbsp;                                      |&nbsp;|
+| **Observers**      | bool **is_empty**(CharT \* s)               | true if C-string is empty |
 | &nbsp;             | bool **is_empty**(StringT const & s)        | true if string is empty |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | bool **contains**(StringT const & s, CharT chr) | true if string contains chr |
@@ -96,13 +125,13 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | bool **ends_with**(StringT const & s, CharT chr) | true if string ends with chr |
 | &nbsp;             | bool **ends_with**(StringT const & s, SubT const & substr) | true if string ends with substring |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
-| Searching          | IterT **find_first**(StringT & s, SubT const & substr)       | provide iterator to substring |
+| **Searching**      | IterT **find_first**(StringT & s, SubT const & substr)       | provide iterator to substring |
 | &nbsp;             | IterT **find_first**(StringT const & s, SubT const & substr) | provide const iterator to substring |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | IterT **find_last**(StringT & s, SubT const & substr)        | provide iterator to substring |
 | &nbsp;             | IterT **find_last**(StringT const & s, SubT const & substr)  | provide const iterator to substring |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
-| Modifiers          | CharT \* **clear**(CharT \* s)              | make C-string empty |
+| **Modifiers**      | CharT \* **clear**(CharT \* s)              | make C-string empty |
 | &nbsp;             | StringT & **clear**(StringT & s)            | make string empty |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
 | &nbsp;             | CharT \* **to_lowercase**(CharT \* p)       | convert C-string to lowercase |
@@ -122,7 +151,7 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | StringT & **replace_last**(StringT & s, FromT const & from, ToT const to) |xxx |
 | &nbsp;             | StringT **replaced_last**(StringT const & s, FromT const & from, ToT const to) |xxx |
 | &nbsp;             | &nbsp;                                                      |&nbsp;|
-| Combining          | CharT \* **append**(CharT \* s, TailT const & tail)         |&nbsp;|
+| **Combining**      | CharT \* **append**(CharT \* s, TailT const & tail)         |&nbsp;|
 | &nbsp;             | StringT & **append**(StringT & s, TailT const & tail)       |&nbsp;|
 | &nbsp;             | StringT **appended**(StringT const & s, TailT const & tail) |&nbsp;|
 | &nbsp;             | &nbsp;                                      |&nbsp;|
