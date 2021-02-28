@@ -2029,12 +2029,8 @@ template<typename Delimiter> std::vector<u16string_view> split(u16string_view te
 template<typename Delimiter> std::vector<u32string_view> split(u32string_view text, Delimiter delimiter) { return detail::split(text, delimiter); }
 #endif
 
-inline
-std::vector<string_view>
-split(string_view text, char const * d)
-{
-    return detail::split(text, literal_delimiter(d));
-}
+inline std::vector<string_view> split(string_view text, char const * d) { return detail::split(text, literal_delimiter(d)); }
+
 } // namespace string
 } // namespace nonstd
 
