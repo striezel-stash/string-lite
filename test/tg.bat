@@ -8,22 +8,26 @@ set unit_file=string
 
 :: if no std is given, use c++11
 
-set std=%1
-set args=%2 %3 %4 %5 %6 %7 %8 %9
-if "%1" == "" set std=c++2a
+set std=c++2a
+if NOT "%1" == "" set std=%1 & shift
+
+set select_sv=string_CONFIG_SELECT_STRING_VIEW_INTERNAL
+if NOT "%1" == "" set select_sv=%1 & shift
+
+set args=%1 %2 %3 %4 %5 %6 %7 %8 %9
 
 set gpp=g++
 
 call :CompilerVersion version
-echo %gpp% %version%: %std% %args%
+echo %gpp% %version%: %std% %select_sv% %args%
 
 set unit_config=^
     -Dstring_STRING_HEADER=\"nonstd/string.hpp\" ^
     -Dstring_TEST_NODISCARD=0 ^
-    -Dstring_CONFIG_SELECT_STRING_VIEW=string_CONFIG_SELECT_STRING_VIEW_STD
+    -Dstring_CONFIG_SELECT_STRING_VIEW=%select_sv%
 
 ::string_CONFIG_SELECT_STRING_VIEW_INTERNAL
-::string_CONFIG_SELECT_STRING_VIEW_LITE
+::string_CONFIG_SELECT_STRING_VIEW_NONSTD
 ::string_CONFIG_SELECT_STRING_VIEW_STD
 
 rem -flto / -fwhole-program
