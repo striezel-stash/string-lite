@@ -273,13 +273,13 @@ append: Append a string to a string in-place - string-string_view
 appended: Return new string with second string appended to first string - string-char*
 appended: Return new string with second string appended to first string - string-string
 appended: Return new string with second string appended to first string - string-string_view
-join: [TODO]
-split: literal_delimiter
-split: any_of_delimiter
-split: fixed_delimiter
-split: regex_delimiter
-split: char_delimiter
-split: empty delimiters
+join: Join strings from collection into a string separated by given separator
+split: Split string into vector of string_view given delimiter - literal_delimiter
+split: Split string into vector of string_view given delimiter - any_of_delimiter
+split: Split string into vector of string_view given delimiter - fixed_delimiter
+split: Split string into vector of string_view given delimiter - regex_delimiter
+split: Split string into vector of string_view given delimiter - char_delimiter
+split: Split string into single characters given empty delimiter
 clear: Makes string empty - string [unicode]
 tweak header: Reads tweak header if supported [tweak]
 ```
