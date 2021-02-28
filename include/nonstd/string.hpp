@@ -58,17 +58,17 @@
 // - lite version: nonstd::string_view
 // - std version: std::string_view
 
-#define  string_CONFIG_SELECT_SV_INTERNAL  1
-#define  string_CONFIG_SELECT_SV_NONSTD    2
-#define  string_CONFIG_SELECT_SV_STD       3
+#define  string_CONFIG_SELECT_STRING_VIEW_INTERNAL  1
+#define  string_CONFIG_SELECT_STRING_VIEW_NONSTD    2
+#define  string_CONFIG_SELECT_STRING_VIEW_STD       3
 
-#ifndef  string_CONFIG_SELECT_SV
-# define string_CONFIG_SELECT_SV string_CONFIG_SELECT_SV_INTERNAL
+#ifndef  string_CONFIG_SELECT_STRING_VIEW
+# define string_CONFIG_SELECT_STRING_VIEW string_CONFIG_SELECT_STRING_VIEW_INTERNAL
 #endif
 
-#if      string_CONFIG_SELECT_SV==string_CONFIG_SELECT_SV_STD && !string_HAVE_STD_STRING_VIEW
+#if      string_CONFIG_SELECT_STRING_VIEW==string_CONFIG_SELECT_STRING_VIEW_STD && !string_HAVE_STD_STRING_VIEW
 # error  string-lite: std::string_view selected but is not available: C++17?
-#elif   0 // string_CONFIG_SELECT_SV==string_CONFIG_SELECT_SV_NONSTD && !defined(NONSTD_SV_LITE_H_INCLUDED)
+#elif   0 // string_CONFIG_SELECT_STRING_VIEW==string_CONFIG_SELECT_STRING_VIEW_NONSTD && !defined(NONSTD_SV_LITE_H_INCLUDED)
 # error  string-lite: string-view-lite selected but is not available: nonstd/string_view.hpp included before nonstd/string.hpp?
 #endif
 
@@ -278,11 +278,11 @@
 # include <tr1/type_traits>
 #endif
 
-#if   string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_INTERNAL
+#if   string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_INTERNAL
 // noop
-#elif string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_NONSTD
+#elif string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_NONSTD
 # include "nonstd/string_view.hpp"
-#elif string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_STD
+#elif string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_STD
 # include <string_view>
 #endif
 
@@ -628,7 +628,7 @@ string_nodiscard inline typename StringT::const_reverse_iterator crend( StringT 
 
 // Minimal internal string_view for string algorithm library, when requested:
 
-#if string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_INTERNAL
+#if string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_INTERNAL
 
 template
 <
@@ -825,7 +825,7 @@ crend( basic_string_view<T> const & sv )
     return const_reverse_iterator( sv.rend() );
 }
 
-#elif string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_NONSTD
+#elif string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_NONSTD
 
 using nonstd::sv_lite::basic_string_view;
 using nonstd::sv_lite::string_view;
@@ -838,7 +838,7 @@ using nonstd::sv_lite::u16string_view;
 using nonstd::sv_lite::u32string_view;
 #endif
 
-#elif string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_STD
+#elif string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_STD
 
 using std::basic_string_view;
 using std::string_view;
@@ -848,11 +848,11 @@ using std::u16string_view;
 using std::u32string_view;
 #endif
 
-#endif // string_CONFIG_SELECT_SV_INTERNAL
+#endif // string_CONFIG_SELECT_STRING_VIEW_INTERNAL
 
 // Convert string_view to std::string:
 
-#if string_CONFIG_SELECT_SV != string_CONFIG_SELECT_SV_NONSTD
+#if string_CONFIG_SELECT_STRING_VIEW != string_CONFIG_SELECT_STRING_VIEW_NONSTD
 
 template< class CharT, class Traits >
 std::basic_string<CharT, Traits>
@@ -868,7 +868,7 @@ to_string( basic_string_view<CharT, Traits> v, Allocator const & a )
     return std::basic_string<CharT, Traits, Allocator>( v.begin(), v.end(), a );
 }
 
-#endif // string_CONFIG_SELECT_SV
+#endif // string_CONFIG_SELECT_STRING_VIEW
 
 // to_identity() - let nonstd::string_view operate with pre-std::string_view std::string methods:
 
@@ -885,7 +885,7 @@ to_identity( std::basic_string<CharT, Traits, Allocator> const & s )
     return s;
 }
 
-#if string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_STD
+#if string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_STD
 
 template< class CharT, class Traits >
 basic_string_view<CharT, Traits>
@@ -903,7 +903,7 @@ to_identity( basic_string_view<CharT, Traits> v )
     return to_string( v );
 }
 
-#endif // string_CONFIG_SELECT_SV
+#endif // string_CONFIG_SELECT_STRING_VIEW
 
 // namespace detail:
 
@@ -1695,7 +1695,7 @@ join( Coll const & coll, SepT const & sep ) string_noexcept
 template< typename CharT >
 basic_string_view<CharT> basic_delimiter_end(basic_string_view<CharT> sv)
 {
-#if string_CONFIG_SELECT_SV != string_CONFIG_SELECT_SV_STD
+#if string_CONFIG_SELECT_STRING_VIEW != string_CONFIG_SELECT_STRING_VIEW_STD
     return basic_string_view<CharT>(sv.cend(), size_t(0));
 #else
     return basic_string_view<CharT>(sv.data() + sv.size(), size_t(0));

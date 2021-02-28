@@ -172,12 +172,20 @@ Note: with `StringT const &` the string type can also be `string_view`.
 
 If the compiler supports [`__has_include()`](https://en.cppreference.com/w/cpp/preprocessor/include), *string lite* supports the [tweak header](https://vector-of-bool.github.io/2020/10/04/lib-configuration.html) mechanism. Provide your *tweak header* as `nonstd/string.tweak.hpp` in a folder in the include-search-path. In the tweak header, provide definitions as documented below, like `#define string_CPLUSPLUS 201103L`.
 
+#### Select internal string_view, `nonstd::string_view` or `std::string_view`
+
+At default, *string lite* uses an internal `string_view`. You can however override this default and explicitly request to use  string-view lite's `nonstd::string_view` as `nonstd::string::string_view` or use C++17's `std::string_view` via the following macros.
+
+-D<b>string\_CONFIG\_SELECT\_STRING_VIEW</b>=string_CONFIG_SELECT_STRING_VIEW_INTERNAL 
+Define this to `string_CONFIG_SELECT_STRING_VIEW_NONSTD` to select `nonstd::string_view` as `nonstd::string::string_view`. Define this to `string_CONFIG_SELECT_STRING_VIEW_STD` to select `std::string_view` as `nonstd::string::string_view`. Default is undefined, which has the same effect as defining to `string_CONFIG_SELECT_STRING_VIEW_INTERNAL`.
+
 #### Standard selection macro
 
 \-D<b>string\_CPLUSPLUS</b>=199711L  
 Define this macro to override the auto-detection of the supported C++ standard, if your compiler does not set the `__cplusplus` macro correctly.
 
 #### Disable exceptions
+
 -D<b>string_CONFIG_NO_EXCEPTIONS</b>=0
 Define this to 1 if you want to compile without exceptions. If not defined, the header tries and detect if exceptions have been disabled (e.g. via `-fno-exceptions`). Default is undefined.
 

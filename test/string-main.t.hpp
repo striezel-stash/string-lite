@@ -62,7 +62,7 @@ inline std::string::const_iterator text_end()
     return text().end();
 }
 
-#if string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_STD
+#if string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_STD
 
 inline std::string_view text_view()
 {
@@ -165,7 +165,7 @@ inline std::ostream & operator<<( std::ostream & os, std::string::const_iterator
 
 namespace string {
 
-#if string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_INTERNAL
+#if string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_INTERNAL
 
 inline std::ostream & operator<<( std::ostream & os, string_view sv )
 {
@@ -207,7 +207,7 @@ inline bool operator==( std::vector<std::string> const & a, std::vector<string_v
 
 } // namespace string
 
-#if _MSC_VER && string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_STD
+#if _MSC_VER && string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_STD
 
 inline std::ostream & operator<<( std::ostream & os, std::string_view::const_iterator pos )
 {
@@ -255,7 +255,7 @@ namespace lest {
 using ::nonstd::operator<<;
 // using ::nonstd::operator==;
 
-#if string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_INTERNAL
+#if string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_INTERNAL
 using ::nonstd::string::operator<<;
 #endif
 

@@ -19,11 +19,11 @@ echo %clang% %version%: %std%
 set unit_config=^
     -Dstring_STRING_HEADER=\"nonstd/string.hpp\" ^
     -Dstring_TEST_NODISCARD=0 ^
-    -Dstring_CONFIG_SELECT_SV=string_CONFIG_SELECT_SV_INTERNAL
+    -Dstring_CONFIG_SELECT_STRING_VIEW=string_CONFIG_SELECT_STRING_VIEW_INTERNAL
 
-::string_CONFIG_SELECT_SV_INTERNAL
-::string_CONFIG_SELECT_SV_LITE
-::string_CONFIG_SELECT_SV_STD
+::string_CONFIG_SELECT_STRING_VIEW_INTERNAL
+::string_CONFIG_SELECT_STRING_VIEW_LITE
+::string_CONFIG_SELECT_STRING_VIEW_STD
 
 rem -flto / -fwhole-program
 set  optflags=-O2
