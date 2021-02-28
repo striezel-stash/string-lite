@@ -83,22 +83,14 @@ CASE( "contains: true if string contains sub string - string-string" )
 
 CASE( "contains: true if string contains sub string - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
-    EXPECT(     contains(std::string("abc123mno123xyz"), std::string_view("123")) );
-    EXPECT_NOT( contains(std::string("abc123mno123xyz"), std::string_view("789")) );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT(     contains(std::string("abc123mno123xyz"), string_view("123")) );
+    EXPECT_NOT( contains(std::string("abc123mno123xyz"), string_view("789")) );
 }
 
 CASE( "contains: true if string contains sub string - string_view-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
-    EXPECT(     contains(std::string_view("abc123mno123xyz"), std::string_view("123")) );
-    EXPECT_NOT( contains(std::string_view("abc123mno123xyz"), std::string_view("789")) );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT(     contains(string_view("abc123mno123xyz"), string_view("123")) );
+    EXPECT_NOT( contains(string_view("abc123mno123xyz"), string_view("789")) );
 }
 
 CASE( "contains: true if string contains regular expression - string-std::regexp" )
@@ -153,22 +145,14 @@ CASE( "starts_with: true if string starts with sub string - string-string" )
 
 CASE( "starts_with: true if string starts with sub string - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
-    EXPECT(     starts_with(std::string("abc123mno123xyz"), std::string_view("a")) );
-    EXPECT_NOT( starts_with(std::string("abc123mno123xyz"), std::string_view("b")) );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT(     starts_with(std::string("abc123mno123xyz"), string_view("a")) );
+    EXPECT_NOT( starts_with(std::string("abc123mno123xyz"), string_view("b")) );
 }
 
 CASE( "starts_with: true if string starts with sub string - string_view-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
-    EXPECT(     starts_with(std::string_view("abc123mno123xyz"), std::string_view("a")) );
-    EXPECT_NOT( starts_with(std::string_view("abc123mno123xyz"), std::string_view("b")) );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT(     starts_with(string_view("abc123mno123xyz"), string_view("a")) );
+    EXPECT_NOT( starts_with(string_view("abc123mno123xyz"), string_view("b")) );
 }
 
 // ends_with():
@@ -193,22 +177,14 @@ CASE( "ends_with: true if string ends with sub string - string-string" )
 
 CASE( "ends_with: true if string ends with sub string - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
-    EXPECT(     ends_with(std::string("abc123mno123xyz"), std::string_view("z")) );
-    EXPECT_NOT( ends_with(std::string("abc123mno123xyz"), std::string_view("y")) );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT(     ends_with(std::string("abc123mno123xyz"), string_view("z")) );
+    EXPECT_NOT( ends_with(std::string("abc123mno123xyz"), string_view("y")) );
 }
 
 CASE( "ends_with: true if string ends with sub string - string_view-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
-    EXPECT(     ends_with(std::string_view("abc123mno123xyz"), std::string_view("z")) );
-    EXPECT_NOT( ends_with(std::string_view("abc123mno123xyz"), std::string_view("y")) );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT(     ends_with(string_view("abc123mno123xyz"), string_view("z")) );
+    EXPECT_NOT( ends_with(string_view("abc123mno123xyz"), string_view("y")) );
 }
 
 // find_last():
@@ -231,26 +207,18 @@ CASE( "find_first: iterator to sub string in string - string-string" )
 
 CASE( "find_first: iterator to sub string in string - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
     // text((): "abc123mno123xyz"
 
-    EXPECT( text_end() != find_first(text(), std::string_view("123")) );
-    EXPECT( text_end() == find_first(text(), std::string_view("789")) );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT( text_end() != find_first(text(), string_view("123")) );
+    EXPECT( text_end() == find_first(text(), string_view("789")) );
 }
 
 CASE( "find_first: iterator to sub string in string_view - string_view-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
     // text((): "abc123mno123xyz"
 
-    EXPECT( text_view_end() != find_first(text_view(), std::string_view("123")) );
-    EXPECT( text_view_end() == find_first(text_view(), std::string_view("789")) );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT( text_view_end() != find_first(text_view(), string_view("123")) );
+    EXPECT( text_view_end() == find_first(text_view(), string_view("789")) );
 }
 
 // find_last():
@@ -273,26 +241,18 @@ CASE( "find_last: iterator to sub string in string - string-string" )
 
 CASE( "find_last: iterator to sub string in string - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
     // text((): "abc123mno123xyz"
 
-    EXPECT( text_end() != find_last(text(), std::string_view("123")) );
-    EXPECT( text_end() == find_last(text(), std::string_view("789")) );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT( text_end() != find_last(text(), string_view("123")) );
+    EXPECT( text_end() == find_last(text(), string_view("789")) );
 }
 
 CASE( "find_last: iterator to sub string in string_view - string_view-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
     // text((): "abc123mno123xyz"
 
-    EXPECT( text_view_end() != find_last(text_view(), std::string_view("123")) );
-    EXPECT( text_view_end() == find_last(text_view(), std::string_view("789")) );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT( text_view_end() != find_last(text_view(), string_view("123")) );
+    EXPECT( text_view_end() == find_last(text_view(), string_view("789")) );
 }
 
 // Modifiers:
@@ -340,15 +300,11 @@ CASE( "replace_all: Change all occurrences of sub string - string-string" )
 
 CASE( "replace_all: Change all occurrences of sub string - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
     std::string result( "abc123mno123xyz" );
 
-    (void) replace_all( result, std::string_view("123"), std::string("789"));
+    (void) replace_all( result, std::string("123"), string_view("789"));
 
     EXPECT( result == std::string("abc789mno789xyz") );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
 }
 
 // replaced_all():
@@ -365,21 +321,13 @@ CASE( "replaced_all: Return new string with all occurrences of sub string change
 
 CASE( "replaced_all: Return new string with all occurrences of sub string changed - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
     EXPECT( replaced_all( std::string("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
 }
 
 CASE( "replaced_all: Return new string with all occurrences of sub string changed - string_view-string_view" " [TODO]" )
 {
-#if string_HAVE_STD_STRING_VIEW
 // TODO : implement detail::replace_all(it...)
-    // EXPECT( replaced_all( std::string_view("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    // EXPECT( replaced_all( string_view("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
 }
 
 // replace_first():
@@ -413,23 +361,20 @@ CASE( "replace_first: Change the first occurrence of sub string - string-string"
 
 CASE( "replace_first: Change the first occurrence of sub string - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
     std::string result( "abc123mno123xyz" );
 
-    (void) replace_first( result, std::string_view("123"), std::string("789"));
+    (void) replace_first( result, string_view("123"), string_view("789"));
 
     EXPECT( result == std::string("abc789mno123xyz") );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
 }
 
 CASE( "replace_first: Change the first occurrence of sub string - string_view-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    std::string result( "abc123mno123xyz" );
+
+    (void) replace_first( result, string_view("123"), string_view("789"));
+
+    EXPECT( result == std::string("abc789mno123xyz") );
 }
 
 // replaced_first():
@@ -446,21 +391,13 @@ CASE( "replaced_first: Return new string with first occurrence of sub string cha
 
 CASE( "replaced_first: Return new string with first occurrence of sub string changed - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
     EXPECT( replaced_first( std::string("abc123mno123xyz"), "123", "789") == std::string("abc789mno123xyz") );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
 }
 
 CASE( "replaced_first: Return new string with first occurrence of sub string changed - string_view-string_view" " [TODO]" )
 {
-#if string_HAVE_STD_STRING_VIEW
 // TODO : implement detail::replaced_first(it...)
-    // EXPECT( replaced_first( std::string_view("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    // EXPECT( replaced_first( string_view("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
 }
 
 // replace_last():
@@ -494,23 +431,16 @@ CASE( "replace_last: Change the last occurrence of sub string - string-string" )
 
 CASE( "replace_last: Change the last occurrence of sub string - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
     std::string result( "abc123mno123xyz" );
 
-    (void) replace_last( result, std::string_view("123"), std::string("789"));
+    (void) replace_last( result, string_view("123"), std::string("789"));
 
     EXPECT( result == std::string("abc123mno789xyz") );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
 }
 
 CASE( "replace_last: Change the last occurrence of sub string - string_view-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    // TODO
 }
 
 // replaced_last():
@@ -527,21 +457,13 @@ CASE( "replaced_last: Return new string with last occurrence of sub string chang
 
 CASE( "replaced_last: Return new string with last occurrence of sub string changed - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
     EXPECT( replaced_last( std::string("abc123mno123xyz"), "123", "789") == std::string("abc123mno789xyz") );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
 }
 
 CASE( "replaced_last: Return new string with last occurrence of sub string changed - string_view-string_view" " [TODO]" )
 {
-#if string_HAVE_STD_STRING_VIEW
 // TODO : implement detail::replaced_last(it...)
-    // EXPECT( replaced_last( std::string_view("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    // EXPECT( replaced_last( string_view("abc123mno123xyz"), "123", "789") == std::string("abc789mno789xyz") );
 }
 
 // to_lowercase(), to_uppercase:
@@ -628,13 +550,9 @@ CASE( "append: Append a string to a string in-place - string-string" )
 
 CASE( "append: Append a string to a string in-place - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
     std::string text("abc");
 
-    EXPECT( append(text, std::string_view("xyz")) == std::string("abcxyz") );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT( append(text, string_view("xyz")) == std::string("abcxyz") );
 }
 
 // appended():
@@ -651,12 +569,10 @@ CASE( "appended: Return new string with second string appended to first string -
 
 CASE( "appended: Return new string with second string appended to first string - string-string_view" )
 {
-#if string_HAVE_STD_STRING_VIEW
-    EXPECT( appended(std::string("abc"), std::string_view("xyz")) == std::string("abcxyz") );
-#else
-    EXPECT( !!"std::string_view is not available (pre C++17)." );
-#endif
+    EXPECT( appended(std::string("abc"), string_view("xyz")) == std::string("abcxyz") );
 }
+
+// TODO Add tests for string_view:
 
 // join(), split():
 

@@ -30,6 +30,16 @@
 //# pragma message("string.hpp: Note: Tweak header not supported.")
 #endif
 
+#ifdef __has_include
+# if __has_include( <string_view> )
+#  define string_HAVE_STD_STRING_VIEW  1
+# else
+#  define string_HAVE_STD_STRING_VIEW  0
+# endif
+#else
+# define  string_HAVE_STD_STRING_VIEW  0
+#endif
+
 // Control presence of exception handling (try and auto discover):
 
 #ifndef string_CONFIG_NO_EXCEPTIONS
@@ -41,6 +51,25 @@
 # else
 #  define string_CONFIG_NO_EXCEPTIONS  1
 # endif
+#endif
+
+// TODO Switch between various versions of string_view:
+// - minimal version: nonstd::string::string_view
+// - lite version: nonstd::string_view
+// - std version: std::string_view
+
+#define  string_CONFIG_SELECT_SV_INTERNAL  1
+#define  string_CONFIG_SELECT_SV_NONSTD    2
+#define  string_CONFIG_SELECT_SV_STD       3
+
+#ifndef  string_CONFIG_SELECT_SV
+# define string_CONFIG_SELECT_SV string_CONFIG_SELECT_SV_INTERNAL
+#endif
+
+#if      string_CONFIG_SELECT_SV==string_CONFIG_SELECT_SV_STD && !string_HAVE_STD_STRING_VIEW
+# error  string-lite: std::string_view selected but is not available: C++17?
+#elif   0 // string_CONFIG_SELECT_SV==string_CONFIG_SELECT_SV_NONSTD && !defined(NONSTD_SV_LITE_H_INCLUDED)
+# error  string-lite: string-view-lite selected but is not available: nonstd/string_view.hpp included before nonstd/string.hpp?
 #endif
 
 // C++ language version detection (C++20 is speculative):
@@ -162,6 +191,12 @@
 # define string_constexpr14  /*constexpr*/
 #endif
 
+#if string_HAVE_EXPLICIT_CONVERSION
+# define string_explicit  explicit
+#else
+# define string_explicit  /*explicit*/
+#endif
+
 #if string_HAVE_NOEXCEPT && !string_CONFIG_NO_EXCEPTIONS
 # define string_noexcept noexcept
 #else
@@ -241,6 +276,14 @@
 # include <type_traits>
 #elif string_HAVE_TR1_TYPE_TRAITS
 # include <tr1/type_traits>
+#endif
+
+#if   string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_INTERNAL
+// noop
+#elif string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_NONSTD
+# include "nonstd/string_view.hpp"
+#elif string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_STD
+# include <string_view>
 #endif
 
 // Method detection:
@@ -583,7 +626,9 @@ string_nodiscard inline typename StringT::const_reverse_iterator crend( StringT 
 #endif // string_CPP11_000
 #endif // string_HAVE_FREE_BEGIN
 
-// Minimal string_view for string algorithm library:
+// Minimal internal string_view for string algorithm library, when requested:
+
+#if string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_INTERNAL
 
 template
 <
@@ -643,6 +688,43 @@ public:
         , size_( s.size() )
     {}
 
+// #if string_HAVE_EXPLICIT_CONVERSION
+
+    template< class Allocator >
+    string_explicit operator std::basic_string<CharT, Traits, Allocator>() const
+    {
+        return to_string( Allocator() );
+    }
+
+// #endif // string_HAVE_EXPLICIT_CONVERSION
+
+#if string_CPP11_OR_GREATER
+
+    template< class Allocator = std::allocator<CharT> >
+    std::basic_string<CharT, Traits, Allocator>
+    to_string( Allocator const & a = Allocator() ) const
+    {
+        return std::basic_string<CharT, Traits, Allocator>( begin(), end(), a );
+    }
+
+#else
+
+    std::basic_string<CharT, Traits>
+    to_string() const
+    {
+        return std::basic_string<CharT, Traits>( begin(), end() );
+    }
+
+    template< class Allocator >
+    std::basic_string<CharT, Traits, Allocator>
+    to_string( Allocator const & a ) const
+    {
+        return std::basic_string<CharT, Traits, Allocator>( begin(), end(), a );
+    }
+
+#endif // string_CPP11_OR_GREATER
+
+
     string_constexpr14 size_type find( basic_string_view v, size_type pos = 0 ) const string_noexcept  // (1)
     {
         return assert( v.size() == 0 || v.data() != string_nullptr )
@@ -686,6 +768,12 @@ public:
     string_constexpr const_iterator cbegin() const string_noexcept { return begin(); }
     string_constexpr const_iterator cend()   const string_noexcept { return end();   }
 
+    string_constexpr const_reverse_iterator rbegin()  const string_noexcept { return const_reverse_iterator( end() );   }
+    string_constexpr const_reverse_iterator rend()    const string_noexcept { return const_reverse_iterator( begin() ); }
+
+    string_constexpr const_reverse_iterator crbegin() const string_noexcept { return rbegin(); }
+    string_constexpr const_reverse_iterator crend()   const string_noexcept { return rend();   }
+
     string_constexpr size_type to_pos( const_iterator it ) const
     {
         return it == cend() ? npos : size_type( it - cbegin() );
@@ -715,7 +803,56 @@ typedef basic_string_view<char16_t>  u16string_view;
 typedef basic_string_view<char32_t>  u32string_view;
 #endif
 
+template< typename T >
+string_nodiscard inline size_t size( basic_string_view<T> const & sv )
+{
+    return sv.size();
+}
+
+template< typename T >
+string_nodiscard inline typename basic_string_view<T>::const_reverse_iterator
+crbegin( basic_string_view<T> const & sv )
+{
+    typedef typename basic_string_view<T>::const_reverse_iterator const_reverse_iterator;
+    return const_reverse_iterator( sv.rbegin() );
+}
+
+template< typename T >
+string_nodiscard inline typename basic_string_view<T>::const_reverse_iterator
+crend( basic_string_view<T> const & sv )
+{
+    typedef typename basic_string_view<T>::const_reverse_iterator const_reverse_iterator;
+    return const_reverse_iterator( sv.rend() );
+}
+
+#elif string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_NONSTD
+
+using nonstd::sv_lite::basic_string_view;
+using nonstd::sv_lite::string_view;
+using nonstd::sv_lite::wstring_view;
+
+#if nssv_HAVE_WCHAR16_T
+using nonstd::sv_lite::u16string_view;
+#endif
+#if nssv_HAVE_WCHAR32_T
+using nonstd::sv_lite::u32string_view;
+#endif
+
+#elif string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_STD
+
+using std::basic_string_view;
+using std::string_view;
+using std::wstring_view;
+#if string_HAVE_CHAR16_T
+using std::u16string_view;
+using std::u32string_view;
+#endif
+
+#endif // string_CONFIG_SELECT_SV_INTERNAL
+
 // Convert string_view to std::string:
+
+#if string_CONFIG_SELECT_SV != string_CONFIG_SELECT_SV_NONSTD
 
 template< class CharT, class Traits >
 std::basic_string<CharT, Traits>
@@ -731,7 +868,45 @@ to_string( basic_string_view<CharT, Traits> v, Allocator const & a )
     return std::basic_string<CharT, Traits, Allocator>( v.begin(), v.end(), a );
 }
 
-// namespace details:
+#endif // string_CONFIG_SELECT_SV
+
+// to_identity() - let nonstd::string_view operate with pre-std::string_view std::string methods:
+
+template< class CharT >
+CharT const * to_identity( CharT const * s )
+{
+    return s;
+}
+
+template< class CharT, class Traits, class Allocator >
+std::basic_string<CharT, Traits, Allocator>
+to_identity( std::basic_string<CharT, Traits, Allocator> const & s )
+{
+    return s;
+}
+
+#if string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_STD
+
+template< class CharT, class Traits >
+basic_string_view<CharT, Traits>
+to_identity( basic_string_view<CharT, Traits> v )
+{
+    return v;
+}
+
+#else
+
+template< class CharT, class Traits >
+std::basic_string<CharT, Traits>
+to_identity( basic_string_view<CharT, Traits> v )
+{
+    return to_string( v );
+}
+
+#endif // string_CONFIG_SELECT_SV
+
+// namespace detail:
+
 namespace detail {
 
 // for string_ENABLE_IF_():
@@ -896,7 +1071,7 @@ std::basic_string<CharT> & replace_all( std::basic_string<CharT> & text, FromT c
         if ( pos == std::string::npos )
             return text;
 
-        text.replace( pos, size(from), to );
+        text.replace( pos, size(from), to_identity(to) );
     }
 }
 
@@ -920,12 +1095,12 @@ StringT & replace_all( StringT & text, FromT const & from, ToT const & to ) stri
 template< typename CharT, typename FromT, typename ToT >
 std::basic_string<CharT> & replace_first( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
 {
-    const size_t pos = text.find( from );
+    const size_t pos = text.find( to_identity(from) );
 
     if ( pos == std::string::npos )
         return text;
 
-    return text.replace( pos, size(from), to );
+    return text.replace( pos, size(from), to_identity(to) );
 }
 
 // replace_last():
@@ -934,12 +1109,12 @@ template< typename CharT, typename FromT, typename ToT >
 std::basic_string<CharT> &
 replace_last( std::basic_string<CharT> & text, FromT const & from, ToT const & to ) string_noexcept
 {
-    const size_t pos = text.rfind( from );
+    const size_t pos = text.rfind( to_identity(from) );
 
     if ( pos == std::string::npos )
         return text;
 
-    return text.replace( pos, size(from), to );
+    return text.replace( pos, size(from), to_identity(to) );
 }
 
 // append():
@@ -948,14 +1123,14 @@ template< typename CharT, typename TailT >
 string_constexpr CharT *
 append( CharT * text, TailT const & tail ) string_noexcept
 {
-    return std::strcat( text, tail );
+    return std::strcat( text, to_identity(tail) );
 }
 
 template< typename CharT, typename TailT >
 string_constexpr std::basic_string<CharT> &
 append( std::basic_string<CharT> & text, TailT const & tail ) string_noexcept
 {
-    return text.append( tail );
+    return text.append( to_identity(tail) );
 }
 
 // TODO join() - alg
@@ -1517,6 +1692,16 @@ join( Coll const & coll, SepT const & sep ) string_noexcept
 // - regex_delimiter - regular expression delimiter
 // - char_delimiter - single-char delimiter
 
+template< typename CharT >
+basic_string_view<CharT> basic_delimiter_end(basic_string_view<CharT> sv)
+{
+#if string_CONFIG_SELECT_SV != string_CONFIG_SELECT_SV_STD
+    return basic_string_view<CharT>(sv.cend(), size_t(0));
+#else
+    return basic_string_view<CharT>(sv.data() + sv.size(), size_t(0));
+#endif
+}
+
 // a single string delimiter:
 
 template< typename CharT >
@@ -1569,7 +1754,7 @@ public:
             }
 
             // nothing left, return 'done':
-            return basic_string_view<CharT>(text.cend(), size_t(0));
+            return basic_delimiter_end(text);
         }
 
         // delimited text:
@@ -1602,7 +1787,7 @@ public:
     {
         // out of range, return 'done':
         if ( pos > text.length())
-            return basic_string_view<CharT>(text.cend(), size_t(0));
+            return basic_delimiter_end(text);
 
         // a single character at a time:
         if (0 == delimiters_.length())
@@ -1628,7 +1813,7 @@ public:
             }
 
             // nothing left, return 'done':
-            return basic_string_view<CharT>(text.cend(), size_t(0));
+            return basic_delimiter_end(text);
         }
 
         // delimited text:
@@ -1661,7 +1846,7 @@ public:
     {
         // out of range, return 'done':
         if ( pos > text.length())
-            return basic_string_view<CharT>(text.cend(), size_t(0));
+            return basic_delimiter_end(text);
 
         // current slice:
         return text.substr(pos, len_);
@@ -1717,7 +1902,7 @@ public:
 
         // out of range, return 'done':
         if ( pos > text.length())
-            return basic_string_view<CharT>(text.cend(), size_t(0));
+            return basic_delimiter_end(text);
 
         // a single character at a time:
         if (0 == delimiter_len_)
@@ -1742,7 +1927,7 @@ public:
             }
 
             // nothing left, return 'done':
-            return basic_string_view<CharT>(text.cend(), size_t(0));
+            return basic_delimiter_end(text);
         }
 
         // at a trailing delimiter, remember for next round:
@@ -1783,13 +1968,13 @@ public:
     {
         // out of range, return 'done':
         if ( pos > text.length())
-            return basic_string_view<CharT>(text.cend(), size_t(0));
+            return basic_delimiter_end(text);
 
         size_t found = text.find(c_, pos);
 
         // nothing left, return 'done':
         if (found == basic_string_view<CharT>::npos)
-            return basic_string_view<CharT>(text.cend(), size_t(0));
+            return basic_delimiter_end(text);
 
         // the c_ in the input string:
         return text.substr(found, 1);

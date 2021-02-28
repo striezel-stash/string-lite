@@ -34,6 +34,11 @@
 
 #include <iostream>
 
+// TODO switch between various versions of string_view:
+// - minimal version: nonstd::string::string_view
+// - lite version: nonstd::string_view
+// - std version: std::string_view
+
 // #if string_CPP17_OR_GREATER && defined(__has_include )
 // # if __has_include( <string_view> )
 // #  define string_HAVE_STD_STRING_VIEW  1
@@ -43,8 +48,6 @@
 // #else
 // # define  string_HAVE_STD_STRING_VIEW  0
 // #endif
-
-# define  string_HAVE_STD_STRING_VIEW  0
 
 // String to use with iterators:
 
@@ -59,7 +62,7 @@ inline std::string::const_iterator text_end()
     return text().end();
 }
 
-#if string_HAVE_STD_STRING_VIEW
+#if string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_STD
 
 inline std::string_view text_view()
 {
@@ -118,13 +121,13 @@ namespace nonstd {
 // see  http://stackoverflow.com/a/10651752/437272
 
 template< typename CharT, typename AllocT >
-inline std::ostream & operator<< ( std::ostream & os, CsString::CsBasicString<CharT,AllocT> const & s )
+inline std::ostream & operator<<( std::ostream & os, CsString::CsBasicString<CharT,AllocT> const & s )
 {
     return os << s.constData();
 }
 
 template< typename CharT, typename AllocT >
-inline std::ostream & operator<< ( std::ostream & os, typename CsString::CsBasicString<CharT,AllocT>::CsStringIterator pos )
+inline std::ostream & operator<<( std::ostream & os, typename CsString::CsBasicString<CharT,AllocT>::CsStringIterator pos )
 {
     return os << "[CsStringIterator]";
 
@@ -145,7 +148,7 @@ inline std::ostream & operator<< ( std::ostream & os, typename CsString::CsBasic
 
 namespace nonstd {
 
-inline std::ostream & operator<< ( std::ostream & os, std::string::const_iterator pos )
+inline std::ostream & operator<<( std::ostream & os, std::string::const_iterator pos )
 {
     // return os << "[it]";
 
@@ -162,12 +165,17 @@ inline std::ostream & operator<< ( std::ostream & os, std::string::const_iterato
 
 namespace string {
 
-inline std::ostream & operator<< ( std::ostream & os, string_view sv )
+#if string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_INTERNAL
+
+inline std::ostream & operator<<( std::ostream & os, string_view sv )
 {
     return os << to_string(sv);
 }
+#else
+// using nonstd::operator<<;
+#endif
 
-// inline std::ostream & operator<< ( std::ostream & os, string_view::const_iterator pos )
+// inline std::ostream & operator<<( std::ostream & os, string_view::const_iterator pos )
 // {
 //     // return os << "[it-sv]";
 
@@ -199,9 +207,9 @@ inline bool operator==( std::vector<std::string> const & a, std::vector<string_v
 
 } // namespace string
 
-#if string_HAVE_STD_STRING_VIEW && _MSC_VER
+#if _MSC_VER && string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_STD
 
-inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_iterator pos )
+inline std::ostream & operator<<( std::ostream & os, std::string_view::const_iterator pos )
 {
     // return os << "[it-sv]";
 
@@ -215,10 +223,10 @@ inline std::ostream & operator<< ( std::ostream & os, std::string_view::const_it
     }
     return os << "\"";
 }
-#endif // string_HAVE_STD_STRING_VIEW
+#endif
 
 template< typename T >
-inline std::ostream & operator<< ( std::ostream & os, std::vector<T> vec )
+inline std::ostream & operator<<( std::ostream & os, std::vector<T> vec )
 {
     os << "[vector:";
 
@@ -246,18 +254,21 @@ namespace lest {
 
 using ::nonstd::operator<<;
 // using ::nonstd::operator==;
+
+#if string_CONFIG_SELECT_SV == string_CONFIG_SELECT_SV_INTERNAL
 using ::nonstd::string::operator<<;
-// using ::nonstd::string::operator==;
+#endif
+
+using ::nonstd::string::operator==;
 
 } // namespace lest
 
 namespace std {
 
 using ::nonstd::operator<<;
-using ::nonstd::string::operator<<;
+// using ::nonstd::string::operator<<;
 
 }
-
 
 #include "lest_cpp03.hpp"
 

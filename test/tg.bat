@@ -19,13 +19,18 @@ echo %gpp% %version%: %std% %args%
 
 set unit_config=^
     -Dstring_STRING_HEADER=\"nonstd/string.hpp\" ^
-    -Dstring_TEST_NODISCARD=0
+    -Dstring_TEST_NODISCARD=0 ^
+    -Dstring_CONFIG_SELECT_SV=string_CONFIG_SELECT_SV_STD
+
+::string_CONFIG_SELECT_SV_INTERNAL
+::string_CONFIG_SELECT_SV_LITE
+::string_CONFIG_SELECT_SV_STD
 
 rem -flto / -fwhole-program
 set  optflags=-O2
 set warnflags=-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wno-padded -Wno-missing-noreturn -Wno-sign-conversion -Wno-conversion
 
-%gpp% -std=%std% %optflags% %warnflags% %unit_config% -o %unit_file%-main.t.exe -I../include -Ics_string -I. %unit_file%-main.t.cpp %unit_file%.t.cpp && %unit_file%-main.t.exe
+%gpp% -std=%std% %optflags% %warnflags% %unit_config% -o %unit_file%-main.t.exe -I../../string-view-lite/include -I../include -Ics_string -I. %unit_file%-main.t.cpp %unit_file%.t.cpp && %unit_file%-main.t.exe
 
 endlocal & goto :EOF
 

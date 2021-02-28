@@ -16,7 +16,12 @@ echo VC%version%: %args%
 
 set unit_config=^
     -Dstring_STRING_HEADER=\"nonstd/string.hpp\" ^
-    -Dstring_TEST_NODISCARD=1
+    -Dstring_TEST_NODISCARD=1 ^
+    -Dstring_CONFIG_SELECT_SV=string_CONFIG_SELECT_SV_INTERNAL
+
+::string_CONFIG_SELECT_SV_INTERNAL
+::string_CONFIG_SELECT_SV_LITE
+::string_CONFIG_SELECT_SV_STD
 
 set msvc_defines=^
     -D_CRT_SECURE_NO_WARNINGS ^
@@ -24,7 +29,7 @@ set msvc_defines=^
 
 set CppCoreCheckInclude=%VCINSTALLDIR%\Auxiliary\VS\include
 
-cl -W3 -EHsc %std% %unit_config% %msvc_defines% -I"%CppCoreCheckInclude%" -I../include -Ics_string -I. %unit_file%-main.t.cpp %unit_file%.t.cpp && %unit_file%-main.t.exe
+cl -nologo -W3 -EHsc %std% %unit_config% %msvc_defines% -I"%CppCoreCheckInclude%" -I../../string-view-lite/include -I../include -Ics_string -I. %unit_file%-main.t.cpp %unit_file%.t.cpp && %unit_file%-main.t.exe
 endlocal & goto :EOF
 
 :: subroutines:

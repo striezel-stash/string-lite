@@ -111,6 +111,11 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | std::basic_string&lt;&gt;<br>**to_string**(basic_string_view&lt;&gt; v) |&nbsp;|
 | &nbsp;             | std::basic_string&lt;&gt;<br>**to_string**(basic_string_view&lt;&gt; v, Allocator const & a) |&nbsp;|
 | &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | CharT const \*<br>**to_identity**(CharT const \* s) |&nbsp;|
+| &nbsp;             | basic_string&lt;&gt;<br>**to_identity**(basic_string&lt;&gt; const & s) |&nbsp;|
+| &nbsp;             | basic_string_view&lt;&gt;<br>**to_identity**(basic_string_view&lt;&gt; v) |std::string_view |
+| &nbsp;             | basic_string&lt;&gt;<br>**to_identity**(basic_string_view&lt;&gt; v) |nonstd::string_view |
+| &nbsp;             | &nbsp;                                      |&nbsp;|
 | **Observers**      | bool **is_empty**(CharT \* s)               | true if C-string is empty |
 | &nbsp;             | bool **is_empty**(StringT const & s)        | true if string is empty |
 | &nbsp;             | &nbsp;                                      |&nbsp;|
