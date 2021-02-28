@@ -278,11 +278,12 @@
 # include <tr1/type_traits>
 #endif
 
-#if   string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_INTERNAL
+#if    string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_INTERNAL
 // noop
-#elif string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_NONSTD
+#elif  string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_NONSTD
+# define nssv_CONFIG_SELECT_STRING_VIEW    nssv_STRING_VIEW_NONSTD
 # include "nonstd/string_view.hpp"
-#elif string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_STD
+#elif  string_CONFIG_SELECT_STRING_VIEW == string_CONFIG_SELECT_STRING_VIEW_STD
 # include <string_view>
 #endif
 
