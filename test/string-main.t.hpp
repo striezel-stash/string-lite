@@ -34,21 +34,6 @@
 
 #include <iostream>
 
-// TODO switch between various versions of string_view:
-// - minimal version: nonstd::string::string_view
-// - lite version: nonstd::string_view
-// - std version: std::string_view
-
-// #if string_CPP17_OR_GREATER && defined(__has_include )
-// # if __has_include( <string_view> )
-// #  define string_HAVE_STD_STRING_VIEW  1
-// # else
-// #  define string_HAVE_STD_STRING_VIEW  0
-// # endif
-// #else
-// # define  string_HAVE_STD_STRING_VIEW  0
-// #endif
-
 // String to use with iterators:
 
 inline std::string & text()
