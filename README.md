@@ -58,7 +58,7 @@ prompt> g++ -std=c++98 -Wall -I../include -o 01-basic.exe 01-basic.cpp && 01-bas
 
 **string lite** is a single-file header-only library to provide various string algorithms. Firstly meant to get you up and running easily, not necessarily to provide everything that might be useful and in the most efficient manner.
 
-Creating *string lite* I've had a look at the [C++ standard](https://eel.is/c++draft/#strings), [Boost](https://www.boost.org/doc/libs/1_60_0/doc/html/string_algo.html), [Facebook Folly](https://github.com/facebook/folly/blob/master/folly/String.h), the [Python standard library](https://docs.python.org/3/library/string.html) and several algorithms I created over time.
+Creating *string lite* I've had a look at the [C++ standard](https://eel.is/c++draft/#strings), [Boost](https://www.boost.org/doc/libs/1_60_0/doc/html/string_algo.html), [Facebook Folly](https://github.com/facebook/folly/blob/master/folly/String.h), the [Python standard library](https://docs.python.org/3/library/string.html), the [proposal for `std::split()`](http://wg21.link/n3593) and several algorithms I created over time.
 
 **Features and properties of string lite** are ease of installation (single header), freedom of dependencies other than the standard library.
 
@@ -92,77 +92,81 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | **limit_delimiter**                         | not implemented |
 | &nbsp;             | **regex_delimiter**                         | regular expression |
 | &nbsp;             | **char_delimiter**                          | character position |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
 | **Utilities**      | CharT **nullchr**()                         | null character of template type |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | size_t **size**(CollT & c)                  | size of collection, C++string |
 | &nbsp;             | size_t **size**(CharT \* s)                 | length of C-string, char, wchar, u16char, u32char |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | CharT \* **begin**(CharT \* c)              | iterator to C-string |
 | &nbsp;             | CharT \* **end**(CharT \* c)                | iterator past C-string |
 | &nbsp;             | CharT const \* **cbegin**(CharT \* c)       | const iterator to C-string |
 | &nbsp;             | CharT const \* **cend**(CharT \* c)         | const iterator past C-string |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
-| &nbsp;             | CollT::iterator **begin**(CollT & c)        | iterator to collection, C++string |
-| &nbsp;             | CollT::iterator **end**(CollT & c)          | iterator past collection, C++string |
-| &nbsp;             | CollT::const_iterator **cbegin**(CollT & c) | const iterator to collection, C++string |
-| &nbsp;             | CollT::const_iterator **cend**(CollT & c)   | const iterator past collection, C++string |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
-| &nbsp;             | std::basic_string&lt;&gt;<br>**to_string**(basic_string_view&lt;&gt; v) |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | IterT **begin**(CollT & c)                  | iterator to collection, C++string |
+| &nbsp;             | IterT **end**(CollT & c)                    | iterator past collection, C++string |
+| &nbsp;             | IterT **cbegin**(CollT & c)                 | const iterator to collection, C++string |
+| &nbsp;             | IterT **cend**(CollT & c)                   | const iterator past collection, C++string |
+| &nbsp;             | IterT **rbegin**(CollT & c)                 | reverse iterator to collection, C++string |
+| &nbsp;             | IterT **rend**(CollT & c)                   | reverse iterator past collection, C++string |
+| &nbsp;             | IterT **crbegin**(CollT & c)                | const reverse iterator to collection, C++string |
+| &nbsp;             | IterT **crend**(CollT & c)                  | const reverse iterator past collection, C++string |
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | std::basic_string&lt;&gt;<br>**to_string**(basic_string_view&lt;&gt; v)                      |&nbsp;|
 | &nbsp;             | std::basic_string&lt;&gt;<br>**to_string**(basic_string_view&lt;&gt; v, Allocator const & a) |&nbsp;|
-| &nbsp;             | &nbsp;                                      |&nbsp;|
-| &nbsp;             | CharT const \*<br>**to_identity**(CharT const \* s) |&nbsp;|
-| &nbsp;             | basic_string&lt;&gt;<br>**to_identity**(basic_string&lt;&gt; const & s) |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | CharT const \*<br>**to_identity**(CharT const \* s)                       |&nbsp;|
+| &nbsp;             | basic_string&lt;&gt;<br>**to_identity**(basic_string&lt;&gt; const & s)   |&nbsp;|
 | &nbsp;             | basic_string_view&lt;&gt;<br>**to_identity**(basic_string_view&lt;&gt; v) |std::string_view |
-| &nbsp;             | basic_string&lt;&gt;<br>**to_identity**(basic_string_view&lt;&gt; v) |nonstd::string_view |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | basic_string&lt;&gt;<br>**to_identity**(basic_string_view&lt;&gt; v)      |nonstd::string_view |
+| &nbsp;             | &nbsp; | &nbsp; |
 | **Observers**      | bool **is_empty**(CharT \* s)               | true if C-string is empty |
 | &nbsp;             | bool **is_empty**(StringT const & s)        | true if string is empty |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
-| &nbsp;             | bool **contains**(StringT const & s, CharT chr) | true if string contains chr |
-| &nbsp;             | bool **contains**(StringT const & s, SubT const & substr) | true if string contains substring |
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | bool **contains**(StringT const & s, CharT chr)              | true if string contains chr |
+| &nbsp;             | bool **contains**(StringT const & s, SubT const & substr)    | true if string contains substring |
 | &nbsp;             | bool **contains**(StringT const & s, std::regex const & substr) | true if string contains regular expression |
-| &nbsp;             | bool **contains_re**(StringT const & s, ReT const & re) | true if string contains regular expression |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
-| &nbsp;             | bool **starts_with**(StringT const & s, CharT chr) | true if string starts with chr |
+| &nbsp;             | bool **contains_re**(StringT const & s, ReT const & re)      | true if string contains regular expression |
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | bool **starts_with**(StringT const & s, CharT chr)           | true if string starts with chr |
 | &nbsp;             | bool **starts_with**(StringT const & s, SubT const & substr) | true if string starts with substring |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
-| &nbsp;             | bool **ends_with**(StringT const & s, CharT chr) | true if string ends with chr |
-| &nbsp;             | bool **ends_with**(StringT const & s, SubT const & substr) | true if string ends with substring |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | bool **ends_with**(StringT const & s, CharT chr)             | true if string ends with chr |
+| &nbsp;             | bool **ends_with**(StringT const & s, SubT const & substr)   | true if string ends with substring |
+| &nbsp;             | &nbsp; | &nbsp; |
 | **Searching**      | IterT **find_first**(StringT & s, SubT const & substr)       | provide iterator to substring |
 | &nbsp;             | IterT **find_first**(StringT const & s, SubT const & substr) | provide const iterator to substring |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | IterT **find_last**(StringT & s, SubT const & substr)        | provide iterator to substring |
 | &nbsp;             | IterT **find_last**(StringT const & s, SubT const & substr)  | provide const iterator to substring |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
 | **Modifiers**      | CharT \* **clear**(CharT \* s)              | make C-string empty |
 | &nbsp;             | StringT & **clear**(StringT & s)            | make string empty |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | CharT \* **to_lowercase**(CharT \* p)       | convert C-string to lowercase |
 | &nbsp;             | CharT \* **to_uppercase**(CharT \* p)       | convert C-string to uppercase |
 | &nbsp;             | StringT & **to_lowercase**(StringT & s)     | convert string to lowercase  |
 | &nbsp;             | StringT & **to_uppercase**(StringT & s)     | convert string to uppercase  |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | StringT **as_lowercase**(StringT const & s) | provide string converted to lowercase |
 | &nbsp;             | StringT **as_uppercase**(StringT const & s) | provide string converted to uppercase |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
-| &nbsp;             | StringT & **replace_all**(StringT & s, FromT const & from, ToT const to) |xxx |
-| &nbsp;             | StringT **replaced_all**(StringT const & s, FromT const & from, ToT const to) |xxx |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
-| &nbsp;             | StringT & **replace_first**(StringT & s, FromT const & from, ToT const to) |xxx |
-| &nbsp;             | StringT **replaced_first**(StringT const & s, FromT const & from, ToT const to) |xxx |
-| &nbsp;             | &nbsp;                                      |&nbsp;|
-| &nbsp;             | StringT & **replace_last**(StringT & s, FromT const & from, ToT const to) |xxx |
-| &nbsp;             | StringT **replaced_last**(StringT const & s, FromT const & from, ToT const to) |xxx |
-| &nbsp;             | &nbsp;                                                      |&nbsp;|
-| **Combining**      | CharT \* **append**(CharT \* s, TailT const & tail)         |&nbsp;|
-| &nbsp;             | StringT & **append**(StringT & s, TailT const & tail)       |&nbsp;|
-| &nbsp;             | StringT **appended**(StringT const & s, TailT const & tail) |&nbsp;|
-| &nbsp;             | &nbsp;                                      |&nbsp;|
-| &nbsp;             | StringT **join**(Coll const & coll, SepT const & sep)       |&nbsp;|
-| &nbsp;             | std::vector&lt;string_view&gt; **split**(string_view text, Delimiter d)    |&nbsp;|
-| &nbsp;             | std::vector&lt;string_view&gt; **split**(string_view text, char const * d) |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | StringT & **replace_all**(StringT & s, FromT const & from, ToT const & to)        |&nbsp;|
+| &nbsp;             | StringT **replaced_all**(StringT const & s, FromT const & from, ToT const & to)   |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | StringT & **replace_first**(StringT & s, FromT const & from, ToT const & to)      |&nbsp;|
+| &nbsp;             | StringT **replaced_first**(StringT const & s, FromT const & from, ToT const & to) |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | StringT & **replace_last**(StringT & s, FromT const & from, ToT const & to)       |&nbsp;|
+| &nbsp;             | StringT **replaced_last**(StringT const & s, FromT const & from, ToT const & to)  |&nbsp;|
+| &nbsp;             | &nbsp;                                                           |&nbsp;|
+| **Combining**      | CharT \* **append**(CharT \* s, TailT const & tail)              |&nbsp;|
+| &nbsp;             | StringT & **append**(StringT & s, TailT const & tail)            |&nbsp;|
+| &nbsp;             | StringT **appended**(StringT const & s, TailT const & tail)      |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | StringT **join**(Coll const & coll, SepT const & sep)            |&nbsp;|
+| &nbsp;             | std::vector&lt;SViewT&gt; **split**(SViewT text, Delimiter d)    | See delimiter types |
+| &nbsp;             | std::vector&lt;SViewT&gt; **split**(SViewT text, char const * d) |&nbsp;|
 
 Note: with `StringT const &` the string type can also be `string_view`.
 
