@@ -1763,6 +1763,13 @@ inline StringT const default_trim_set()
     return " \t\n";
 }
 
+template< typename CharT, typename SetT >
+string_constexpr CharT *
+trim_left( CharT * text, SetT const * set ) string_noexcept
+{
+    return detail::trim_left( text, set );
+}
+
 template< typename CharT >
 string_constexpr CharT *
 trim_left( CharT * text ) string_noexcept
@@ -1770,9 +1777,9 @@ trim_left( CharT * text ) string_noexcept
     return trim_left( text, default_trim_set<CharT const *>() );
 }
 
-template< typename CharT, typename SetT >
-string_constexpr CharT *
-trim_left( CharT * text, SetT const * set ) string_noexcept
+template< typename StringT, typename SetT >
+string_constexpr StringT &
+trim_left( StringT & text, SetT const & set ) string_noexcept
 {
     return detail::trim_left( text, set );
 }
@@ -1785,10 +1792,11 @@ trim_left( StringT & text ) string_noexcept
 }
 
 template< typename StringT, typename SetT >
-string_constexpr StringT &
-trim_left( StringT & text, SetT const & set ) string_noexcept
+string_constexpr StringT
+trimmed_left( StringT const & text, SetT const & set ) string_noexcept
 {
-    return detail::trim_left( text, set );
+    StringT result( text );
+    return detail::trim_left( result, set );
 }
 
 template< typename StringT >
@@ -1798,15 +1806,14 @@ trimmed_left( StringT const & text ) string_noexcept
     return trimmed_left( text, default_trim_set<StringT>() );
 }
 
-template< typename StringT, typename SetT >
-string_constexpr StringT
-trimmed_left( StringT const & text, SetT const & set ) string_noexcept
-{
-    StringT result( text );
-    return detail::trim_left( result, set );
-}
-
 // trim_right():
+
+template< typename CharT, typename SetT >
+string_constexpr CharT *
+trim_right( CharT * text, SetT const * set ) string_noexcept
+{
+    return detail::trim_right( text, set );
+}
 
 template< typename CharT >
 string_constexpr CharT *
@@ -1815,9 +1822,9 @@ trim_right( CharT * text ) string_noexcept
     return trim_right( text, default_trim_set<CharT const *>() );
 }
 
-template< typename CharT, typename SetT >
-string_constexpr CharT *
-trim_right( CharT * text, SetT const * set ) string_noexcept
+template< typename StringT, typename SetT >
+string_constexpr StringT &
+trim_right( StringT & text, SetT const & set ) string_noexcept
 {
     return detail::trim_right( text, set );
 }
@@ -1830,10 +1837,11 @@ trim_right( StringT & text ) string_noexcept
 }
 
 template< typename StringT, typename SetT >
-string_constexpr StringT &
-trim_right( StringT & text, SetT const & set ) string_noexcept
+string_constexpr StringT
+trimmed_right( StringT const & text, SetT const & set ) string_noexcept
 {
-    return detail::trim_right( text, set );
+    StringT result( text );
+    return detail::trim_right( result, set );
 }
 
 template< typename StringT >
@@ -1843,15 +1851,14 @@ trimmed_right( StringT const & text ) string_noexcept
     return trimmed_right( text, default_trim_set<StringT>() );
 }
 
-template< typename StringT, typename SetT >
-string_constexpr StringT
-trimmed_right( StringT const & text, SetT const & set ) string_noexcept
-{
-    StringT result( text );
-    return detail::trim_right( result, set );
-}
-
 // trim():
+
+template< typename CharT, typename SetT >
+string_constexpr CharT *
+trim( CharT * text, SetT const * set ) string_noexcept
+{
+    return detail::trim( text, set );
+}
 
 template< typename CharT >
 string_constexpr CharT *
@@ -1860,9 +1867,9 @@ trim( CharT * text ) string_noexcept
     return trim( text, default_trim_set<CharT const *>() );
 }
 
-template< typename CharT, typename SetT >
-string_constexpr CharT *
-trim( CharT * text, SetT const * set ) string_noexcept
+template< typename StringT, typename SetT >
+string_constexpr StringT &
+trim( StringT & text, SetT const & set ) string_noexcept
 {
     return detail::trim( text, set );
 }
@@ -1875,10 +1882,11 @@ trim( StringT & text ) string_noexcept
 }
 
 template< typename StringT, typename SetT >
-string_constexpr StringT &
-trim( StringT & text, SetT const & set ) string_noexcept
+string_constexpr StringT
+trimmed( StringT const & text, SetT const & set ) string_noexcept
 {
-    return detail::trim( text, set );
+    StringT result( text );
+    return detail::trim( result, set );
 }
 
 template< typename StringT >
@@ -1887,15 +1895,6 @@ trimmed( StringT const & text ) string_noexcept
 {
     return trimmed( text, default_trim_set<StringT>() );
 }
-
-template< typename StringT, typename SetT >
-string_constexpr StringT
-trimmed( StringT const & text, SetT const & set ) string_noexcept
-{
-    StringT result( text );
-    return detail::trim( result, set );
-}
-
 
 // TODO join():
 
