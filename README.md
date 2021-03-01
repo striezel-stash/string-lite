@@ -120,19 +120,19 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | basic_string_view&lt;&gt;<br>**to_identity**(basic_string_view&lt;&gt; v) |std::string_view |
 | &nbsp;             | basic_string&lt;&gt;<br>**to_identity**(basic_string_view&lt;&gt; v)      |nonstd::string_view |
 | &nbsp;             | &nbsp; | &nbsp; |
-| **Observers**      | bool **is_empty**(CharT \* s)               | true if C-string is empty |
-| &nbsp;             | bool **is_empty**(StringT const & s)        | true if string is empty |
+| **Observers**      | bool **is_empty**(CharT \* s)               | C-string is empty |
+| &nbsp;             | bool **is_empty**(StringT const & s)        | string is empty |
 | &nbsp;             | &nbsp; | &nbsp; |
-| &nbsp;             | bool **contains**(StringT const & s, CharT chr)              | true if string contains chr |
-| &nbsp;             | bool **contains**(StringT const & s, SubT const & substr)    | true if string contains substring |
-| &nbsp;             | bool **contains**(StringT const & s, std::regex const & substr) | true if string contains regular expr. |
-| &nbsp;             | bool **contains_re**(StringT const & s, ReT const & re)      | true if string contains regular expr. |
+| &nbsp;             | bool **contains**(StringT const & s, CharT chr)              | string contains chr |
+| &nbsp;             | bool **contains**(StringT const & s, SubT const & substr)    | string contains substring |
+| &nbsp;             | bool **contains**(StringT const & s, std::regex const & substr) | string contains reg. expr. |
+| &nbsp;             | bool **contains_re**(StringT const & s, ReT const & re)      | string contains reg. expr. |
 | &nbsp;             | &nbsp; | &nbsp; |
-| &nbsp;             | bool **starts_with**(StringT const & s, CharT chr)           | true if string starts with chr |
-| &nbsp;             | bool **starts_with**(StringT const & s, SubT const & substr) | true if string starts with substring |
+| &nbsp;             | bool **starts_with**(StringT const & s, CharT chr)           | string starts with chr |
+| &nbsp;             | bool **starts_with**(StringT const & s, SubT const & substr) | string starts with substring |
 | &nbsp;             | &nbsp; | &nbsp; |
-| &nbsp;             | bool **ends_with**(StringT const & s, CharT chr)             | true if string ends with chr |
-| &nbsp;             | bool **ends_with**(StringT const & s, SubT const & substr)   | true if string ends with substring |
+| &nbsp;             | bool **ends_with**(StringT const & s, CharT chr)             | string ends with chr |
+| &nbsp;             | bool **ends_with**(StringT const & s, SubT const & substr)   | string ends with substring |
 | &nbsp;             | &nbsp; | &nbsp; |
 | **Searching**      | IterT **find_first**(StringT & s, SubT const & substr)       | iterator to substring |
 | &nbsp;             | IterT **find_first**(StringT const & s, SubT const & substr) | const iterator to substring |
