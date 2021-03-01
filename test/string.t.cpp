@@ -592,12 +592,6 @@ CASE( "trim_left: Remove characters in set from left of string [\" \\t\\n\"] - i
     EXPECT( trim_left(s2, " #$%&") == std::string("abc") );
 }
 
-CASE( "trimmed_left: Remove characters in set from left of string [\" \\t\\n\"] - copy - string" )
-{
-    EXPECT( trimmed_left(std::string(" \t\nabc")) == std::string("abc") );
-    EXPECT( trimmed_left(std::string(" #$%&abc"), " #$%&") == std::string("abc") );
-}
-
 CASE( "trim_right: Remove characters in set from right of string [\" \\t\\n\"] - in-place - char*" )
 {
     char s1[] = "abc \t\n";
@@ -616,12 +610,6 @@ CASE( "trim_right: Remove characters in set from right of string [\" \\t\\n\"] -
     EXPECT( trim_right(s2, " #$%&") == std::string("abc") );
 }
 
-CASE( "trimmed_right: Remove characters in set from right of string [\" \\t\\n\"] - copy - string" )
-{
-    EXPECT( trimmed_right(std::string("abc \t\n")) == std::string("abc") );
-    EXPECT( trimmed_right(std::string("abc #$%&"), " #$%&") == std::string("abc") );
-}
-
 CASE( "trim: Remove characters in set from left and right of string [\" \\t\\n\"] - in-place - char*" )
 {
     char s1[] = " \t\nabc \t\n";
@@ -638,6 +626,18 @@ CASE( "trim: Remove characters in set from left and right of string [\" \\t\\n\"
 
     EXPECT( trim(s1) == std::string("abc") );
     EXPECT( trim(s2, " #$%&") == std::string("abc") );
+}
+
+CASE( "trimmed_left: Remove characters in set from left of string [\" \\t\\n\"] - copy - string" )
+{
+    EXPECT( trimmed_left(std::string(" \t\nabc")) == std::string("abc") );
+    EXPECT( trimmed_left(std::string(" #$%&abc"), " #$%&") == std::string("abc") );
+}
+
+CASE( "trimmed_right: Remove characters in set from right of string [\" \\t\\n\"] - copy - string" )
+{
+    EXPECT( trimmed_right(std::string("abc \t\n")) == std::string("abc") );
+    EXPECT( trimmed_right(std::string("abc #$%&"), " #$%&") == std::string("abc") );
 }
 
 CASE( "trimmed: Remove characters in set from left and right of string [\" \\t\\n\"] - copy - string" )
