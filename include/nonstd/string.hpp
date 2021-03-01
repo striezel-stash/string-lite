@@ -368,6 +368,18 @@ using void_t = void;
 
 } // namespace c++17
 
+namespace std20 {
+
+// type identity, to establish non-deduced contexts in template argument deduction:
+
+template< typename T >
+struct type_identity
+{
+    typedef T type;
+};
+
+} // namespace c++20
+
 namespace std23 {
 namespace detail {
 
@@ -425,7 +437,7 @@ string_nodiscard CharT nullchr() string_noexcept
 // free function min():
 
 template< typename T >
-inline T min(T a, T b)
+inline T min( T a, typename std20::type_identity<T>::type b )
 {
     return a < b ? a : b;
 }
@@ -1134,6 +1146,91 @@ append( std::basic_string<CharT> & text, TailT const & tail ) string_noexcept
     return text.append( to_identity(tail) );
 }
 
+// TODO trim() - alg
+
+template< typename CharT, typename SetT >
+string_constexpr CharT *
+trim_left( CharT * text, SetT const * set ) string_noexcept
+{
+    // TODO trim() - strspn(CharT), adapt std::strspn to CharT
+    const int pos = std::strspn( text, set );
+
+    memmove( text, text + pos, 1 + size( text ) - pos );
+
+    return text;
+}
+
+template< typename CharT, typename SetT >
+string_constexpr std::basic_string<CharT> &
+trim_left( std::basic_string<CharT> & text, SetT const & set ) string_noexcept
+{
+    return text.erase( 0, text.find_first_not_of( set ) );
+}
+
+template< typename StringT, typename SetT >
+string_constexpr StringT &
+trim_left( StringT & text, SetT const & set ) string_noexcept
+{
+    //  TODO trim() - make generic version
+    return text;
+}
+
+template< typename CharT, typename SetT >
+string_constexpr CharT *
+trim_right( CharT * text, SetT const * set ) string_noexcept
+{
+    std::size_t length = size( text );
+
+    if ( !length )
+        return text;
+
+    char * end = text + length - 1;
+
+    // TODO trim() - strspn(CharT), adapt std::strchr to CharT
+    while ( end >= text && std::strchr( set, *end ) )
+        end--;
+
+    *( end + 1 ) = '\0';
+
+    return text;
+}
+
+template< typename CharT, typename SetT >
+string_constexpr std::basic_string<CharT> &
+trim_right( std::basic_string<CharT> & text, SetT const & set ) string_noexcept
+{
+    return text.erase( text.find_last_not_of( set ) + 1 );
+}
+
+template< typename StringT, typename SetT >
+string_constexpr StringT &
+trim_right( StringT & text, SetT const & set ) string_noexcept
+{
+    //  TODO trim() - make generic version
+    return text;
+}
+
+template< typename CharT, typename SetT >
+string_constexpr CharT *
+trim( CharT * text, SetT const * set ) string_noexcept
+{
+    return trim_right( trim_left( text, set ), set);
+}
+
+template< typename CharT, typename SetT >
+string_constexpr std::basic_string<CharT> &
+trim( std::basic_string<CharT> & text, SetT const & set ) string_noexcept
+{
+    return trim_right( trim_left( text, set ), set);
+}
+
+template< typename StringT, typename SetT >
+string_constexpr StringT &
+trim( StringT & text, SetT const & set ) string_noexcept
+{
+    return trim_right( trim_left( text, set ), set);
+}
+
 // TODO join() - alg
 
 // split():
@@ -1651,6 +1748,150 @@ appended( StringT const & text, TailT const & tail ) string_noexcept
 
     return detail::append( result, tail );
 }
+
+// TODO trim()
+
+// trim_left():
+
+template< typename StringT >
+inline StringT const default_trim_set()
+{
+    return " \t\n";
+}
+
+template< typename CharT >
+string_constexpr CharT *
+trim_left( CharT * text ) string_noexcept
+{
+    return trim_left( text, default_trim_set<CharT const *>() );
+}
+
+template< typename CharT, typename SetT >
+string_constexpr CharT *
+trim_left( CharT * text, SetT const * set ) string_noexcept
+{
+    return detail::trim_left( text, set );
+}
+
+template< typename StringT >
+string_constexpr StringT &
+trim_left( StringT & text ) string_noexcept
+{
+    return trim_left( text, default_trim_set<StringT>() );
+}
+
+template< typename StringT, typename SetT >
+string_constexpr StringT &
+trim_left( StringT & text, SetT const & set ) string_noexcept
+{
+    return detail::trim_left( text, set );
+}
+
+template< typename StringT >
+string_constexpr StringT
+trimmed_left( StringT const & text ) string_noexcept
+{
+    return trimmed_left( text, default_trim_set<StringT>() );
+}
+
+template< typename StringT, typename SetT >
+string_constexpr StringT
+trimmed_left( StringT const & text, SetT const & set ) string_noexcept
+{
+    StringT result( text );
+    return detail::trim_left( result, set );
+}
+
+// trim_right():
+
+template< typename CharT >
+string_constexpr CharT *
+trim_right( CharT * text ) string_noexcept
+{
+    return trim_right( text, default_trim_set<CharT const *>() );
+}
+
+template< typename CharT, typename SetT >
+string_constexpr CharT *
+trim_right( CharT * text, SetT const * set ) string_noexcept
+{
+    return detail::trim_right( text, set );
+}
+
+template< typename StringT >
+string_constexpr StringT &
+trim_right( StringT & text ) string_noexcept
+{
+    return trim_right( text, default_trim_set<StringT>() );
+}
+
+template< typename StringT, typename SetT >
+string_constexpr StringT &
+trim_right( StringT & text, SetT const & set ) string_noexcept
+{
+    return detail::trim_right( text, set );
+}
+
+template< typename StringT >
+string_constexpr StringT
+trimmed_right( StringT const & text ) string_noexcept
+{
+    return trimmed_right( text, default_trim_set<StringT>() );
+}
+
+template< typename StringT, typename SetT >
+string_constexpr StringT
+trimmed_right( StringT const & text, SetT const & set ) string_noexcept
+{
+    StringT result( text );
+    return detail::trim_right( result, set );
+}
+
+// trim():
+
+template< typename CharT >
+string_constexpr CharT *
+trim( CharT * text ) string_noexcept
+{
+    return trim( text, default_trim_set<CharT const *>() );
+}
+
+template< typename CharT, typename SetT >
+string_constexpr CharT *
+trim( CharT * text, SetT const * set ) string_noexcept
+{
+    return detail::trim( text, set );
+}
+
+template< typename StringT >
+string_constexpr StringT &
+trim( StringT & text ) string_noexcept
+{
+    return trim( text, default_trim_set<StringT>() );
+}
+
+template< typename StringT, typename SetT >
+string_constexpr StringT &
+trim( StringT & text, SetT const & set ) string_noexcept
+{
+    return detail::trim( text, set );
+}
+
+template< typename StringT >
+string_constexpr StringT
+trimmed( StringT const & text ) string_noexcept
+{
+    return trimmed( text, default_trim_set<StringT>() );
+}
+
+template< typename StringT, typename SetT >
+string_constexpr StringT
+trimmed( StringT const & text, SetT const & set ) string_noexcept
+{
+    StringT result( text );
+    return detail::trim( result, set );
+}
+
 
 // TODO join():
 

@@ -334,6 +334,7 @@ CASE( "replaced_all: Return new string with all occurrences of sub string change
 
 CASE( "replace_first: Change the first occurrence of sub string - char*-char*" "[TODO]" )
 {
+// TODO : implement detail::replace_first(...)
     // char result[] = "abc123mno123xyz";
 
     // (void) replace_first( result, "123", "789");
@@ -404,6 +405,7 @@ CASE( "replaced_first: Return new string with first occurrence of sub string cha
 
 CASE( "replace_last: Change the first occurrence of sub string - char*-char*" "[TODO]" )
 {
+// TODO : implement detail::replace_last(...)
     // char result[] = "abc123mno123xyz";
 
     // (void) replace_last( result, "123", "789");
@@ -572,7 +574,83 @@ CASE( "appended: Return new string with second string appended to first string -
     EXPECT( appended(std::string("abc"), string_view("xyz")) == std::string("abcxyz") );
 }
 
+CASE( "trim_left: Remove characters in set from left of string [\" \\t\\n\"] - in-place - char*" )
+{
+    char s1[] = " \t\nabc";
+    char s2[] = " #$%&abc";
+
+    EXPECT( trim_left(s1) == std::string("abc") );
+    EXPECT( trim_left(s2, " #$%&") == std::string("abc") );
+}
+
+CASE( "trim_left: Remove characters in set from left of string [\" \\t\\n\"] - in-place - string" )
+{
+    std::string s1(" \t\nabc");
+    std::string s2(" #$%&abc");
+
+    EXPECT( trim_left(s1) == std::string("abc") );
+    EXPECT( trim_left(s2, " #$%&") == std::string("abc") );
+}
+
+CASE( "trimmed_left: Remove characters in set from left of string [\" \\t\\n\"] - copy - string" )
+{
+    EXPECT( trimmed_left(std::string(" \t\nabc")) == std::string("abc") );
+    EXPECT( trimmed_left(std::string(" #$%&abc"), " #$%&") == std::string("abc") );
+}
+
+CASE( "trim_right: Remove characters in set from right of string [\" \\t\\n\"] - in-place - char*" )
+{
+    char s1[] = "abc \t\n";
+    char s2[] = "abc #$%&";
+
+    EXPECT( trim_right(s1) == std::string("abc") );
+    EXPECT( trim_right(s2, " #$%&") == std::string("abc") );
+}
+
+CASE( "trim_right: Remove characters in set from right of string [\" \\t\\n\"] - in-place - string" )
+{
+    std::string s1("abc \t\n");
+    std::string s2("abc #$%&");
+
+    EXPECT( trim_right(s1) == std::string("abc") );
+    EXPECT( trim_right(s2, " #$%&") == std::string("abc") );
+}
+
+CASE( "trimmed_right: Remove characters in set from right of string [\" \\t\\n\"] - copy - string" )
+{
+    EXPECT( trimmed_right(std::string("abc \t\n")) == std::string("abc") );
+    EXPECT( trimmed_right(std::string("abc #$%&"), " #$%&") == std::string("abc") );
+}
+
+CASE( "trim: Remove characters in set from left and right of string [\" \\t\\n\"] - in-place - char*" )
+{
+    char s1[] = " \t\nabc \t\n";
+    char s2[] = " #$%&abc #$%&";
+
+    EXPECT( trim(s1) == std::string("abc") );
+    EXPECT( trim(s2, " #$%&") == std::string("abc") );
+}
+
+CASE( "trim: Remove characters in set from left and right of string [\" \\t\\n\"] - in-place - string" )
+{
+    std::string s1(" \t\nabc \t\n");
+    std::string s2(" #$%&abc #$%&");
+
+    EXPECT( trim(s1) == std::string("abc") );
+    EXPECT( trim(s2, " #$%&") == std::string("abc") );
+}
+
+CASE( "trimmed: Remove characters in set from left and right of string [\" \\t\\n\"] - copy - string" )
+{
+    EXPECT( trimmed(std::string(" \t\nabc \t\n")) == std::string("abc") );
+    EXPECT( trimmed(std::string(" #$%&abc #$%&"), " #$%&") == std::string("abc") );
+}
+
 // TODO Add tests for string_view:
+
+CASE( "string_view: ..." "[TODO]" )
+{
+}
 
 // join(), split():
 
