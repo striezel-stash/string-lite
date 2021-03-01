@@ -93,24 +93,24 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | **regex_delimiter**                         | regular expression |
 | &nbsp;             | **char_delimiter**                          | character position |
 | &nbsp;             | &nbsp; | &nbsp; |
-| **Utilities**      | CharT **nullchr**()                         | null character of template type |
+| **Utilities**      | CharT **nullchr**()                         | null char of template type |
 | &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | size_t **size**(CharT \* s)                 | C-string, [w,u16,u32]char |
-| &nbsp;             | size_t **size**(CollT & c)                  | collection, C++string |
+| &nbsp;             | size_t **size**(CollT & c)                  | collection, C++ string |
 | &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | CharT \* **begin**(CharT \* c)              | iterator to C-string |
 | &nbsp;             | CharT \* **end**(CharT \* c)                | iterator past C-string |
 | &nbsp;             | CharT const \* **cbegin**(CharT \* c)       | const iterator to C-string |
 | &nbsp;             | CharT const \* **cend**(CharT \* c)         | const iterator past C-string |
 | &nbsp;             | &nbsp; | &nbsp; |
-| &nbsp;             | IterT **begin**(CollT & c)                  | collection, C++string |
-| &nbsp;             | IterT **end**(CollT & c)                    | collection, C++string |
-| &nbsp;             | IterT **cbegin**(CollT & c)                 | collection, C++string |
-| &nbsp;             | IterT **cend**(CollT & c)                   | collection, C++string |
-| &nbsp;             | IterT **rbegin**(CollT & c)                 | collection, C++string |
-| &nbsp;             | IterT **rend**(CollT & c)                   | collection, C++string |
-| &nbsp;             | IterT **crbegin**(CollT & c)                | collection, C++string |
-| &nbsp;             | IterT **crend**(CollT & c)                  | collection, C++string |
+| &nbsp;             | IterT **begin**(CollT & c)                  | collection, C++ string |
+| &nbsp;             | IterT **end**(CollT & c)                    | collection, C++ string |
+| &nbsp;             | IterT **cbegin**(CollT & c)                 | collection, C++ string |
+| &nbsp;             | IterT **cend**(CollT & c)                   | collection, C++ string |
+| &nbsp;             | IterT **rbegin**(CollT & c)                 | collection, C++ string |
+| &nbsp;             | IterT **rend**(CollT & c)                   | collection, C++ string |
+| &nbsp;             | IterT **crbegin**(CollT & c)                | collection, C++ string |
+| &nbsp;             | IterT **crend**(CollT & c)                  | collection, C++ string |
 | &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | std::basic_string&lt;&gt;<br>**to_string**(basic_string_view&lt;&gt; v)                      |&nbsp;|
 | &nbsp;             | std::basic_string&lt;&gt;<br>**to_string**(basic_string_view&lt;&gt; v, Allocator const & a) |&nbsp;|
