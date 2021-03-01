@@ -95,22 +95,22 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | &nbsp; | &nbsp; |
 | **Utilities**      | CharT **nullchr**()                         | null character of template type |
 | &nbsp;             | &nbsp; | &nbsp; |
-| &nbsp;             | size_t **size**(CollT & c)                  | size of collection, C++string |
-| &nbsp;             | size_t **size**(CharT \* s)                 | length of C-string, char, wchar, u16char, u32char |
+| &nbsp;             | size_t **size**(CharT \* s)                 | C-string, [w,u16,u32]char |
+| &nbsp;             | size_t **size**(CollT & c)                  | collection, C++string |
 | &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | CharT \* **begin**(CharT \* c)              | iterator to C-string |
 | &nbsp;             | CharT \* **end**(CharT \* c)                | iterator past C-string |
 | &nbsp;             | CharT const \* **cbegin**(CharT \* c)       | const iterator to C-string |
 | &nbsp;             | CharT const \* **cend**(CharT \* c)         | const iterator past C-string |
 | &nbsp;             | &nbsp; | &nbsp; |
-| &nbsp;             | IterT **begin**(CollT & c)                  | iterator to collection, C++string |
-| &nbsp;             | IterT **end**(CollT & c)                    | iterator past collection, C++string |
-| &nbsp;             | IterT **cbegin**(CollT & c)                 | const iterator to collection, C++string |
-| &nbsp;             | IterT **cend**(CollT & c)                   | const iterator past collection, C++string |
-| &nbsp;             | IterT **rbegin**(CollT & c)                 | reverse iterator to collection, C++string |
-| &nbsp;             | IterT **rend**(CollT & c)                   | reverse iterator past collection, C++string |
-| &nbsp;             | IterT **crbegin**(CollT & c)                | const reverse iterator to collection, C++string |
-| &nbsp;             | IterT **crend**(CollT & c)                  | const reverse iterator past collection, C++string |
+| &nbsp;             | IterT **begin**(CollT & c)                  | collection, C++string |
+| &nbsp;             | IterT **end**(CollT & c)                    | collection, C++string |
+| &nbsp;             | IterT **cbegin**(CollT & c)                 | collection, C++string |
+| &nbsp;             | IterT **cend**(CollT & c)                   | collection, C++string |
+| &nbsp;             | IterT **rbegin**(CollT & c)                 | collection, C++string |
+| &nbsp;             | IterT **rend**(CollT & c)                   | collection, C++string |
+| &nbsp;             | IterT **crbegin**(CollT & c)                | collection, C++string |
+| &nbsp;             | IterT **crend**(CollT & c)                  | collection, C++string |
 | &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | std::basic_string&lt;&gt;<br>**to_string**(basic_string_view&lt;&gt; v)                      |&nbsp;|
 | &nbsp;             | std::basic_string&lt;&gt;<br>**to_string**(basic_string_view&lt;&gt; v, Allocator const & a) |&nbsp;|
@@ -125,8 +125,8 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | bool **contains**(StringT const & s, CharT chr)              | true if string contains chr |
 | &nbsp;             | bool **contains**(StringT const & s, SubT const & substr)    | true if string contains substring |
-| &nbsp;             | bool **contains**(StringT const & s, std::regex const & substr) | true if string contains regular expression |
-| &nbsp;             | bool **contains_re**(StringT const & s, ReT const & re)      | true if string contains regular expression |
+| &nbsp;             | bool **contains**(StringT const & s, std::regex const & substr) | true if string contains regular expr. |
+| &nbsp;             | bool **contains_re**(StringT const & s, ReT const & re)      | true if string contains regular expr. |
 | &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | bool **starts_with**(StringT const & s, CharT chr)           | true if string starts with chr |
 | &nbsp;             | bool **starts_with**(StringT const & s, SubT const & substr) | true if string starts with substring |
@@ -134,11 +134,11 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | bool **ends_with**(StringT const & s, CharT chr)             | true if string ends with chr |
 | &nbsp;             | bool **ends_with**(StringT const & s, SubT const & substr)   | true if string ends with substring |
 | &nbsp;             | &nbsp; | &nbsp; |
-| **Searching**      | IterT **find_first**(StringT & s, SubT const & substr)       | provide iterator to substring |
-| &nbsp;             | IterT **find_first**(StringT const & s, SubT const & substr) | provide const iterator to substring |
+| **Searching**      | IterT **find_first**(StringT & s, SubT const & substr)       | iterator to substring |
+| &nbsp;             | IterT **find_first**(StringT const & s, SubT const & substr) | const iterator to substring |
 | &nbsp;             | &nbsp; | &nbsp; |
-| &nbsp;             | IterT **find_last**(StringT & s, SubT const & substr)        | provide iterator to substring |
-| &nbsp;             | IterT **find_last**(StringT const & s, SubT const & substr)  | provide const iterator to substring |
+| &nbsp;             | IterT **find_last**(StringT & s, SubT const & substr)        | iterator to substring |
+| &nbsp;             | IterT **find_last**(StringT const & s, SubT const & substr)  | const iterator to substring |
 | &nbsp;             | &nbsp; | &nbsp; |
 | **Modifiers**      | CharT \* **clear**(CharT \* s)              | make C-string empty |
 | &nbsp;             | StringT & **clear**(StringT & s)            | make string empty |
@@ -148,8 +148,8 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | StringT & **to_lowercase**(StringT & s)     | convert string to lowercase  |
 | &nbsp;             | StringT & **to_uppercase**(StringT & s)     | convert string to uppercase  |
 | &nbsp;             | &nbsp; | &nbsp; |
-| &nbsp;             | StringT **as_lowercase**(StringT const & s) | provide string converted to lowercase |
-| &nbsp;             | StringT **as_uppercase**(StringT const & s) | provide string converted to uppercase |
+| &nbsp;             | StringT **as_lowercase**(StringT const & s) | string converted to lowercase |
+| &nbsp;             | StringT **as_uppercase**(StringT const & s) | string converted to uppercase |
 | &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | StringT & **replace_all**(StringT & s, FromT const & from, ToT const & to)        |&nbsp;|
 | &nbsp;             | StringT **replaced_all**(StringT const & s, FromT const & from, ToT const & to)   |&nbsp;|
