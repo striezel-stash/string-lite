@@ -159,7 +159,31 @@ Note: this repository contains a copy of several files from the [CsString librar
 | &nbsp;             | &nbsp; | &nbsp; |
 | &nbsp;             | StringT & **replace_last**(StringT & s, FromT const & from, ToT const & to)       |&nbsp;|
 | &nbsp;             | StringT **replaced_last**(StringT const & s, FromT const & from, ToT const & to)  |&nbsp;|
-| &nbsp;             | &nbsp;                                                           |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | CharT \* **trim_left**(CharT \* s)                               |[" \\t\\n"]|
+| &nbsp;             | CharT \* **trim_left**(CharT \* s, SetT const * set)             |&nbsp;|
+| &nbsp;             | StringT & **trim_left**(StringT & s)                             |&nbsp;|
+| &nbsp;             | StringT & **trim_left**(StringT & s, SetT const & set)           |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | CharT \* **trim_right**(CharT \* s)                              |&nbsp;|
+| &nbsp;             | CharT \* **trim_right**(CharT \* s, SetT const * set)            |&nbsp;|
+| &nbsp;             | StringT & **trim_right**(StringT & s)                            |&nbsp;|
+| &nbsp;             | StringT & **trim_right**(StringT & s, SetT const & set)          |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | CharT \* **trim**(CharT \* s)                                    |&nbsp;|
+| &nbsp;             | CharT \* **trim**(CharT \* s, SetT const * set)                  |&nbsp;|
+| &nbsp;             | StringT & **trim**(StringT & s)                                  |&nbsp;|
+| &nbsp;             | StringT & **trim**(StringT & s, SetT const & set)                |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | StringT **trimmed_left**(StringT const & s)                      |&nbsp;|
+| &nbsp;             | StringT **trimmed_left**(StringT const & s, SetT const & set)    |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | StringT **trimmed_right**(StringT const & s)                     |&nbsp;|
+| &nbsp;             | StringT **trimmed_right**(StringT const & s, SetT const & set)   |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
+| &nbsp;             | StringT **trimmed**(StringT const & s)    |&nbsp;|
+| &nbsp;             | StringT **trimmed**(StringT const & s, SetT const & set)         |&nbsp;|
+| &nbsp;             | &nbsp; | &nbsp; |
 | **Combining**      | CharT \* **append**(CharT \* s, TailT const & tail)              |&nbsp;|
 | &nbsp;             | StringT & **append**(StringT & s, TailT const & tail)            |&nbsp;|
 | &nbsp;             | StringT **appended**(StringT const & s, TailT const & tail)      |&nbsp;|
@@ -287,12 +311,12 @@ appended: Return new string with second string appended to first string - string
 appended: Return new string with second string appended to first string - string-string_view
 trim_left: Remove characters in set from left of string [" \t\n"] - in-place - char*
 trim_left: Remove characters in set from left of string [" \t\n"] - in-place - string
-trimmed_left: Remove characters in set from left of string [" \t\n"] - copy - string
 trim_right: Remove characters in set from right of string [" \t\n"] - in-place - char*
 trim_right: Remove characters in set from right of string [" \t\n"] - in-place - string
-trimmed_right: Remove characters in set from right of string [" \t\n"] - copy - string
 trim: Remove characters in set from left and right of string [" \t\n"] - in-place - char*
 trim: Remove characters in set from left and right of string [" \t\n"] - in-place - string
+trimmed_left: Remove characters in set from left of string [" \t\n"] - copy - string
+trimmed_right: Remove characters in set from right of string [" \t\n"] - copy - string
 trimmed: Remove characters in set from left and right of string [" \t\n"] - copy - string
 string_view: ...[TODO]
 join: Join strings from collection into a string separated by given separator
