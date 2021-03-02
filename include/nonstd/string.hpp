@@ -1153,7 +1153,7 @@ append( std::basic_string<CharT> & text, TailT const & tail ) string_noexcept
 // TODO trim() - alg
 
 template< typename CharT, typename SetT >
-string_constexpr CharT *
+string_constexpr14 CharT *
 trim_left( CharT * text, SetT const * set ) string_noexcept
 {
     // TODO trim() - strspn(CharT), adapt std::strspn to CharT
@@ -1180,7 +1180,7 @@ trim_left( StringT & text, SetT const & set ) string_noexcept
 }
 
 template< typename CharT, typename SetT >
-string_constexpr CharT *
+string_constexpr14 CharT *
 trim_right( CharT * text, SetT const * set ) string_noexcept
 {
     std::size_t length = size( text );
