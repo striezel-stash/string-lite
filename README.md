@@ -309,8 +309,8 @@ append: Append a string to a string in-place - string-string_view
 appended: Return new string with second string appended to first string - string-char*
 appended: Return new string with second string appended to first string - string-string
 appended: Return new string with second string appended to first string - string-string_view
-trim_left: Remove characters in set from left of string [" \t\n"] - in-place - char*
-trim_left: Remove characters in set from left of string [" \t\n"] - in-place - string
+trim_left: Remove characters in set from left of string [" \t\n"] - in-place - C-string
+trim_left: Remove characters in set from left of string [" \t\n"] - in-place - std::string
 trim_right: Remove characters in set from right of string [" \t\n"] - in-place - char*
 trim_right: Remove characters in set from right of string [" \t\n"] - in-place - string
 trim: Remove characters in set from left and right of string [" \t\n"] - in-place - char*
@@ -320,6 +320,10 @@ trimmed_right: Remove characters in set from right of string [" \t\n"] - copy - 
 trimmed: Remove characters in set from left and right of string [" \t\n"] - copy - string
 string_view: ...[TODO]
 join: Join strings from collection into a string separated by given separator
+split: Split string into vector of string_view given delimiter - literal_delimiter
+split: Split string into vector of string_view given delimiter - literal_delimiter
+split: Split string into vector of string_view given delimiter - literal_delimiter
+split: Split string into vector of string_view given delimiter - literal_delimiter
 split: Split string into vector of string_view given delimiter - literal_delimiter
 split: Split string into vector of string_view given delimiter - any_of_delimiter
 split: Split string into vector of string_view given delimiter - fixed_delimiter
