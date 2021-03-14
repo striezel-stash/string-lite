@@ -290,7 +290,7 @@
 // Method detection:
 
 #define string_HAS_METHOD_( T, M )  \
-    nonstd::string::has_##M<T>::value
+    ::nonstd::string::has_##M<T>::value
 
 #if string_CPP11_OR_GREATER && !string_BETWEEN(string_COMPILER_GNUC_VERSION, 1, 500)
 
@@ -1196,7 +1196,7 @@ trim_left( std::basic_string<CharT> & text, SetT const & set ) string_noexcept
 
 template< typename StringT, typename SetT >
 string_constexpr StringT &
-trim_left( StringT & text, SetT const & set ) string_noexcept
+trim_left( StringT & text, SetT const & /*set*/ ) string_noexcept
 {
     //  TODO trim() - make generic version
     return text;
@@ -1231,7 +1231,7 @@ trim_right( std::basic_string<CharT> & text, SetT const & set ) string_noexcept
 
 template< typename StringT, typename SetT >
 string_constexpr StringT &
-trim_right( StringT & text, SetT const & set ) string_noexcept
+trim_right( StringT & text, SetT const & /*set*/ ) string_noexcept
 {
     //  TODO trim() - make generic version
     return text;
@@ -1815,7 +1815,7 @@ trim_left( StringT & text ) string_noexcept
 }
 
 template< typename StringT, typename SetT >
-string_constexpr StringT
+string_constexpr14 StringT
 trimmed_left( StringT const & text, SetT const & set ) string_noexcept
 {
     StringT result( text );
@@ -1860,7 +1860,7 @@ trim_right( StringT & text ) string_noexcept
 }
 
 template< typename StringT, typename SetT >
-string_constexpr StringT
+string_constexpr14 StringT
 trimmed_right( StringT const & text, SetT const & set ) string_noexcept
 {
     StringT result( text );
