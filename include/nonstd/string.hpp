@@ -352,6 +352,21 @@ struct conditional { typedef T type; };
 template< typename T, typename F >
 struct conditional<false, T, F> { typedef F type; };
 
+template< typename T > struct remove_const          { typedef T type; };
+template< typename T > struct remove_const<const T> { typedef T type; };
+
+template< typename T > struct remove_volatile             { typedef T type; };
+template< typename T > struct remove_volatile<volatile T> { typedef T type; };
+
+template< typename T > struct remove_cv { typedef typename remove_volatile<typename remove_const<T>::type>::type type; };
+
+// template< typename T > struct is_const          : std98::false_type {};
+// template< typename T > struct is_const<const T> : std98::true_type {};
+
+template< typename T > struct is_pointer_helper     : std98::false_type {};
+template< typename T > struct is_pointer_helper<T*> : std98::true_type {};
+template< typename T > struct is_pointer : is_pointer_helper<typename remove_cv<T>::type> {};
+
 } // C++11
 
 namespace std14 {
@@ -499,38 +514,46 @@ string_nodiscard inline size_t size( wchar_t const * s )
 
 // TODO Add char16_t, char32_t, wchar_t variations - begin(), end()
 
-template< typename CharT >
-string_nodiscard inline CharT * begin( CharT * text )
+template< typename PCharT >
+string_nodiscard inline
+string_ENABLE_IF_R_(std11::is_pointer<PCharT>::value, PCharT)
+begin( PCharT text )
 {
     return text;
 }
 
-template< typename CharT >
-string_nodiscard inline CharT * end( CharT * text )
+template< typename PCharT >
+string_nodiscard inline
+string_ENABLE_IF_R_(std11::is_pointer<PCharT>::value, PCharT)
+end( PCharT text )
 {
     return text + size( text );
 }
 
 template< typename CharT >
-string_nodiscard inline CharT const * begin( CharT const * text )
+string_nodiscard inline CharT const *
+begin( CharT const * text )
 {
     return text;
 }
 
 template< typename CharT >
-string_nodiscard inline CharT const * end( CharT const * text )
+string_nodiscard inline CharT const *
+end( CharT const * text )
 {
     return text + size( text );
 }
 
 template< typename CharT >
-string_nodiscard inline CharT const * cbegin( CharT const * text )
+string_nodiscard inline CharT const *
+cbegin( CharT const * text )
 {
     return text;
 }
 
 template< typename CharT >
-string_nodiscard inline CharT const * cend( CharT const * text )
+string_nodiscard inline CharT const *
+cend( CharT const * text )
 {
     return text + size( text );
 }
@@ -1953,10 +1976,12 @@ template< typename CharT >
 class basic_literal_delimiter
 {
     const std::basic_string<CharT> delimiter_;
+    mutable size_t found_;
 
 public:
     explicit basic_literal_delimiter(basic_string_view<CharT> sv)
         : delimiter_(to_string(sv))
+        , found_(0)
     {}
 
     size_t length() const
@@ -1971,9 +1996,16 @@ public:
 
     basic_string_view<CharT> find(basic_string_view<CharT> text, size_t pos) const
     {
-        // out of range, return 'done':
-        if ( pos > text.length())
-            return basic_string_view<CharT>(text.cend(), size_t(0));
+        // out of range, return 'empty' if last match was at end of text, else return 'done':
+        if ( pos >= text.length())
+        {
+            // last delimiter match at end of text?
+            if ( found_ != text.length() - 1 )
+                return basic_delimiter_end(text);
+
+            found_ = 0;
+            return text.substr(text.length() - 1, 0);
+        }
 
         // a single character at a time:
         if (0 == delimiter_.length())
@@ -1981,16 +2013,16 @@ public:
             return text.substr(pos, 1);
         }
 
-        size_t found = text.find(delimiter_, pos);
+        found_ = text.find(delimiter_, pos);
 
         // at a delimiter, or searching past the last delimiter:
-        if (found == pos || pos == text.length())
+        if (found_ == pos || pos == text.length())
         {
-            return basic_string_view<CharT>();
+            return text.substr(pos, 0);
         }
 
         // no delimiter found:
-        if (found == basic_string_view<CharT>::npos)
+        if (found_ == basic_string_view<CharT>::npos)
         {
             // return remaining text:
             if (pos < text.length())
@@ -2003,7 +2035,7 @@ public:
         }
 
         // delimited text:
-        return text.substr(pos, found - pos);
+        return text.substr(pos, found_ - pos);
     }
 };
 
@@ -2211,10 +2243,6 @@ public:
 
     basic_string_view<CharT> find(basic_string_view<CharT> text, size_t pos) const
     {
-        // out of range, return 'done':
-        if ( pos > text.length())
-            return basic_delimiter_end(text);
-
         size_t found = text.find(c_, pos);
 
         // nothing left, return 'done':
