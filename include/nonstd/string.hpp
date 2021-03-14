@@ -532,20 +532,6 @@ end( PCharT text )
 
 template< typename CharT >
 string_nodiscard inline CharT const *
-begin( CharT const * text )
-{
-    return text;
-}
-
-template< typename CharT >
-string_nodiscard inline CharT const *
-end( CharT const * text )
-{
-    return text + size( text );
-}
-
-template< typename CharT >
-string_nodiscard inline CharT const *
 cbegin( CharT const * text )
 {
     return text;
