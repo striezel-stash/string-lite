@@ -384,7 +384,28 @@ using void_t = void;
 } // namespace c++17
 
 namespace std20 {
-    // see below
+
+// type identity, to establish non-deduced contexts in template argument deduction:
+
+template< typename T >
+struct type_identity
+{
+    typedef T type;
+};
+
+#if string_CPP11_100
+
+struct identity
+{
+    template< typename T >
+    string_constexpr T && operator ()( T && arg ) const string_noexcept
+    {
+        return std::forward<T>( arg );
+    }
+};
+
+#endif // string_CPP11_100
+
 } // namespace c++20
 
 namespace std23 {
@@ -430,18 +451,6 @@ string_MAKE_HAS_METHOD_( empty )
 string_MAKE_HAS_METHOD_( starts_with )
 string_MAKE_HAS_METHOD_( ends_with )
 string_MAKE_HAS_METHOD_( replace )
-
-namespace std20 {
-
-// type identity, to establish non-deduced contexts in template argument deduction:
-
-template< typename T >
-struct type_identity
-{
-    typedef T type;
-};
-
-} // namespace c++20
 
 // string-lite API functions:
 
