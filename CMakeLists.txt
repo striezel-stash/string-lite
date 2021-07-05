@@ -11,7 +11,7 @@ cmake_minimum_required( VERSION 3.5 FATAL_ERROR )
 
 project(
     string_lite
-    VERSION 0.1.0
+    VERSION 0.9.1
 #   DESCRIPTION "A strong string for C++98, C++11 and later in a single-file header-only library"
 #   HOMEPAGE_URL "https://github.com/martinmoene/string-lite"
     LANGUAGES CXX )
