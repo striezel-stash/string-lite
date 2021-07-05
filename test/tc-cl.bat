@@ -6,7 +6,7 @@
 set      unit=string
 set unit_file=string
 
-:: if no std is given, use c++14
+:: if no std is given, use c++17
 
 set std=%1
 if "%std%"=="" set std=c++17
