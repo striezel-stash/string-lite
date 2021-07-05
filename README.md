@@ -333,3 +333,6 @@ split: Split string into single characters given empty delimiter
 clear: Makes string empty - string [unicode]
 tweak header: Reads tweak header if supported [tweak]
 ```
+
+</p>
+</details>
