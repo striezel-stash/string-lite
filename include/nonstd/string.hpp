@@ -1106,7 +1106,7 @@ std::basic_string<CharT> & replace_all( std::basic_string<CharT> & text, FromT c
         if ( pos == std::string::npos )
             return text;
 
-        text.replace( pos, size(from), to_identity(to) );
+        text.replace( pos, ::nonstd::string::size(from), to_identity(to) );
     }
 }
 
@@ -1135,7 +1135,7 @@ std::basic_string<CharT> & replace_first( std::basic_string<CharT> & text, FromT
     if ( pos == std::string::npos )
         return text;
 
-    return text.replace( pos, size(from), to_identity(to) );
+    return text.replace( pos, ::nonstd::string::size(from), to_identity(to) );
 }
 
 // replace_last():
@@ -1149,7 +1149,7 @@ replace_last( std::basic_string<CharT> & text, FromT const & from, ToT const & t
     if ( pos == std::string::npos )
         return text;
 
-    return text.replace( pos, size(from), to_identity(to) );
+    return text.replace( pos, ::nonstd::string::size(from), to_identity(to) );
 }
 
 // append():
